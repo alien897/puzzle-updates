@@ -2866,7 +2866,8 @@ const BOXES=[['auto','By hall'],['leather','Oxblood'],['lapis','Lapis & gold'],[
 const HALL_BOX={'Persian miniature':'lapis'}; // every other hall uses the red leather box (Ali's pick)
 let boxPref='auto';try{boxPref=localStorage.getItem('pz.box')||'auto';}catch(e){}
 const boxStyle=()=>boxPref==='auto'?(HALL_BOX[PT.move]||'leather'):boxPref;
-const BOX={x:-MG-1300,y:-200,w:1240,h:960}; // a landscape lid: mostly the painting itself (Ali: like a shop-bought puzzle box)let boxCv=null,boxKey='';
+const BOX={x:-MG-1300,y:-200,w:1240,h:960}; /* a landscape lid: mostly the painting itself (Ali: like a shop-bought puzzle box) */
+let boxCv=null,boxKey='';
 const BOXIMG=new Image();BOXIMG.src='ui/box-lapis.webp';BOXIMG.onload=()=>{boxKey='';};
 let boxAt=null; // where the player moved the box (world units)
 const boxDim=st=>{const d={...BOX};if(boxAt){d.x=boxAt.x;d.y=boxAt.y;}return d;};
