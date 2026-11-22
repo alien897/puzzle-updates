@@ -2627,7 +2627,7 @@ function closePicker(){$('picker').hidden=true;}
 function choosePainting(id){if(id===PAINT_ID){closePicker();$('intro').hidden=false;refreshIntro();return;}
   try{localStorage.setItem('pz.painting',id);}catch(e){}
   location.hash='p='+id+'!';location.reload();}
-$('pkClose').onclick=()=>{closePicker();showMenu(true);}; // Close goes back to the main menu (Ali 2026-11-22)$('pkReset').onclick=()=>{for(const k in pkSel)pkSel[k]=k==='play'?false:'';pkRender();};$('pickGo').onclick=openPicker;$('introBack').onclick=openPicker;
+$('pkClose').onclick=()=>{closePicker();showMenu(true);}; /* Close goes back to the main menu (Ali 2026-11-22) */$('pkReset').onclick=()=>{for(const k in pkSel)pkSel[k]=k==='play'?false:'';pkRender();};$('pickGo').onclick=openPicker;$('introBack').onclick=openPicker;
 $('picker').addEventListener('click',e=>{if(e.target.id==='picker')closePicker();});
 addEventListener('keydown',e=>{if(!$('picker').hidden&&e.key==='Escape'){closePicker();showMenu(true);}});
 /* fill the intro card with the chosen painting */
