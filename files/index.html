@@ -1606,7 +1606,11 @@ function ovErase(x,y,w,h){if(!ov.ok)return;const k=ov.s*ov.d,X=Math.floor((x*ov.
   const a=Math.max(0,X),b=Math.max(0,Y),e=Math.min(ov.c.width,X+Wd),f=Math.min(ov.c.height,Y+Hd);if(e<=a||f<=b)return;ov.c.getContext('2d').drawImage(ov.tb,a,b,e-a,f-b,a,b,e-a,f-b);}
 function ovEraseBox(){const d=boxDim(boxStyle());ovErase(d.x-30,d.y-30,d.w+90,d.h+110);} // picture of the whole table, so zooming out never shows an empty table
 function snapZoom(){return zan.tk!=null&&pieces.length>=800&&!drag&&!marq&&mode==='main';}
+/* while a full menu covers the table, stop redrawing it: the table painting every frame made scrolling the menus stutter (Ali 2026-11-22) */
+const MENU_OV=['intro','picker','gallery','trophies','pause'];let coverN=0;addEventListener('resize',()=>{coverN=0;});
+function menuCover(){const mm=$('mainMenu');if(mm&&!mm.hidden&&!mm.classList.contains('out'))return true;for(const id of MENU_OV){const el=document.getElementById(id);if(el&&!el.hidden)return true;}return false;}
 function frame(now){
+  if(menuCover()&&!sortAnim&&!finalHold){if(++coverN>3){requestAnimationFrame(frame);return;}}else coverN=0;
   const useSnap=snapZoom();
   if(useSnap&&!snap.ok){snap.c.width=cv.width;snap.c.height=cv.height;const g=snap.c.getContext('2d');g.drawImage(cv,0,0);snap.ok=true;snap.s=lastV.s;snap.ox=lastV.ox;snap.oy=lastV.oy;}
   if(!useSnap)snap.ok=false;
