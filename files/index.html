@@ -3138,7 +3138,7 @@ function menuMusic(on){clearInterval(menuFade);
     const p=menuAud.play();if(p&&p.catch)p.catch(()=>{const go=()=>{removeEventListener('pointerdown',go,true);removeEventListener('keydown',go,true);if(!$('mainMenu').classList.contains('out'))menuMusic(true);};addEventListener('pointerdown',go,true);addEventListener('keydown',go,true);});
     const tgt=musicVol*.6;menuFade=setInterval(()=>{menuAud.volume=Math.min(tgt,menuAud.volume+tgt/30);if(menuAud.volume>=tgt)clearInterval(menuFade);},100);} // well in the background, about half the game volume
   else if(menuAud&&!menuAud.paused){const st=menuAud.volume/30;menuFade=setInterval(()=>{menuAud.volume=Math.max(0,menuAud.volume-st);if(menuAud.volume<=0){clearInterval(menuFade);menuAud.pause();}},100);}} // slow 3 s fade out
-const inGame=()=>running&&$('intro').hidden;
+const inGame=()=>(running||done)&&$('intro').hidden; /* 'done': Esc still opens the pause menu on the finished painting (Ali 2026-11-22) */
 function showMenu(v){$('mainMenu').classList.toggle('out',!v);$('mainMenu').inert=!v;
   // the menu music keeps playing through the painting picker and the intro card, and only gives way when the puzzle starts
   if(v){menuMusic(true);if(amb)amb.pause();}else if(inGame()){menuMusic(false);if(amb&&$('ambT').checked&&amb.paused)amb.play().catch(()=>{});}}
