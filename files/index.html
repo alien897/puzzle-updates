@@ -989,6 +989,9 @@ let PAINT_ID='annunciation',SKIP_MENU=false;
 try{PAINT_ID=localStorage.getItem('pz.painting')||PAINT_ID;}catch(e){}
 {const m=/[#&]p=([a-z]+)(!?)/.exec(location.hash||'');if(m){PAINT_ID=m[1];SKIP_MENU=!!m[2];try{history.replaceState(null,'',location.pathname+location.search+'#p='+m[1]);}catch(e){}}}
 if(!PAINTINGS[PAINT_ID])PAINT_ID='annunciation';
+/* a locked story page (previous page not finished) opens the next playable page instead */
+{let dn={};try{dn=(JSON.parse(localStorage.getItem('pz.trophies')||'null')||{}).done||{};}catch(e){}
+ for(const k in STORIES){const ids=STORIES[k].ids,i=ids.indexOf(PAINT_ID);if(i>0&&!dn[ids[i-1]]){let j=0;while(j<ids.length-1&&dn[ids[j]])j++;PAINT_ID=ids[j];try{localStorage.setItem('pz.painting',PAINT_ID);}catch(e){}}}}
 const PT=PAINTINGS[PAINT_ID],IS_ANN=PAINT_ID==='annunciation';
 const W=PT.W,H=PT.H; // world units of the painting (its real proportions)
 const MGK=PAINT_ID==='bosch'?1:2.5; // Ali (2026-11-21): 2.5x more table on all four sides (Bosch already has a huge table)
@@ -2380,6 +2383,8 @@ const SPECIAL=[
 ];
 let TRO=(()=>{try{return JSON.parse(localStorage.getItem('pz.trophies')||'null')||{};}catch(e){return{};}})();
 TRO.done=TRO.done||{};TRO.ach=TRO.ach||{};TRO.guesses=TRO.guesses||0;
+/* story pages unlock one by one: page n opens when page n-1 is finished (Ali 2026-11-22) */
+function storyLocked(w){if(!w||!w.story||w.page<=1)return false;const S=STORIES[w.story];return !TRO.done[S.ids[w.page-2]];}
 let newTro=[];
 function troSave(){try{localStorage.setItem('pz.trophies',JSON.stringify(TRO));}catch(e){}}
 const SEAL_T=['Not started','Apprentice','Journeyman','Master'];
@@ -2690,11 +2695,11 @@ function pkRender(){const esc=t=>String(t).replace(/[&<>"]/g,ch=>({'&':'&amp;','
   g.innerHTML=list.length?'':'<div class="pkEmpty">No painting matches these filters.</div>';
   if(pkStory&&STORIES[pkStory])g.appendChild(pkStoryHead(pkStory));
   const nextUp=pkStory?list.find(w=>!TRO.done[w.id]):null;
-  for(const w of list){if(w.bundle){g.appendChild(pkBundle(w.bundle));continue;}const b=document.createElement('button');b.className='pkCard'+(w.play?'':' soon')+(w.id===PAINT_ID?' cur':'');
+  for(const w0 of list){if(w0.bundle){g.appendChild(pkBundle(w0.bundle));continue;}const lk=storyLocked(w0),w=lk?{...w0,play:false}:w0;const b=document.createElement('button');b.className='pkCard'+(w.play?'':' soon')+(w.id===PAINT_ID?' cur':'');
     if(!w.play)b.setAttribute('aria-disabled','true');
     const st=(TRO.done[w.id]||{}).stars||[];
     b.innerHTML=`<div class="im" style="${w.card?`background-image:url(${w.card})`:''}">${w.card?'':esc(w.ini)}</div><b>${pkStory&&w.page?w.page+'. ':''}${esc(w.title)}</b><small>${esc(w.artist)} · ${w.year<1500?'c. ':''}${w.year}</small>
-      <div class="tg"><i>${esc(w.move)}</i><i>${esc(w.museum)}</i>${w===nextUp?'<i class="ok">Next in the story</i>':''}${w.play?`<i class="ok">${w.id===PAINT_ID?'Current':'Up to '+w.max+' pieces'}</i>`:'<i>Coming soon</i>'}${st.some(Boolean)?`<i class="ok">${'★'.repeat(st.filter(Boolean).length)}</i>`:''}</div>`;
+      <div class="tg"><i>${esc(w.move)}</i><i>${esc(w.museum)}</i>${w0===nextUp?'<i class="ok">Next in the story</i>':''}${lk?'<i class="lk">Locked · finish page '+(w.page-1)+' first</i>':''}${lk?'':(w.play?`<i class="ok">${w.id===PAINT_ID?'Current':'Up to '+w.max+' pieces'}</i>`:'<i>Coming soon</i>')}${st.some(Boolean)?`<i class="ok">${'★'.repeat(st.filter(Boolean).length)}</i>`:''}</div>`;
     const u=w.play&&unf(w.id);
     if(u){b.classList.add('unf');const d=document.createElement('div');d.className='pkUnf';
       d.innerHTML=`<span>Unfinished · ${u.done} of ${u.n} placed · ${fmt(u.t)}</span><span class="pkDel" role="button" tabindex="0">Delete</span>`;
@@ -2704,7 +2709,7 @@ function pkRender(){const esc=t=>String(t).replace(/[&<>"]/g,ch=>({'&':'&amp;','
         if(w.id===PAINT_ID&&typeof refreshIntro==='function')refreshIntro();
         toast('Deleted','Your unfinished "'+w.title+'" was removed.');pkRender();};
       del.onclick=act;del.onkeydown=e=>{if(e.key==='Enter'||e.key===' ')act(e);};b.appendChild(d);}
-    b.onclick=()=>{if(!w.play){toast('Coming soon','"'+w.title+'" is not playable in this prototype yet.');return;}choosePainting(w.id);};g.appendChild(b);}
+    b.onclick=()=>{if(lk){toast('Page '+w.page+' is locked','Finish page '+(w.page-1)+' of the story first to unlock it.');return;}if(!w.play){toast('Coming soon','"'+w.title+'" is not playable in this prototype yet.');return;}choosePainting(w.id);};g.appendChild(b);}
 }
 let pkStory='';
 function storyDone(k){return STORIES[k].ids.filter(id=>TRO.done[id]).length;}
