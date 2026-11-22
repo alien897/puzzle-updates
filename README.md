@@ -1,2 +1,2 @@
 # Puzzle updates
-Update files for the puzzle game prototype. Version 0.48.2.
+Update files for the puzzle game prototype. Version 0.49.0.
