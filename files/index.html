@@ -2502,11 +2502,9 @@ function playFilm(onEnd){const F=FILMS[PAINT_ID];if(!F){onEnd&&onEnd();return;}
     /* ducks bob on the pond */
     if(FX.ducks){const d=R(FX.ducks),o=Math.sin(t*2.2)*IH*.0012;g.drawImage(im,d.x,d.y,d.w,d.h,d.x,d.y+o,d.w,d.h);}
     /* the freshly dug pit breathes darkly */
-    if(FX.dug&&on.includes('dugpulse')){const d=R(FX.dug),a=.25+.2*Math.sin(lt*3);g.save();g.fillStyle=`rgba(10,8,12,${a})`;g.beginPath();g.ellipse(d.x+d.w/2,d.y+d.h/2,d.w*.55,d.h*.9,0,0,7);g.fill();g.restore();}
+    /* (removed in 0.50.2: Ali did not like the dark shape drawn over the pit) */
     /* the king slides down into the pit */
-    if(FX.pit&&on.includes('fall')&&lt<2.2){const d=R(FX.pit),p=Math.min(1,lt/1.4),off=(1-ease(p))*-d.h*.75;
-      g.save();g.beginPath();g.ellipse(d.x+d.w/2,d.y+d.h/2,d.w*.47,d.h*.5,0,0,7);g.clip();g.fillStyle='#14131a';g.fillRect(d.x,d.y,d.w,d.h);
-      g.drawImage(im,d.x,d.y,d.w,d.h,d.x,d.y+off,d.w,d.h);g.restore();}
+    /* the fall is shown by the camera shake and Mirdas's kicking legs only (0.50.2) */
     /* blossom petals drift through the garden */
     if(FX.petals){const P=R(FX.petals);while(petals.length<38)petals.push({x:P.x+rnd()*P.w,y:P.y+rnd()*P.h*.3,v:.4+rnd()*.6,ph:rnd()*7,s:.5+rnd(),c:rnd()<.6?'#f6dfe6':'#fffaf0',life:0});
       for(const q of petals){q.life+=1/60;q.y+=IH*.00045*q.v;q.x+=Math.sin(t*1.3+q.ph)*IW*.0005;
@@ -2515,8 +2513,8 @@ function playFilm(onEnd){const F=FILMS[PAINT_ID];if(!F){onEnd&&onEnd();return;}
         g.fillStyle=q.c;g.beginPath();g.ellipse(0,0,IW*.0032*q.s,IW*.0018*q.s,0,0,7);g.fill();g.restore();}}
     /* spotlight: darken everything but the focus */
     g.setTransform(1,0,0,1,0,0);
-    if(B.r.w<1){const rr=B.r,cx=SW/2+((rr.x+rr.w/2)*IW-cam.cx)*sc,cy=SH/2+((rr.y+rr.h/2)*IH-cam.cy)*sc+cam.oy,rx=rr.w*IW*sc*.75,ry=rr.h*IH*sc*.75;
-      const al=.55*Math.min(1,lt/1.2);g.save();g.translate(cx,cy);g.scale(1,ry/rx);const gr=g.createRadialGradient(0,0,rx*.65,0,0,rx*1.6);
+    if(B.r.w<1){const rr=B.r,cx=SW/2+((rr.x+rr.w/2)*IW-cam.cx)*sc,cy=SH/2+((rr.y+rr.h/2)*IH-cam.cy)*sc+cam.oy,rx=rr.w*IW*sc*.72,ry=rr.h*IH*sc*.72;
+      const al=.78*Math.min(1,lt/1.2);g.save();g.translate(cx,cy);g.scale(1,ry/rx);const gr=g.createRadialGradient(0,0,rx*.55,0,0,rx*1.05);
       gr.addColorStop(0,'rgba(8,5,2,0)');gr.addColorStop(1,`rgba(8,5,2,${al})`);g.fillStyle=gr;g.fillRect(-SW*3,-SH*3*rx/ry,SW*6,SH*6*rx/ry);g.restore();}
     /* gold dust at the end */
     if(on.includes('gold')){for(let i=0;i<40;i++){const a=(i*137.5+t*20)%360*Math.PI/180,rr=(i*53%97)/97;const x=SW*(.5+Math.cos(a)*rr*.5),y=SH*(.5+Math.sin(a*1.3)*rr*.45);
