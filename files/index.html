@@ -421,6 +421,8 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 .bkPg{margin:0;flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:6px;align-items:center}
 .bkPg img{max-width:100%;max-height:calc(100vh - 260px);object-fit:contain;box-shadow:0 4px 18px #0008;background:#e9dcc0}
 .bkPg figcaption{font-size:13px;color:#f3e6c4;text-align:center}.bkLock{aspect-ratio:3/4.4;width:min(100%,340px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:20px;background:#e9dcc022;border:1px dashed #b8913a;color:#e8d9b0;font-size:13px}
+.bkSpread.cmp .bkPg img{max-height:calc(100vh - 420px)}
+.bkFlip{transform:rotate(180deg);transition:transform .9s}
 .bkLock span{font:700 46px 'Almendra',Georgia,serif;color:#cfa646}
 .pkCard.soon{cursor:default;opacity:.5}.pkCard.soon:hover{transform:none;border-color:#6b5230}
 .pkCard.cur{border-color:#e8c669;box-shadow:0 0 0 1px #e8c669}
@@ -2715,16 +2717,20 @@ function pkStoryHead(k){const S=STORIES[k],n=storyDone(k),d=document.createEleme
   d.innerHTML=`<button class="btn" id="pkStBack">‹ All works</button><div class="eyebrow">A story in ${S.ids.length} pages</div><h3>${S.title}</h3><p>${S.about}</p>
    <div class="row"><span class="note">${n} of ${S.ids.length} pages finished</span><button class="btn pri" id="pkBook">Open the book</button></div>`;
   d.querySelector('#pkStBack').onclick=()=>{pkStory='';pkRender();};d.querySelector('#pkBook').onclick=()=>openBook(k);return d;}
-let bookK='',bookS=0;
-function openBook(k,at){bookK=k;const S=STORIES[k];bookS=at!=null?at:0;renderBook();$('zbook').hidden=false;}
-function renderBook(){const S=STORIES[bookK],N=S.ids.length,sp=Math.ceil(N/2),a=bookS*2,pg=[a,a+1].filter(i=>i<N),n=storyDone(bookK);
+let bookK='',bookS=0,bookCmp=false;
+function openBook(k,at){bookK=k;bookCmp=false;const S=STORIES[k];bookS=at!=null?at:0;renderBook();$('zbook').hidden=false;}
+function renderBook(){const S=STORIES[bookK],N=S.ids.length,sp=Math.ceil(N/2),a=bookS*2,n=storyDone(bookK);
+  const canCmp=bookK==='zahhak'&&TRO.done[S.ids[0]]&&TRO.done[S.ids[N-1]];if(!canCmp)bookCmp=false;
+  const pg=bookCmp?[0,N-1]:[a,a+1].filter(i=>i<N);
   const page=i=>{const id=S.ids[i],w=CATALOG.find(x=>x.id===id),ok=!!TRO.done[id];
-    return `<figure class="bkPg${ok?'':' lock'}">${ok?`<img src="${PAINTINGS[id].img}" alt="${w.title}">`:`<div class="bkLock"><span>${i+1}</span>Finish this page to add it to your book</div>`}<figcaption><b>${i+1}.</b> ${w.title}</figcaption></figure>`;};
+    return `<figure class="bkPg${ok?'':' lock'}">${ok?`<img src="${PAINTINGS[id].img}" alt="${w.title}"${bookCmp&&i===0?' class="bkFlip"':''}>`:`<div class="bkLock"><span>${i+1}</span>Finish this page to add it to your book</div>`}<figcaption><b>${i+1}.</b> ${w.title}</figcaption></figure>`;};
   $('bkCard').innerHTML=`<div class="eyebrow">${S.sub} · ${n} of ${N} finished</div><h2>${S.title}</h2>
    ${n===N?'<p class="note">Every page is back in its place. The whole tale, from the fall of Mirdas to the cave on Mount Damavand.</p>':''}
-   <div class="bkSpread">${pg.map(page).join('')}</div>
-   <div class="row"><button class="btn" id="bkPrev"${bookS?'':' disabled'}>‹ Previous</button><span class="note">Pages ${a+1}${pg.length>1?'–'+(a+2):''} of ${N}</span><button class="btn" id="bkNext"${bookS<sp-1?'':' disabled'}>Next ›</button><button class="btn pri" id="bkClose">Close</button></div>`;
-  $('bkPrev').onclick=()=>{bookS--;renderBook();};$('bkNext').onclick=()=>{bookS++;renderBook();};$('bkClose').onclick=()=>{$('zbook').hidden=true;};}
+   ${bookCmp?'<p class="zRecap" style="font-style:normal"><b>Where the circle closes</b>The first page, turned upside down, beside the last. The dark pit where Zahhak’s father fell lands almost exactly where Zahhak himself hangs in chains at the mouth of the cave on Mount Damavand. The story ends where it began, and the evil Zahhak started comes back to him.</p>':''}
+   <div class="bkSpread${bookCmp?' cmp':''}">${pg.map(page).join('')}</div>
+   <div class="row"><button class="btn" id="bkPrev"${bookS?'':' disabled'}>‹ Previous</button><span class="note">Pages ${a+1}${pg.length>1?'–'+(a+2):''} of ${N}</span><button class="btn" id="bkNext"${bookS<sp-1?'':' disabled'}>Next ›</button>${canCmp?`<button class="btn" id="bkCmp">${bookCmp?'Back to the book':'Turn the first page upside down'}</button>`:''}<button class="btn pri" id="bkClose">Close</button></div>`;
+  if($('bkCmp'))$('bkCmp').onclick=()=>{bookCmp=!bookCmp;renderBook();};
+  if(bookCmp){$('bkPrev').disabled=true;$('bkNext').disabled=true;}$('bkPrev').onclick=()=>{bookS--;renderBook();};$('bkNext').onclick=()=>{bookS++;renderBook();};$('bkClose').onclick=()=>{$('zbook').hidden=true;};}
 addEventListener('keydown',e=>{if($('zbook').hidden)return;if(e.key==='Escape'){$('zbook').hidden=true;e.stopPropagation();}
   if(e.key==='ArrowRight'&&bookS<Math.ceil(STORIES[bookK].ids.length/2)-1){bookS++;renderBook();}if(e.key==='ArrowLeft'&&bookS>0){bookS--;renderBook();}},true);
 function openPicker(){{const w=CATALOG.find(x=>x.id===PAINT_ID);pkStory=(w&&w.story)||'';}pkRender();$('picker').hidden=false;$('pkClose').focus();}
