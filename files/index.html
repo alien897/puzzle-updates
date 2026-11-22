@@ -2447,7 +2447,7 @@ function showDoneBar(){const b=$('doneBar'),go=$('doneGo');
 /* ---------- story film: after the puzzle, the camera tells the painting's story (Ali 2026-11-22) ----------
    beats: r = focus region (fractions of the image), t = subtitle, d = seconds, fx = effects active in that beat */
 const FILMS={
- mirdas:{fx:{petals:{x:.02,y:.32,w:.7,h:.4},ducks:{x:.0,y:.915,w:.19,h:.06},pit:{x:.32,y:.838,w:.246,h:.135},dug:{x:.385,y:.69,w:.13,h:.04}},
+ mirdas:{cut:{"bg":"zahhak/cut/mirdas-bg.jpg","parts":[{"src":"zahhak/cut/mirdas-iblisHead.png","x":248,"y":1614,"px":282,"py":1706,"amp":4,"sp":1.1,"ph":0},{"src":"zahhak/cut/mirdas-iblisHand.png","x":284,"y":1702,"px":300,"py":1742,"amp":10,"sp":2.4,"ph":0.5},{"src":"zahhak/cut/mirdas-zahhakHead.png","x":673,"y":1606,"px":744,"py":1702,"amp":4.5,"sp":0.8,"ph":1},{"src":"zahhak/cut/mirdas-zahhakArm.png","x":690,"y":1751,"px":795,"py":1763,"amp":5,"sp":1.6,"ph":0,"on":[3]},{"src":"zahhak/cut/mirdas-legL.png","x":638,"y":2333,"px":682,"py":2393,"amp":9,"sp":3.2,"ph":0,"on":[4],"decay":1},{"src":"zahhak/cut/mirdas-legR.png","x":668,"y":2325,"px":676,"py":2362,"amp":9,"sp":3.2,"ph":2.2,"on":[4],"decay":1},{"src":"zahhak/cut/mirdas-woman.png","x":1181,"y":1496,"px":1210,"py":1580,"amp":4,"sp":0.9,"ph":2}]},fx:{petals:{x:.02,y:.32,w:.7,h:.4},ducks:{x:.0,y:.915,w:.19,h:.06},pit:{x:.32,y:.838,w:.246,h:.135},dug:{x:.385,y:.69,w:.13,h:.04}},
   beats:[
   {r:{x:0,y:0,w:1,h:1},d:5,t:'Long ago, in the land of the Arabs, there lived a good and generous king called Mirdas.'},
   {r:{x:.37,y:.52,w:.26,h:.25},d:5,t:'His son Zahhak was young and proud, and very easily led.'},
@@ -2462,6 +2462,9 @@ let filmRun=null;
 function playFilm(onEnd){const F=FILMS[PAINT_ID];if(!F){onEnd&&onEnd();return;}
   const ov=$('film'),cv=$('filmCv'),g=cv.getContext('2d'),sub=$('filmSub');ov.hidden=false;
   const im=new Image();im.src=PT.img;
+  /* cut-out layer: background with the moving parts painted out, plus each part as its own sprite */
+  let cut=null;if(F.cut){const bgI=new Image();bgI.src=F.cut.bg;const parts=F.cut.parts.map(p=>({...p,img:Object.assign(new Image(),{src:p.src})}));cut={bg:bgI,parts};}
+  const cutOK=()=>cut&&cut.bg.complete&&cut.bg.naturalWidth&&cut.parts.every(p=>p.img.complete&&p.img.naturalWidth);
   const dpr=Math.min(2,devicePixelRatio||1);const fit=()=>{cv.width=innerWidth*dpr;cv.height=innerHeight*dpr;};fit();addEventListener('resize',fit);
   let t0=null,bi=-1,bStart=0,cam=null,from=null,shake=0,stopped=false;
   const starts=[];let acc=0;for(const b of F.beats){starts.push(acc);acc+=b.d;}const total=acc;
@@ -2490,7 +2493,11 @@ function playFilm(onEnd){const F=FILMS[PAINT_ID];if(!F){onEnd&&onEnd();return;}
     let jx=0,jy=0;if(shake>0.01){jx=(rnd()-.5)*14*shake*dpr;jy=(rnd()-.5)*14*shake*dpr;shake*=.93;}
     g.setTransform(1,0,0,1,0,0);g.fillStyle='#0b0805';g.fillRect(0,0,SW,SH);
     g.setTransform(sc,0,0,sc,SW/2-cam.cx*sc+jx,SH/2-cam.cy*sc+jy+cam.oy);
-    g.drawImage(im,0,0);
+    if(cutOK()){g.drawImage(cut.bg,0,0);
+      for(const p of cut.parts){let a=p.amp*Math.sin(t*p.sp+p.ph);
+        if(p.on){if(!p.on.includes(bi))a=0;else if(p.decay)a*=Math.max(0,1-(t-bStart)/F.beats[bi].d);}
+        g.save();g.translate(p.px,p.py);g.rotate(a*Math.PI/180);g.translate(-p.px,-p.py);g.drawImage(p.img,p.x,p.y);g.restore();}}
+    else g.drawImage(im,0,0);
     const FX=F.fx||{},on=B.fx||[],R=(r)=>({x:r.x*IW,y:r.y*IH,w:r.w*IW,h:r.h*IH});
     /* ducks bob on the pond */
     if(FX.ducks){const d=R(FX.ducks),o=Math.sin(t*2.2)*IH*.0012;g.drawImage(im,d.x,d.y,d.w,d.h,d.x,d.y+o,d.w,d.h);}
