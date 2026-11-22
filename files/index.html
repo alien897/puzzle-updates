@@ -1716,7 +1716,7 @@ function frame(now){
     drawPiece(p,false);
   }
   drawLiving(now,s);
-  {const fin=mode==='main'&&(done||phase!=='pieces'),tgt=(fin!==dotKey)?0:1; /* H flips the dots while held: hides them during play, shows them on the finished painting */dotA+=Math.sign(tgt-dotA)*Math.min(Math.abs(tgt-dotA),tgt?.08:.022);}
+  {const tgt=dotKey?0:1; /* Ali 2026-11-22: gold dots stay visible on the finished painting too; hold H to hide them */dotA+=Math.sign(tgt-dotA)*Math.min(Math.abs(tgt-dotA),tgt?.08:.022);}
   if(mode==='main'&&artistic()&&dotA>.005){ctx.save();ctx.globalAlpha=dotA;for(const dd of DETAILS)if(found.has(dd.id)){
     const t=(now-dd.at)/1000,x=dd.x*W*s,y=dd.y*H*s,w=dd.w*W*s,h=dd.h*H*s;
     if(t<4){const a=.5+.5*Math.sin(t*6);ctx.strokeStyle=`rgba(232,198,105,${.4+.6*a})`;ctx.lineWidth=3;ctx.shadowColor=GOLD;ctx.shadowBlur=16;ctx.strokeRect(x,y,w,h);ctx.shadowBlur=0;}
@@ -2447,7 +2447,7 @@ function openTrophies(){const c=$('troCard');const esc=t=>String(t).replace(/[&<
 addEventListener('keydown',e=>{if(!$('trophies').hidden&&e.key==='Escape')$('trophies').hidden=true;});
 let qi=0,team=0;
 function showDoneBar(){const b=$('doneBar'),go=$('doneGo');
-  $('doneTxt').textContent=artistic()?'Puzzle complete. Take your time: zoom in and explore the painting. Hold H to show the hidden details you found.':'Puzzle complete. Take your time with the finished painting.';
+  $('doneTxt').textContent=artistic()?'Puzzle complete. Take your time: zoom in and explore the painting. Click the gold dots to revisit the hidden details you found (hold H to hide them).':'Puzzle complete. Take your time with the finished painting.';
   go.textContent=artistic()?'Continue to the quiz →':'See your results →';b.hidden=false;
   go.onclick=()=>{b.hidden=true;artistic()?startQuiz():showReward();};
   let fb=$('filmAgain');if(FILMS[PAINT_ID]&&artistic()){if(!fb){fb=document.createElement('button');fb.className='btn';fb.id='filmAgain';fb.textContent='Watch the story again';b.appendChild(fb);}
