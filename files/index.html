@@ -358,7 +358,18 @@ body.patOn #doneBar{opacity:0;pointer-events:none}
 @keyframes fcRare{50%{box-shadow:0 0 calc(42px*var(--u)) rgba(255,226,150,1),0 0 calc(80px*var(--u)) rgba(255,190,80,.45),0 24px 50px rgba(0,0,0,.6)}}
 
 .ft.art .fcTier{display:none!important;position:absolute;left:50%;top:1.6%;transform:translateX(-50%);z-index:4;padding:.28em .9em;border-radius:99px;font:700 calc(9.5px*var(--u))/1 'Almendra',Georgia,serif;letter-spacing:.16em;text-transform:uppercase;color:#fff;background:#6f6a62;box-shadow:0 1px 4px rgba(0,0,0,.45);white-space:nowrap;transition:opacity .5s}
-.ft.art.pre .fcTier{opacity:0}
+.ft.art.pre .fcTier,.ft.art.pre .fcGem{opacity:0}
+/* rarity gem under the title ribbon (Ali 2026-11-23, like collectible card games) */
+.ft.art .fcGem{position:absolute;left:50%;top:calc((var(--rt) + var(--rh) + .045)*100%);width:7%;aspect-ratio:3/4;transform:translate(-50%,-50%);z-index:5;border-radius:50% 50% 50% 50%/42% 42% 58% 58%;transition:opacity .5s;
+ --g1:#ffffff;--g2:#c9cfd6;--g3:#6d747c;
+ background:radial-gradient(ellipse 38% 26% at 36% 26%,rgba(255,255,255,.95),rgba(255,255,255,0) 70%),conic-gradient(from 200deg at 50% 55%,var(--g2),var(--g1),var(--g2),var(--g3),var(--g2),var(--g1),var(--g3),var(--g2)),var(--g2);
+ box-shadow:0 0 0 calc(2.2px*var(--u)) #d9b24a,0 0 0 calc(3.4px*var(--u)) #5a3c0c,0 calc(2px*var(--u)) calc(5px*var(--u)) rgba(0,0,0,.6),inset 0 calc(-3px*var(--u)) calc(5px*var(--u)) rgba(0,0,0,.35)}
+.ft.art .fcGem::after{content:"";position:absolute;inset:18% 22% 40% 22%;border-radius:50%;background:linear-gradient(160deg,rgba(255,255,255,.55),rgba(255,255,255,0) 70%)}
+.fc3.t-rare .ft.art .fcGem{--g1:#a9d4ff;--g2:#2f7fe6;--g3:#0b2f7a}
+.fc3.t-epic .ft.art .fcGem{--g1:#e6c2ff;--g2:#9440e0;--g3:#3d0b7a}
+.fc3.t-legendary .ft.art .fcGem{--g1:#ffe2a0;--g2:#ff8a1a;--g3:#8a3300;animation:fcGemL 2.4s ease-in-out infinite}
+@keyframes fcGemL{50%{filter:brightness(1.25) drop-shadow(0 0 calc(8px*var(--u)) rgba(255,160,40,.95))}}
+@media (prefers-reduced-motion:reduce){.fc3.t-legendary .ft.art .fcGem{animation:none}}
 /* tier colours: classic game colours (Ali 2026-11-23): grey, blue, purple, orange-gold */
 .ft.art .fcEye .tn{display:inline-block;transform:translateY(42%);font-size:calc(14px*var(--u));font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#4c535a;text-shadow:0 1px 0 rgba(255,255,255,.7),0 0 6px rgba(220,228,235,.9)}
 .fc3.t-rare .ft.art .fcEye .tn{color:#1652c4;text-shadow:0 1px 0 rgba(255,255,255,.6),0 0 8px rgba(90,160,255,.95)}
@@ -685,7 +696,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 
 <div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
-  <div class="mmVer">v0.68.0</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
+  <div class="mmVer">v0.68.1</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
   <button class="mmBtn" data-mm="gallery" style="top:45.8%" aria-label="Gallery"></button>
   <button class="mmBtn" data-mm="trophies" style="top:55.9%" aria-label="Trophies"></button>
@@ -808,7 +819,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 <div class="ov" id="quiz" hidden><div class="card quiz" id="quizCard"></div></div>
 <div class="ov" id="trophies" hidden><div class="card tro" id="troCard"></div></div>
 <div class="ov" id="gallery" hidden><div class="card gal" id="galCard"></div></div>
-<div class="ov fco" id="factOv" hidden><div class="dim" id="fcDim"></div><div class="fc3" id="fc3" role="dialog" aria-label="Fact card"><div class="in" id="fcIn"><div class="fa bk"></div><div class="fa ft art pre"><video class="fcV" id="fcV" muted loop playsinline preload="auto"></video><video class="fcRV" id="fcRV" muted playsinline preload="auto"></video><i class="fcGlow"></i><i class="fcSheen"></i><div class="fcRib"><h2 id="fcRibT"></h2></div><div class="fcPic"><canvas id="fcCv" width="760" height="500"></canvas><span class="fcCredit" id="fcCredit"></span></div><div class="fcTier" id="fcTier"></div><div class="fcEye" id="fcEye"></div><div class="fcBody" id="fcBody"><h2 id="fcTitle"></h2><p id="fcText"></p><div class="fcCr2" id="fcCr2"></div><button class="fcMore" id="fcMore">Read more ⌄</button></div><div class="fcNav" id="fcNav"><button id="fcPrev" aria-label="Previous fact">‹</button><span id="fcN"></span><button id="fcNext" aria-label="Next fact">›</button></div></div></div></div></div>
+<div class="ov fco" id="factOv" hidden><div class="dim" id="fcDim"></div><div class="fc3" id="fc3" role="dialog" aria-label="Fact card"><div class="in" id="fcIn"><div class="fa bk"></div><div class="fa ft art pre"><video class="fcV" id="fcV" muted loop playsinline preload="auto"></video><video class="fcRV" id="fcRV" muted playsinline preload="auto"></video><i class="fcGlow"></i><i class="fcSheen"></i><div class="fcRib"><h2 id="fcRibT"></h2></div><div class="fcPic"><canvas id="fcCv" width="760" height="500"></canvas><span class="fcCredit" id="fcCredit"></span></div><div class="fcTier" id="fcTier"></div><div class="fcGem" id="fcGem"></div><div class="fcEye" id="fcEye"></div><div class="fcBody" id="fcBody"><h2 id="fcTitle"></h2><p id="fcText"></p><div class="fcCr2" id="fcCr2"></div><button class="fcMore" id="fcMore">Read more ⌄</button></div><div class="fcNav" id="fcNav"><button id="fcPrev" aria-label="Previous fact">‹</button><span id="fcN"></span><button id="fcNext" aria-label="Next fact">›</button></div></div></div></div></div>
 <div id="sortMenu" role="menu" hidden><button role="menuitem" id="smCol">By colour <kbd>O</kbd></button><button role="menuitem" id="smEdge">Edges together <kbd>E</kbd></button><button role="menuitem" id="smShape">Same shape as… <kbd>click a piece</kbd></button><button role="menuitem" id="smLike">Same colour as… <kbd>click a piece</kbd></button></div>
 <div id="doneBar" hidden><span id="doneTxt">Puzzle complete. Take your time: zoom in, explore the painting and open the details you found.</span><button class="btn pri" id="doneGo">Continue to the quiz →</button></div>
 <div class="ov" id="viewer" hidden><div class="card viewer mag" role="dialog" aria-label="Painting detail">
