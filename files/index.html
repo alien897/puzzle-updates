@@ -751,7 +751,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 
 <div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
-  <div class="mmVer">v0.74.0</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
+  <div class="mmVer">v0.74.1</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
   <button class="mmBtn" data-mm="gallery" style="top:45.8%" aria-label="Gallery"></button>
   <button class="mmBtn" data-mm="trophies" style="top:55.9%" aria-label="Trophies"></button>
@@ -2553,7 +2553,7 @@ function closeFact(){
     to=`translate(${c.left+c.width/2-(g.L+g.W/2)}px,${c.top+c.height/2-(g.T+g.H/2)}px) scale(${c.width/g.W}) rotate(${rot}deg)`;}
   else to=`translate(0,${innerHeight*.7}px) scale(.35) rotate(8deg)`;
   dim.animate([{opacity:.87},{opacity:0}],{duration:700,fill:'forwards'});
-  const a1=inn.animate([{transform:'rotateY(180deg)'},{transform:'rotateY(180deg) scale(1.03)'},{transform:'rotateY(180deg)'}],{duration:180,easing:'ease-in-out',fill:'forwards'}); /* no flip on close either (Ali 2026-11-23) */
+  const a1=inn.animate([{transform:'rotateY(180deg)'},{transform:'rotateY(90deg) scale(1.05)'},{transform:'rotateY(0)'}],{duration:420,easing:'ease-in-out',fill:'forwards'}); /* Ali 2026-11-23: keep the flip when a card closes */
   let cd=false;const dn=()=>{if(cd)return;cd=true;done();};a1.onfinish=()=>{const a2=box.animate([{transform:'none'},{transform:to}],{duration:460,easing:'cubic-bezier(.5,0,.75,0)',fill:'forwards'});a2.onfinish=dn;};setTimeout(dn,1300);
 }
 /* card motion presets (Ali 2026-11-23): each fact picks one with fx:{k:'zoom'|'pan'|'spot'|'split'|'flip'|'compare'|'color', r, r2, img, at} */
