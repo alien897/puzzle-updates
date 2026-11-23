@@ -309,6 +309,19 @@ body.patOn #doneBar{opacity:0;pointer-events:none}
 .fc3 h2{margin:0;font-family:'Almendra',Georgia,serif;font-weight:700;font-size:calc(34px*var(--u));line-height:1.1;color:#6e1012}
 .fc3 p{margin:0;font-family:'Almendra',Georgia,serif;font-size:calc(21px*var(--u));line-height:1.45;color:#3b2a14}
 .fc3 p::first-letter{float:left;font-weight:700;font-size:3.1em;line-height:.82;color:#8e1b1d;padding:.06em .1em 0 0;margin-top:.04em}
+/* Ali 2026-11-23: living cards: tilt + gold sheen + float, slow camera on the picture, gold drop-cap and ink reveal */
+.fcSheen{position:absolute;inset:0;pointer-events:none;z-index:3;border-radius:inherit;background:linear-gradient(105deg,transparent 38%,rgba(255,236,170,.55) 47%,rgba(255,250,225,.75) 50%,rgba(255,236,170,.55) 53%,transparent 62%);background-size:300% 100%;background-position:var(--sx,120%) 0;mix-blend-mode:soft-light;opacity:var(--so,0);transition:opacity .4s}
+.fcGlow{position:absolute;inset:0;pointer-events:none;z-index:2;border-radius:inherit;background:radial-gradient(circle at var(--gx,50%) var(--gy,30%),rgba(255,240,200,.35),transparent 45%);mix-blend-mode:overlay;opacity:var(--so,0);transition:opacity .4s}
+.fcPic canvas{transform-origin:var(--kx,50%) var(--ky,50%)}
+.fc3 .ft.live .fcPic canvas{animation:fcKB 22s ease-in-out infinite alternate}
+@keyframes fcKB{0%{transform:scale(1.03)}100%{transform:scale(1.16) translate(-2.5%,-1.5%)}}
+.fc3 .ft.rev p{animation:fcInk 1.5s ease-out var(--rd,0s) both;-webkit-mask-image:linear-gradient(180deg,#000 45%,transparent 55%);mask-image:linear-gradient(180deg,#000 45%,transparent 55%);-webkit-mask-size:100% 260%;mask-size:100% 260%}
+@keyframes fcInk{0%{-webkit-mask-position:0 100%;mask-position:0 100%}100%{-webkit-mask-position:0 0;mask-position:0 0}}
+.fc3 .ft.rev p::first-letter{animation:fcCap 1.6s ease-out var(--rd,0s) both}
+@keyframes fcCap{0%{color:transparent;text-shadow:0 0 0 rgba(232,190,80,0)}35%{color:#d4a640;text-shadow:0 0 .25em rgba(255,215,110,.95)}100%{color:#8e1b1d;text-shadow:0 0 0 rgba(255,215,110,0)}}
+.fc3 .ft.rev h2{animation:fcTi .7s ease-out var(--rd,0s) both}
+@keyframes fcTi{0%{opacity:0;letter-spacing:.06em}100%{opacity:1;letter-spacing:0}}
+@media (prefers-reduced-motion:reduce){.fc3 .ft.live .fcPic canvas,.fc3 .ft.rev p,.fc3 .ft.rev p::first-letter,.fc3 .ft.rev h2{animation:none}}
 .fcNav{display:flex;align-items:center;justify-content:center;gap:calc(14px*var(--u));font-size:calc(14px*var(--u));color:#7a6448;padding-top:calc(6px*var(--u))}
 .fcNav button{font:inherit;font-family:'Almendra',Georgia,serif;font-size:calc(20px*var(--u));line-height:1;width:calc(34px*var(--u));height:calc(34px*var(--u));border-radius:50%;border:1px solid #8e5a3a;background:rgba(255,248,230,.5);color:#6e1012;cursor:pointer}
 .fcNav button:hover{background:#8e1b1d;color:#f6e7c8}
@@ -619,7 +632,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 
 <div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
-  <div class="mmVer">v0.62.0</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
+  <div class="mmVer">v0.63.0</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
   <button class="mmBtn" data-mm="gallery" style="top:45.8%" aria-label="Gallery"></button>
   <button class="mmBtn" data-mm="trophies" style="top:55.9%" aria-label="Trophies"></button>
@@ -742,7 +755,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 <div class="ov" id="quiz" hidden><div class="card quiz" id="quizCard"></div></div>
 <div class="ov" id="trophies" hidden><div class="card tro" id="troCard"></div></div>
 <div class="ov" id="gallery" hidden><div class="card gal" id="galCard"></div></div>
-<div class="ov fco" id="factOv" hidden><div class="dim" id="fcDim"></div><div class="fc3" id="fc3" role="dialog" aria-label="Fact card"><div class="in" id="fcIn"><div class="fa bk"></div><div class="fa ft"><div class="fcPic"><canvas id="fcCv" width="760" height="500"></canvas><span class="fcCredit" id="fcCredit"></span></div><div class="fcBody"><div class="fcEye" id="fcEye"></div><h2 id="fcTitle"></h2><p id="fcText"></p></div><div class="fcNav" id="fcNav"><button id="fcPrev" aria-label="Previous fact">‹</button><span id="fcN"></span><button id="fcNext" aria-label="Next fact">›</button></div></div></div></div></div>
+<div class="ov fco" id="factOv" hidden><div class="dim" id="fcDim"></div><div class="fc3" id="fc3" role="dialog" aria-label="Fact card"><div class="in" id="fcIn"><div class="fa bk"></div><div class="fa ft"><i class="fcGlow"></i><i class="fcSheen"></i><div class="fcPic"><canvas id="fcCv" width="760" height="500"></canvas><span class="fcCredit" id="fcCredit"></span></div><div class="fcBody"><div class="fcEye" id="fcEye"></div><h2 id="fcTitle"></h2><p id="fcText"></p></div><div class="fcNav" id="fcNav"><button id="fcPrev" aria-label="Previous fact">‹</button><span id="fcN"></span><button id="fcNext" aria-label="Next fact">›</button></div></div></div></div></div>
 <div id="sortMenu" role="menu" hidden><button role="menuitem" id="smCol">By colour <kbd>O</kbd></button><button role="menuitem" id="smEdge">Edges together <kbd>E</kbd></button><button role="menuitem" id="smShape">Same shape as… <kbd>click a piece</kbd></button><button role="menuitem" id="smLike">Same colour as… <kbd>click a piece</kbd></button></div>
 <div id="doneBar" hidden><span id="doneTxt">Puzzle complete. Take your time: zoom in, explore the painting and open the details you found.</span><button class="btn pri" id="doneGo">Continue to the quiz →</button></div>
 <div class="ov" id="viewer" hidden><div class="card viewer mag" role="dialog" aria-label="Painting detail">
@@ -2333,7 +2346,7 @@ function drawFactPic(c,o){const g=c.getContext('2d');
 let flying=false,fcCur=null,fcSrc=null;
 function fcList(){return FACTS.filter(f=>milestones.has(f.at));}
 function fcGeom(){const st=$('stage').getBoundingClientRect(),H=Math.min(innerHeight*.84,720),W=H*2/3,cx=st.left+st.width/2,cy=Math.min(Math.max(st.top+st.height/2,H/2+8),innerHeight-H/2-8);return{W,H,L:cx-W/2,T:cy-H/2};}
-function fcFill(o){fcCur=o;if(o.isNew){o.isNew=false;setTimeout(renderFan,0);}
+function fcFill(o){fcCur=o;fcRev(flying||$('factOv').hidden?0:.25);if(o.isNew){o.isNew=false;setTimeout(renderFan,0);}
   const L=fcList(),k=L.indexOf(o);$('fcEye').textContent='Fact · unlocked at '+o.at+'%';$('fcTitle').textContent=o.title;$('fcText').textContent=o.t;$('fcNav').hidden=L.length<2;
   const cv=$('fcCv'),pb=cv.parentNode,dp=Math.min(2,devicePixelRatio||1);cv.width=Math.max(50,Math.round(pb.clientWidth*dp));cv.height=Math.max(50,Math.round(pb.clientHeight*dp));drawFactPic(cv,o);$('fcCredit').textContent=o.credit||'';
   $('fcEye').textContent='Fact · unlocked at '+o.at+'%';$('fcTitle').textContent=o.title;$('fcText').textContent=o.t;
@@ -2342,7 +2355,7 @@ function fanBtnFor(o){const L=FACTS.indexOf(o),cs=$('fanCards')?$('fanCards').ch
 function openFact(o,btn){
   if(flying)return;const ov=$('factOv'),box=$('fc3'),inn=$('fcIn'),dim=$('fcDim');
   const g=fcGeom();Object.assign(box.style,{left:g.L+'px',top:g.T+'px',width:g.W+'px',height:g.H+'px'});box.style.setProperty('--u',(g.H/700).toFixed(3));
-  ov.hidden=false;fcFill(o);fcSrc=btn&&btn.isConnected&&fanOpen()?btn:null;
+  ov.hidden=false;fcFill(o);fcRev(1.05);fcLive();fcSrc=btn&&btn.isConnected&&fanOpen()?btn:null;
   const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
   box.getAnimations().forEach(a=>a.cancel());inn.getAnimations().forEach(a=>a.cancel());dim.getAnimations().forEach(a=>a.cancel());
   if(reduce||!box.animate){inn.style.transform='rotateY(180deg)';dim.style.opacity=.87;return;}
@@ -2369,6 +2382,22 @@ function closeFact(){
   const a1=inn.animate([{transform:'rotateY(180deg)'},{transform:'rotateY(90deg) scale(1.05)'},{transform:'rotateY(0)'}],{duration:420,easing:'ease-in-out',fill:'forwards'});
   a1.onfinish=()=>{const a2=box.animate([{transform:'none'},{transform:to}],{duration:460,easing:'cubic-bezier(.5,0,.75,0)',fill:'forwards'});a2.onfinish=done;};
 }
+/* living card (Ali 2026-11-23) */
+function fcRev(d){const f=document.querySelector('.fc3 .ft');if(!f)return;f.classList.remove('rev');void f.offsetWidth;f.style.setProperty('--rd',d+'s');f.classList.add('rev');
+  const r=fcCur&&fcCur.r;if(r){const cx=r.x+r.w/2,cy=r.y+r.h/2;f.style.setProperty('--kx',(30+40*cx).toFixed(1)+'%');f.style.setProperty('--ky',(30+40*cy).toFixed(1)+'%');}}
+const FCL={tx:0,ty:0,x:0,y:0,on:false,mx:.5,my:.3,t0:0};
+function fcLive(){const f=document.querySelector('.fc3 .ft');if(f)f.classList.add('live');if(FCL.on)return;FCL.on=true;FCL.t0=performance.now();requestAnimationFrame(fcLoop);}
+function fcLoop(now){const ov=$('factOv'),inn=$('fcIn'),f=document.querySelector('.fc3 .ft');
+  if(ov.hidden){FCL.on=false;inn.style.rotate='';inn.style.translate='';if(f)f.classList.remove('live');return;}
+  const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches,act=!flying&&!reduce;
+  const tx=act?FCL.tx:0,ty=act?FCL.ty:0;FCL.x+=(tx-FCL.x)*.08;FCL.y+=(ty-FCL.y)*.08;
+  const ang=Math.hypot(FCL.x,FCL.y),fl=act?Math.sin((now-FCL.t0)/1400)*4:0;
+  inn.style.rotate=ang>.01?`${(-FCL.y).toFixed(3)} ${FCL.x.toFixed(3)} 0 ${ang.toFixed(2)}deg`:'';inn.style.translate=`0 ${fl.toFixed(2)}px`;
+  if(f){f.style.setProperty('--so',act?'1':'0');f.style.setProperty('--sx',(140-FCL.mx*180).toFixed(1)+'%');f.style.setProperty('--gx',(FCL.mx*100).toFixed(1)+'%');f.style.setProperty('--gy',(FCL.my*100).toFixed(1)+'%');}
+  requestAnimationFrame(fcLoop);}
+addEventListener('pointermove',e=>{if($('factOv').hidden)return;const r=$('fc3').getBoundingClientRect();if(!r.width)return;
+  const nx=(e.clientX-r.left)/r.width,ny=(e.clientY-r.top)/r.height;FCL.mx=Math.max(0,Math.min(1,nx));FCL.my=Math.max(0,Math.min(1,ny));
+  FCL.tx=Math.max(-1,Math.min(1,(nx-.5)*2))*7;FCL.ty=Math.max(-1,Math.min(1,(ny-.5)*2))*7;},{passive:true});
 function stepFact(d){if(flying||!fcCur)return;const L=fcList();if(L.length<2)return;const k=(L.indexOf(fcCur)+d+L.length)%L.length,inn=$('fcIn');
   flying=true;const a=inn.animate([{transform:'rotateY(180deg)'},{transform:'rotateY(270deg)'}],{duration:200,easing:'ease-in',fill:'forwards'});
   a.onfinish=()=>{fcFill(L[k]);const b=inn.animate([{transform:'rotateY(90deg)'},{transform:'rotateY(180deg)'}],{duration:220,easing:'ease-out',fill:'forwards'});b.onfinish=()=>{flying=false;};};}
