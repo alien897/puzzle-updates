@@ -193,6 +193,20 @@ aside#side.open{opacity:1;transform:none;pointer-events:auto}
 .setHd{display:flex;align-items:center;justify-content:space-between;margin:-4px 0 -6px}.setHd b{font-family:var(--f-display);font-size:22px;font-weight:600}
 .setX{border:0;background:none;color:var(--muted);font-size:24px;line-height:1;padding:0 4px}.setX:hover{color:var(--ink)}
 .stage>.toasts{position:absolute;top:12px;right:12px;width:290px;z-index:7}
+#patScroll{position:fixed;left:28px;top:50%;z-index:25;height:min(76vh,620px);aspect-ratio:606/930;transform:translateY(-50%);cursor:pointer;
+  filter:drop-shadow(0 16px 24px rgba(0,0,0,.6));opacity:0;transition:opacity .25s;pointer-events:none}
+#patScroll .sBg{position:absolute;inset:0;background:url(ui/quill-scroll.webp) center/100% 100% no-repeat;clip-path:inset(46% 0 46% 0);transition:clip-path .8s cubic-bezier(.3,.9,.3,1)}
+#patScroll.on{opacity:1;pointer-events:auto}#patScroll.on .sBg{clip-path:inset(0 0 0 0)}
+body.patOn #doneBar{opacity:0;pointer-events:none}
+#patScroll .sIn{position:absolute;left:17%;right:15%;top:15%;bottom:14%;overflow:hidden;color:#24160a}
+#patScroll em{display:block;font:600 11px var(--f-body);letter-spacing:.18em;text-transform:uppercase;color:#8a1c14;font-style:normal;margin-bottom:8px}
+#patScroll b{display:block;font:clamp(20px,3.4vh,28px)/1.2 'Almendra',Georgia,serif;margin:0 0 14px;color:#3a1608}
+#patScroll p{margin:0 0 14px;font:clamp(16px,2.9vh,22px)/1.5 var(--f-display);color:#24160a}
+#patScroll small{position:absolute;left:0;bottom:0;font:12px var(--f-body);color:#6b5530}
+#patScroll .ink{opacity:0;filter:blur(1.5px);transition:opacity .35s,filter .5s}
+#patScroll .ink.on{opacity:1;filter:none}
+#patScroll .quill{position:absolute;left:0;top:0;width:clamp(150px,26vh,220px);pointer-events:none;transform-origin:0 100%;transition:transform .09s linear,opacity .6s;-webkit-mask-image:linear-gradient(to right,#000 78%,transparent 99%);mask-image:linear-gradient(to right,#000 78%,transparent 99%);filter:drop-shadow(4px 8px 6px rgba(0,0,0,.35))}
+#patScroll .quill.away{transition:transform 1s ease-in,opacity .8s;transform:translate(130%,40%) rotate(8deg)!important;opacity:0}
 .factPop{position:fixed;right:24px;bottom:214px;z-index:20;display:flex;gap:12px;align-items:center;max-width:340px;padding:12px 16px 12px 12px;text-align:left;cursor:pointer;
   color:#3b2a14;background:#efe0bb linear-gradient(180deg,#f4e8c9,#e5d2a6);border:1px solid #8a6a3a;border-radius:6px;box-shadow:0 10px 30px rgba(0,0,0,.55),0 0 0 3px rgba(214,174,92,.35);
   opacity:0;transform:translateY(30px) scale(.96);transition:opacity .4s,transform .5s cubic-bezier(.2,1.4,.4,1);pointer-events:none;font-family:'Almendra',Georgia,serif}
@@ -1869,15 +1883,36 @@ function checkPats(){for(const P of PATS())if(!found.has(P.id)){
   if(ok){found.add(P.id);P.at=performance.now();toast('Hidden pattern found',P.title,()=>openPat(P));}}}
 function patAt(w){if(dotA<.4)return null;const r=16/(view.s||1);
   return PATS().find(P=>found.has(P.id)&&P.pts.some(([x,y])=>Math.hypot(w.x-x*W,w.y-y*H)<r))||null;}
-function openPat(P){P.seen=true;patView={P,t0:performance.now()};{const xs=P.pts.map(q=>q[0]*W),ys=P.pts.map(q=>q[1]*H),x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys),r=cv.getBoundingClientRect(),s1=view.s/zoom.k;zoomFocus(Math.min(r.height*.6/((y1-y0)*s1),r.width*.45/((x1-x0)*s1)),(x0+x1)/2,(y0+y1)/2);}
-  let c=$('patCap');if(!c){c=document.createElement('div');c.id='patCap';c.className='toast';c.innerHTML='<em></em><span></span><span class="go">Esc or click to close</span>';$('toasts').appendChild(c);}
-  c.firstChild.textContent=P.title;c.children[1].textContent=P.t;}
-function closePat(){patView=null;const c=$('patCap');if(c)c.remove();}
+function openPat(P){P.seen=true;patView={P,t0:performance.now()};{const xs=P.pts.map(q=>q[0]*W),ys=P.pts.map(q=>q[1]*H),x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys),r=cv.getBoundingClientRect(),s1=view.s/zoom.k,L=Math.min(440,r.width*.4);
+  const k=Math.max(minZoom(),Math.min(maxZoom(),Math.min(r.height*.6/((y1-y0)*s1),(r.width-L)*.6/((x1-x0)*s1))));zoomFocus(k,(x0+x1)/2-(L/2)/(s1*k),(y0+y1)/2);}
+  /* Ali 2026-11-23: a scroll unrolls on the left and a hand with a quill writes the text in ink */
+  let c=$('patScroll');if(!c){c=document.createElement('div');c.id='patScroll';c.innerHTML='<div class="sBg"></div><div class="sIn"><em>Hidden pattern</em><b></b><p></p><small>Esc or click to close</small></div><img class="quill" src="ui/quill-hand.webp" alt="">';document.body.appendChild(c);
+    c.onclick=()=>{if(c._w&&!c._w.done){c._w.finish();return;}closePat();};}
+  if(c._w)c._w.stop();c.classList.remove('on');document.body.classList.add('patOn');
+  const bEl=c.querySelector('b'),pEl=c.querySelector('p'),q=c.querySelector('.quill');
+  const wrap=(el,txt)=>{el.textContent='';return [...txt].map(ch=>{const s=document.createElement('span');s.textContent=ch;s.className='ink';el.appendChild(s);return s;});};
+  const L=[...wrap(bEl,P.title),...wrap(pEl,P.t)];let i=0,raf=0,last=0,stopped=false;
+  const put=s=>{const r=s.getBoundingClientRect(),R=c.getBoundingClientRect();q.style.transform=`translate(${r.right-R.left-2}px,${r.bottom-R.top-q.offsetHeight+2}px) rotate(${Math.sin(performance.now()/90)*1.6}deg)`;};
+  const w=c._w={done:false,stop(){stopped=true;cancelAnimationFrame(raf);},finish(){L.forEach(s=>s.classList.add('on'));i=L.length;end();}};
+  const end=()=>{w.done=true;cancelAnimationFrame(raf);q.classList.add('away');};
+  const step=now=>{if(stopped)return;if(!last)last=now;const ms=i<P.title.length?55:24;
+    while(now-last>=ms&&i<L.length){L[i].classList.add('on');i++;last+=(L[i-1].textContent===' '?ms*.4:ms)+(/[.,:]/.test(L[i-1].textContent)?220:0);}
+    if(i<L.length){put(L[i]);raf=requestAnimationFrame(step);}else end();};
+  q.classList.remove('away');q.style.transform='translate(110%,30%)';void c.offsetWidth;
+  setTimeout(()=>{c.classList.add('on');setTimeout(()=>{if(!stopped){put(L[0]);setTimeout(()=>{if(!stopped)raf=requestAnimationFrame(step);},350);}},800);},250);}
+function closePat(){patView=null;document.body.classList.remove('patOn');const c=$('patScroll');if(c){if(c._w)c._w.stop();c.classList.remove('on');}}
 function star(g,x,y,r){g.beginPath();for(let i=0;i<8;i++){const a=i*Math.PI/4-Math.PI/2,rr=i%2?r*.32:r;g.lineTo(x+Math.cos(a)*rr,y+Math.sin(a)*rr);}g.closePath();g.fill();}
 function drawPats(now,s){const L=PATS();if(!L.length)return;ctx.save();
   for(const P of L)if(found.has(P.id)&&!(patView&&patView.P===P)&&dotA>.005){
-    ctx.globalAlpha=dotA;ctx.fillStyle=GOLD;ctx.shadowColor=GOLD;ctx.shadowBlur=10;
-    P.pts.forEach(([x,y],i)=>{const k=Math.max(0,Math.sin(now/420-i*1.3));star(ctx,x*W*s,y*H*s,(P.seen?6:7)+(P.seen?2:5)*k);});ctx.shadowBlur=0;}
+    const pt=P.pts.map(([x,y])=>[x*W*s,y*H*s]),cyc=(now/1000)%4,sw=Math.min(1,cyc/1.2);
+    /* every 4 s a faint gold thread runs from star to star, hinting that the three belong together */
+    if(cyc<2){ctx.globalAlpha=dotA*.55*(cyc<1.2?1:1-(cyc-1.2)/.8);ctx.strokeStyle=GOLD;ctx.lineWidth=2;ctx.setLineDash([6,6]);ctx.beginPath();
+      const f=sw*3;for(let i=0;i<3;i++){const k=Math.max(0,Math.min(1,f-i));if(!k)break;const a=pt[i],b=pt[(i+1)%3];ctx.moveTo(a[0],a[1]);ctx.lineTo(a[0]+(b[0]-a[0])*k,a[1]+(b[1]-a[1])*k);}ctx.stroke();ctx.setLineDash([]);}
+    pt.forEach(([x,y],i)=>{const k=Math.max(0,Math.sin(now/420-i*1.3)),R=(P.seen?13:16)+(P.seen?2:6)*k;
+      ctx.globalAlpha=dotA*.55;ctx.fillStyle='rgba(20,12,4,.8)';ctx.beginPath();ctx.arc(x,y,R*.75,0,7);ctx.fill();
+      ctx.globalAlpha=dotA;ctx.fillStyle=GOLD;ctx.shadowColor='#ffe9a8';ctx.shadowBlur=14+10*k;star(ctx,x,y,R);ctx.shadowBlur=0;
+      ctx.strokeStyle='rgba(60,35,8,.9)';ctx.lineWidth=1.5;ctx.stroke();
+      if(!P.seen){const br=((now/1600)+i*.33)%1;ctx.strokeStyle=`rgba(232,198,105,${.8*(1-br)})`;ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,R+14*br,0,7);ctx.stroke();}});}
   if(patView){const P=patView.P,t=(now-patView.t0)/1000,pt=P.pts.map(([x,y])=>[x*W*s,y*H*s]);
     const cx=pt.reduce((a,p)=>a+p[0],0)/3,cy=pt.reduce((a,p)=>a+p[1],0)/3,pad=pt.map(([x,y])=>[cx+(x-cx)*1.4,cy+(y-cy)*1.4]);
     ctx.globalAlpha=1;ctx.fillStyle=`rgba(8,6,4,${.62*Math.min(1,t/.5)})`;ctx.beginPath();ctx.rect(-1e6,-1e6,2e6,2e6);
@@ -2492,7 +2527,7 @@ function showDoneBar(){const b=$('doneBar'),go=$('doneGo');
 /* ---------- story film: after the puzzle, the camera tells the painting's story (Ali 2026-11-22) ----------
    beats: r = focus region (fractions of the image), t = subtitle, d = seconds, fx = effects active in that beat */
 const FILMS={
- mirdas:{cut:{"bg":"zahhak/cut/mirdas-bg.jpg","parts":[{"src":"zahhak/cut/mirdas-iblisHead.png","x":248,"y":1614,"px":282,"py":1706,"amp":4,"sp":1.1,"ph":0},{"src":"zahhak/cut/mirdas-iblisHand.png","x":284,"y":1702,"px":300,"py":1742,"amp":10,"sp":2.4,"ph":0.5},{"src":"zahhak/cut/mirdas-zahhakHead.png","x":673,"y":1606,"px":744,"py":1702,"amp":4.5,"sp":0.8,"ph":1},{"src":"zahhak/cut/mirdas-zahhakArm.png","x":690,"y":1751,"px":795,"py":1763,"amp":5,"sp":1.6,"ph":0,"on":[3]},{"src":"zahhak/cut/mirdas-legL.png","x":638,"y":2333,"px":682,"py":2393,"amp":16,"sp":5.5,"ph":0,"on":[4],"decay":1},{"src":"zahhak/cut/mirdas-legR.png","x":668,"y":2325,"px":676,"py":2362,"amp":16,"sp":5.5,"ph":2.2,"on":[4],"decay":1},{"src":"zahhak/cut/mirdas-kingHand.png","x":695,"y":2509,"px":713,"py":2568,"amp":18,"sp":4.2,"ph":1,"on":[4],"decay":1},{"src":"zahhak/cut/mirdas-woman.png","x":1181,"y":1496,"px":1210,"py":1580,"amp":4,"sp":0.9,"ph":2}]},fx:{petals:{x:.02,y:.32,w:.7,h:.4},ducks:{x:.0,y:.915,w:.19,h:.06},pit:{x:.32,y:.838,w:.246,h:.135},dug:{x:.385,y:.69,w:.13,h:.04}},
+ mirdas:{cut:{"bg":"zahhak/cut/mirdas-bg.jpg","parts":[{"src":"zahhak/cut/mirdas-iblisHead.png","x":248,"y":1614,"px":282,"py":1706,"amp":4,"sp":1.1,"ph":0},{"src":"zahhak/cut/mirdas-iblisHand.png","x":284,"y":1702,"px":300,"py":1742,"amp":10,"sp":2.4,"ph":0.5},{"src":"zahhak/cut/mirdas-zahhakHead.png","x":673,"y":1606,"px":744,"py":1702,"amp":4.5,"sp":0.8,"ph":1},{"src":"zahhak/cut/mirdas-zahhakArm.png","x":690,"y":1751,"px":795,"py":1763,"amp":5,"sp":1.6,"ph":0,"on":[3]},{"src":"zahhak/cut/mirdas-kingBody.png","x":520,"y":2381,"px":640,"py":2520,"amp":3,"sp":1.6,"ph":0,"on":[4],"decay":1},{"src":"zahhak/cut/mirdas-legL.png","x":638,"y":2333,"px":682,"py":2393,"amp":16,"sp":5.5,"ph":0,"on":[4],"decay":1},{"src":"zahhak/cut/mirdas-legR.png","x":668,"y":2325,"px":676,"py":2362,"amp":16,"sp":5.5,"ph":2.2,"on":[4],"decay":1},{"src":"zahhak/cut/mirdas-kingHand.png","x":695,"y":2509,"px":713,"py":2568,"amp":18,"sp":4.2,"ph":1,"on":[4],"decay":1},{"src":"zahhak/cut/mirdas-woman.png","x":1181,"y":1496,"px":1210,"py":1580,"amp":4,"sp":0.9,"ph":2}]},fx:{petals:{x:.02,y:.32,w:.7,h:.4},ducks:{x:.0,y:.915,w:.19,h:.06},pit:{x:.32,y:.838,w:.246,h:.135},dug:{x:.385,y:.69,w:.13,h:.04}},
   beats:[
   {r:{x:0,y:0,w:1,h:1},d:5,t:'Long ago, in the land of the spear-riding horsemen, there lived a good and generous king called Mirdas.'},
   {r:{x:.37,y:.52,w:.26,h:.25},d:5,t:'His son Zahhak was young and proud, and very easily led.'},
