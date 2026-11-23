@@ -360,7 +360,8 @@ body.patOn #doneBar{opacity:0;pointer-events:none}
 .fc3.t-rare .fcX::before{--hc:80,150,255;opacity:1}
 .fc3.t-epic .fcX::before{--hc:175,90,255;opacity:1}
 .fc3.t-legendary .fcX::before{--hc:255,135,20;opacity:1}
-.fc3.t-rare .fcX::before,.fc3.t-epic .fcX::before,.fc3.t-legendary .fcX::before{box-shadow:0 0 0 calc(2px*var(--u)) rgba(var(--hc),.95),0 0 calc(14px*var(--u)) calc(3px*var(--u)) rgba(var(--hc),.9),0 0 calc(42px*var(--u)) calc(8px*var(--u)) rgba(var(--hc),.55);animation:fcHalo 2.6s ease-in-out infinite}
+.fc3.t-rare .fcX::before,.fc3.t-epic .fcX::before,.fc3.t-legendary .fcX::before{box-shadow:0 0 0 calc(2px*var(--u)) rgba(var(--hc),.95),0 0 calc(14px*var(--u)) calc(3px*var(--u)) rgba(var(--hc),.9),0 0 calc(42px*var(--u)) calc(8px*var(--u)) rgba(var(--hc),.55);}
+.fc3.t-legendary .fcX::before{animation:fcHalo 2.6s ease-in-out infinite}
 @keyframes fcHalo{0%,100%{filter:brightness(1)}50%{filter:brightness(1.45)}}
 @media (prefers-reduced-motion:reduce){.fc3 .fcX::before{animation:none!important}}
 .fc3.rare .ft.art{box-shadow:0 0 calc(18px*var(--u)) rgba(255,214,120,.85),0 24px 50px rgba(0,0,0,.6);animation:fcRare 2.4s ease-in-out infinite}
@@ -380,7 +381,8 @@ body.patOn #doneBar{opacity:0;pointer-events:none}
 .fc3 .fcMed{position:absolute;left:calc(var(--mx)*100%);top:calc(var(--my)*100%);width:22%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;transition:opacity .4s;
  box-shadow:0 0 0 calc(3.5px*var(--u)) #e6bf5c,0 0 0 calc(5px*var(--u)) #6b4a12,0 0 0 calc(7px*var(--u)) #c9982f,0 0 0 calc(8px*var(--u)) #4a300a,0 calc(4px*var(--u)) calc(10px*var(--u)) calc(6px*var(--u)) rgba(0,0,0,.45)}
 .fc3:has(.fcBody.more) .fcMed{opacity:0}
-.fc3.t-epic .fcMed,.fc3.t-legendary .fcMed{animation:fcMedG 2.6s ease-in-out infinite}
+
+.fc3.t-legendary .fcMed{animation:fcMedG 2.6s ease-in-out infinite}
 @keyframes fcMedG{50%{filter:brightness(1.12) drop-shadow(0 0 calc(10px*var(--u)) rgba(255,210,120,.9))}}
 @media (prefers-reduced-motion:reduce){.fc3 .fcMed{animation:none!important}}
 /* rarity gem under the title ribbon (Ali 2026-11-23, like collectible card games) */
@@ -405,7 +407,7 @@ body.patOn #doneBar{opacity:0;pointer-events:none}
 .fc3.t-legendary .ft.art .fcTier{background:linear-gradient(#f3cf6a,#b8860b);color:#3a2408}
 .fc3.t-rare .ft.art{box-shadow:0 0 calc(14px*var(--u)) rgba(80,150,255,.8),0 24px 50px rgba(0,0,0,.6)}
 .fc3.t-epic .ft.art{box-shadow:0 0 calc(18px*var(--u)) rgba(170,90,255,.8),0 24px 50px rgba(0,0,0,.6)}
-.fc3.t-rare .ft.art::after{content:"";position:absolute;inset:0;z-index:7;pointer-events:none;border-radius:inherit;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.38) 48%,rgba(180,215,255,.2) 54%,transparent 66%) no-repeat;background-size:250% 100%;animation:fcShim 3.6s ease-in-out infinite}
+.fc3.t-rare .ft.art::after{display:none;content:"";position:absolute;inset:0;z-index:7;pointer-events:none;border-radius:inherit;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.38) 48%,rgba(180,215,255,.2) 54%,transparent 66%) no-repeat;background-size:250% 100%;animation:fcShim 3.6s ease-in-out infinite}
 @keyframes fcShim{0%{background-position:130% 0}60%,100%{background-position:-60% 0}}
 @media (prefers-reduced-motion:reduce){.fc3.t-rare .ft.art::after{animation:none;display:none}}
 @media (prefers-reduced-motion:reduce){.fc3.rare .ft.art{animation:none}}
@@ -720,7 +722,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 
 <div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
-  <div class="mmVer">v0.71.4</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
+  <div class="mmVer">v0.72.0</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
   <button class="mmBtn" data-mm="gallery" style="top:45.8%" aria-label="Gallery"></button>
   <button class="mmBtn" data-mm="trophies" style="top:55.9%" aria-label="Trophies"></button>
@@ -2469,7 +2471,7 @@ function rollTier(o){if(factRare(o))return 'legendary';let pity=0;try{pity=+loca
   pity=t==='epic'?0:pity+1;const m=TIERS[PAINT_ID]||(TIERS[PAINT_ID]={}),old=m[o.at];if(!old||TIER_N[t]>TIER_N[old])m[o.at]=t;
   try{localStorage.setItem('pz.tiers',JSON.stringify(TIERS));localStorage.setItem('pz.pity',String(pity));}catch(e){}return t;}
 const OLD_EMB=new Set(),NO_LOOP=new Set(['journey']); /* journey v2 loop morphs the astrolabe into a different shape (Ali 2026-11-23): keep it still */ /* v2 clips (0.71) show the new book/palette/astrolabe emblems on the banner */
-const CSRC=k=>'ui/card/'+k;const RARE_V=new Set(['story','craft','painter','journey']); /* add craft/painter/journey when their rare-glow videos are in ui/card */
+const CSRC=k=>'ui/card/'+k;['story','painter','journey'].forEach(k=>{new Image().src=CSRC(k+'-flip0.jpg');new Image().src=CSRC(k+'-back.jpg');});const RARE_V=new Set(['story','craft','painter','journey']); /* add craft/painter/journey when their rare-glow videos are in ui/card */
 let fcK='';
 function fcSetCat(o){const k=factCat(o),C=CARDK[k],f=document.querySelector('.fc3 .ft');if(!f)return k;
   const set=(p,a)=>{f.style.setProperty('--'+p+'l',a[0]);f.style.setProperty('--'+p+'t',a[1]);f.style.setProperty('--'+p+'w',a[2]);f.style.setProperty('--'+p+'h',a[3]);};
@@ -2478,17 +2480,17 @@ function fcSetCat(o){const k=factCat(o),C=CARDK[k],f=document.querySelector('.fc
    pic.style.webkitMaskImage=pic.style.maskImage=mi;pic.style.webkitMaskSize=pic.style.maskSize=ms;pic.style.webkitMaskPosition=pic.style.maskPosition=mp;}
   set('r',C.rib);set('b',C.tab);set('p',C.pl);{const x=$('fcX');x.style.setProperty('--pt',C.pl[1]);x.style.setProperty('--ph',C.pl[3]);x.style.setProperty('--mx',C.med[0]);x.style.setProperty('--my',C.med[1]);const md=$('fcMed'),ms=CSRC('med-'+k+'.png');if(md.getAttribute('src')!==ms)md.src=ms;}f.style.setProperty('--ink',C.ink);
   const v=$('fcV');if(fcK!==k){fcK=k;v.poster=CSRC(k+'-poster.jpg');v.src=CSRC(k+'-loop.webm');}
-  const t=factTier(o),live=(t==='epic'||t==='legendary')&&!NO_LOOP.has(k);{const gi=$('fcGemI'),src='ui/card/gem-'+t+'.png';if(gi.getAttribute('src')!==src)gi.src=src;gi.alt=TIER_LAB[t];}
+  const t=factTier(o),live=t==='legendary'&&!NO_LOOP.has(k); /* Ali 2026-11-23: moving/light effects are Legendary only */{const gi=$('fcGemI'),src='ui/card/gem-'+t+'.png';if(gi.getAttribute('src')!==src)gi.src=src;gi.alt=TIER_LAB[t];}
   if(!$('factOv').hidden&&live){const p=v.play();if(p&&p.catch)p.catch(()=>{});}else{v.pause();try{v.currentTime=0;}catch(e){}}
   const fc=$('fc3');['common','rare','epic','legendary'].forEach(x=>fc.classList.toggle('t-'+x,x===t));fc.classList.toggle('rare',t==='legendary');return k;}
 function fcFit(){const b=$('fcBody');if(!b)return;b.classList.remove('over');if(!b.classList.contains('more')&&b.scrollHeight>b.clientHeight+2)b.classList.add('over');}
 function fcMoreTog(on){const b=$('fcBody');b.classList.toggle('more',on);$('fcMore').textContent=on?'Close ⌃':'Read more ⌄';if(!on){b.scrollTop=0;fcFit();}else b.classList.add('over');}
 function fcReveal(o,done){const f=document.querySelector('.fc3 .ft'),rv=$('fcRV'),k=factCat(o),C=CARDK[k];
   const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
-  const t=factTier(o);let clip='flip';if(t==='legendary'&&RARE_V.has(k)&&!OLD_EMB.has(k))clip='rare';else if(OLD_EMB.has(k)){}else if(t==='epic'&&C.rev.length>1){const x=C.rev.filter(c=>c!=='flip'&&c!=='shimmer');clip=x[Math.floor(Math.random()*x.length)];}else if(t==='rare'&&C.rev.includes('shimmer'))clip='shimmer';
+  const t=factTier(o);let clip='flip';if(t==='legendary'&&RARE_V.has(k)&&!OLD_EMB.has(k))clip='rare';else if(OLD_EMB.has(k)){}else if(false){const x=C.rev.filter(c=>c!=='flip'&&c!=='shimmer');clip=x[Math.floor(Math.random()*x.length)];}
   let fin=false;const end=()=>{if(fin)return;fin=true;rv.onended=null;f.classList.remove('revv','pre');fcRev(0);setTimeout(fcFit,60);done&&done();};
   if(reduce){end();return;}
-  f.classList.add('pre','revv');rv.src=CSRC(k+'-'+clip+'.webm');rv.playbackRate=1.6;rv.currentTime=0;
+  f.classList.add('pre','revv');{const ns=CSRC(k+'-'+clip+'.webm');if(rv.getAttribute('src')!==ns){rv.poster=CSRC(k+(clip==='flip'?'-flip0.jpg':'-poster.jpg'));rv.src=ns;}}rv.playbackRate=1.6;rv.currentTime=0;
   rv.onended=end;rv.onerror=end;const p=rv.play();if(p&&p.catch)p.catch(end);
   setTimeout(end,4200);f.onclick=e=>{if(!fin&&!e.target.closest('button'))end();};}
 function fanBtnFor(o){const L=FACTS.indexOf(o),cs=$('fanCards')?$('fanCards').children:[];return cs[L]||null;}
@@ -2499,7 +2501,7 @@ function openFact(o,btn){
   const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
   box.getAnimations().forEach(a=>a.cancel());inn.getAnimations().forEach(a=>a.cancel());dim.getAnimations().forEach(a=>a.cancel());
   if(reduce||!box.animate){inn.style.transform='rotateY(180deg)';dim.style.opacity=.87;fcReveal(o);return;}
-  flying=true;inn.style.transform='rotateY(180deg)';{const f=document.querySelector('.fc3 .ft'),rv=$('fcRV'),k=factCat(o);f.classList.add('pre','revv');rv.src=CSRC(k+'-flip.webm');rv.currentTime=0;}const ease='cubic-bezier(.2,.8,.2,1)';
+  flying=true;inn.style.transform='rotateY(180deg)';{const f=document.querySelector('.fc3 .ft'),rv=$('fcRV'),k=factCat(o);f.classList.add('pre','revv');{const lg=factTier(o)==='legendary'&&RARE_V.has(k);rv.poster=CSRC(k+(lg?'-poster.jpg':'-flip0.jpg'));rv.src=CSRC(k+(lg?'-rare.webm':'-flip.webm'));rv.currentTime=0;}const bk=document.querySelector('.fc3 .bk');if(bk)bk.style.backgroundImage='url('+CSRC(k+'-back.jpg')+')';}const ease='cubic-bezier(.2,.8,.2,1)';
   dim.animate([{opacity:0},{opacity:.87}],{duration:700,fill:'forwards'});
   let from;
   if(fcSrc){const c=fcSrc.getBoundingClientRect(),rot=parseFloat((fcSrc.style.transform.match(/rotate\(([-\d.]+)deg/)||[0,0])[1]);
