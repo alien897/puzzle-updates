@@ -711,7 +711,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 
 <div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
-  <div class="mmVer">v0.69.3</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
+  <div class="mmVer">v0.70.0</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
   <button class="mmBtn" data-mm="gallery" style="top:45.8%" aria-label="Gallery"></button>
   <button class="mmBtn" data-mm="trophies" style="top:55.9%" aria-label="Trophies"></button>
@@ -2442,7 +2442,8 @@ const CAT_RX=[['journey',/\b(sold|auction|bought|buyer|dealer|collector|collecti
  ['painter',/\b(painter|artist|workshop|atelier|master|sultan muhammad|mir musavvir|aqa mirak|dust muhammad|mirza ali|abd al-?samad|mir sayyid ali|behzad|bihzad|shah tahmasp|tahmasp|bosch|goya|van eyck|fra angelico|angelico|signed|signature|apprentice|self-portrait|his (?:son|father|teacher|pupil)|born|died|deaf|court painter|painted (?:it|this|for))\b/i],
  ['story',/./]];
 const CAT_FIX={"How fire was found": "story", "Two pictures in one": "craft", "Inside the mind": "craft", "A puppet, not yet a monster": "story", "Walls that open": "craft", "From man to icon": "story", "Many-sided buildings": "craft", "Far away means higher up": "craft", "Fifty-three people": "craft", "A bird’s-eye view": "craft", "A hidden cross": "craft", "Faces from Central Asia": "craft", "Tall like a scroll": "craft", "Lines of violence": "craft", "A sky of gold": "craft", "Faces, not portraits": "craft", "The smallest page": "craft", "Silver turned black": "craft", "The banner in the middle": "craft", "Horses from the side": "craft", "The biggest page": "craft", "Clouds from China": "craft", "Flat walls, whole patterns": "craft", "A party outdoors": "story", "Clothes of 1525": "craft", "Big book, tiny people": "craft", "Rocks that come alive": "craft", "Mountains, never plains": "craft", "Painted six years later": "painter", "A new kind of war picture": "painter", "Matisse was watching": "journey", "Many hands, one page": "painter", "A murder among painters": "painter", "One designer, many crafts": "painter", "Words first, pictures second": "craft", "Scribes before painters": "painter", "Why \"miniature\"?": "craft", "Paper polished with stone": "craft", "World heritage": "journey"};
-function factCat(o){if(o.cat&&CARDK[o.cat])return o.cat;if(CAT_FIX[o.title])return CAT_FIX[o.title];const s=(o.title||'')+' '+(o.t||'');
+function factCat(o){const k=factCat0(o);return k==='craft'?'painter':k;} /* Ali 2026-11-23: 3 card types; how-it-was-made facts merged into Painters */
+function factCat0(o){if(o.cat&&CARDK[o.cat])return o.cat;if(CAT_FIX[o.title])return CAT_FIX[o.title];const s=(o.title||'')+' '+(o.t||'');
   const st=/\b(zahhak|iblis|faridun|fereydun|kava|jamshid|mirdas|arnavaz|shahrnavaz|kundrav|myth|legend|story|shahnameh|shahnama|firdausi|ferdowsi|dream|snakes?|serpent|dragon|angel|gabriel|mary|virgin|annunciation|bible|gospel|hell|paradise|eden|adam|eve|soldiers?|execution|1808|napoleon|king|hero|tale)\b/i.test(s);
   for(const [k,re] of CAT_RX){if(k==='story')return 'story';if(re.test(s)&&!(k==='craft'&&st&&!/\b(pigment|lapis|gold leaf|brush|paper|technique|tempera|oil paint|perspective|shadow|composition)\b/i.test(s)))return k;}return 'story';}
 function rareNeed(){const z=(PT&&PT.sizes)||[1000];return Math.min(1000,Math.max(...z));}
