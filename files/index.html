@@ -355,6 +355,11 @@ body.patOn #doneBar{opacity:0;pointer-events:none}
 .ft.art.pre .fcPic,.ft.art.pre .fcRib,.ft.art.pre .fcBody,.ft.art.pre .fcEye,.ft.art.pre .fcNav{opacity:0}
 .ft.art .fcEye,.ft.art .fcNav{transition:opacity .5s}
 #fcMed{display:none}
+/* mouse-follow highlight on every tier (Ali 2026-11-23): a soft spotlight under the pointer, tinted per tier */
+.fc3 .ft.art .fcGlow{z-index:7;--gc:255,240,205;background:radial-gradient(circle at var(--gx,50%) var(--gy,30%),rgba(var(--gc),.42),rgba(var(--gc),.12) 22%,transparent 42%);mix-blend-mode:screen}
+.fc3.t-rare .ft.art .fcGlow{--gc:150,200,255}.fc3.t-epic .ft.art .fcGlow{--gc:205,160,255}.fc3.t-legendary .ft.art .fcGlow{--gc:255,205,120}
+.fc3 .ft.art .fcSheen{z-index:7;mix-blend-mode:screen;opacity:calc(var(--so,0)*.45)}
+.fc3 .ft.art.pre .fcGlow,.fc3 .ft.art.pre .fcSheen,.fc3 .ft.art .fcBody.more~.fcGlow{opacity:0}
 /* TEMPORARY card test screen (Ali 2026-11-23) — remove before release */
 #ctBtn{position:absolute;right:1.6cqw;bottom:1.6cqw;z-index:3;font:600 13px/1 var(--f-ui,sans-serif);padding:8px 12px;border-radius:8px;border:1px solid #b08a3e;background:#2a1c0c;color:#f1d58e;cursor:pointer}
 #ctBtn:hover{background:#3d2a12}
@@ -746,7 +751,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 
 <div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
-  <div class="mmVer">v0.73.2</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
+  <div class="mmVer">v0.73.3</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
   <button class="mmBtn" data-mm="gallery" style="top:45.8%" aria-label="Gallery"></button>
   <button class="mmBtn" data-mm="trophies" style="top:55.9%" aria-label="Trophies"></button>
