@@ -619,7 +619,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 
 <div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
-  <div class="mmVer">v0.59.0</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
+  <div class="mmVer">v0.59.1</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
   <button class="mmBtn" data-mm="gallery" style="top:45.8%" aria-label="Gallery"></button>
   <button class="mmBtn" data-mm="trophies" style="top:55.9%" aria-label="Trophies"></button>
@@ -1056,9 +1056,10 @@ let PAINT_ID='annunciation',SKIP_MENU=false;
 try{PAINT_ID=localStorage.getItem('pz.painting')||PAINT_ID;}catch(e){}
 {const m=/[#&]p=([a-z]+)(!?)/.exec(location.hash||'');if(m){PAINT_ID=m[1];SKIP_MENU=!!m[2];try{history.replaceState(null,'',location.pathname+location.search+'#p='+m[1]);}catch(e){}}}
 if(!PAINTINGS[PAINT_ID])PAINT_ID='annunciation';
+/* Ali 2026-11-23: story lock OFF for testing; set STORY_LOCK=true to turn it back on */ var STORY_LOCK=false;
 /* a locked story page (previous page not finished) opens the next playable page instead */
 {let dn={};try{dn=(JSON.parse(localStorage.getItem('pz.trophies')||'null')||{}).done||{};}catch(e){}const ok=id=>dn[id]&&(dn[id].best||0)>=STORY_MIN;
- for(const k in STORIES){const ids=STORIES[k].ids,i=ids.indexOf(PAINT_ID);if(i>0&&!ok(ids[i-1])){let j=0;while(j<ids.length-1&&ok(ids[j]))j++;PAINT_ID=ids[j];try{localStorage.setItem('pz.painting',PAINT_ID);}catch(e){}}}}
+ for(const k in STORIES){const ids=STORIES[k].ids,i=ids.indexOf(PAINT_ID);if(STORY_LOCK&&i>0&&!ok(ids[i-1])){let j=0;while(j<ids.length-1&&ok(ids[j]))j++;PAINT_ID=ids[j];try{localStorage.setItem('pz.painting',PAINT_ID);}catch(e){}}}}
 const PT=PAINTINGS[PAINT_ID],IS_ANN=PAINT_ID==='annunciation';
 const W=PT.W,H=PT.H; // world units of the painting (its real proportions)
 const MGK=PAINT_ID==='bosch'?1:2.5; // Ali (2026-11-21): 2.5x more table on all four sides (Bosch already has a huge table)
@@ -2584,7 +2585,7 @@ TRO.done=TRO.done||{};TRO.ach=TRO.ach||{};TRO.guesses=TRO.guesses||0;
 /* story pages unlock one by one: page n opens when page n-1 is finished (Ali 2026-11-22) */
 /* Ali 2026-11-22: a page only counts for unlocking the next one when it was finished with STORY_MIN+ pieces */
 function storyOK(id){const d=TRO.done[id];return !!d&&(d.best||0)>=STORY_MIN;}
-function storyLocked(w){if(!w||!w.story||w.page<=1)return false;const S=STORIES[w.story];return !storyOK(S.ids[w.page-2]);}
+function storyLocked(w){if(!STORY_LOCK||!w||!w.story||w.page<=1)return false;const S=STORIES[w.story];return !storyOK(S.ids[w.page-2]);}
 let newTro=[];
 function troSave(){try{localStorage.setItem('pz.trophies',JSON.stringify(TRO));}catch(e){}}
 const SEAL_T=['Not started','Apprentice','Journeyman','Master'];
