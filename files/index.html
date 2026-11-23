@@ -354,7 +354,26 @@ body.patOn #doneBar{opacity:0;pointer-events:none}
 .ft.art #fcN{display:none}
 .ft.art.pre .fcPic,.ft.art.pre .fcRib,.ft.art.pre .fcBody,.ft.art.pre .fcEye,.ft.art.pre .fcNav{opacity:0}
 .ft.art .fcEye,.ft.art .fcNav{transition:opacity .5s}
-#fcMed{display:none} /* 0.71: the v2 card art has its own emblem on the banner */
+#fcMed{display:none}
+/* TEMPORARY card test screen (Ali 2026-11-23) — remove before release */
+#ctBtn{position:absolute;right:1.6cqw;bottom:1.6cqw;z-index:3;font:600 13px/1 var(--f-ui,sans-serif);padding:8px 12px;border-radius:8px;border:1px solid #b08a3e;background:#2a1c0c;color:#f1d58e;cursor:pointer}
+#ctBtn:hover{background:#3d2a12}
+#cardTest{position:fixed;inset:0;z-index:26;background:#0b0705f2;display:flex;justify-content:center;overflow:auto;padding:24px 16px;font-family:var(--f-ui,sans-serif);color:#f3e6c6}
+#cardTest[hidden]{display:none}
+#cardTest .ctIn{width:min(860px,100%)}
+#cardTest .ctHd{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+#cardTest h2{margin:0 auto 0 0;font:700 22px var(--f-display,Georgia,serif);color:#f1d58e}
+#cardTest select,#cardTest .ctX{font:14px var(--f-ui,sans-serif);padding:6px 10px;border-radius:7px;border:1px solid #8a6a3a;background:#1d140a;color:#f3e6c6}
+#cardTest .ctX{cursor:pointer}
+#cardTest .ctNote{font-size:12.5px;color:#cbb58a;margin:0 0 12px}
+#cardTest .ctRow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:9px 12px;border:1px solid #4a3519;border-radius:9px;margin-bottom:7px;background:#1a1209}
+#cardTest .ctT b{display:block;font-size:14.5px}#cardTest .ctT small{color:#b79c6a;font-size:12px}
+#cardTest .ctB{display:flex;gap:6px;flex-wrap:wrap}
+#cardTest .ctB button{font:600 12px var(--f-ui,sans-serif);padding:6px 10px;border-radius:6px;cursor:pointer;border:1px solid;background:#120c06}
+#cardTest .ctB .common{color:#e6e6e6;border-color:#9a9a9a}#cardTest .ctB .rare{color:#8fc0ff;border-color:#3f7fe0}
+#cardTest .ctB .epic{color:#d3a6ff;border-color:#9a4fe6}#cardTest .ctB .legendary{color:#ffbe6a;border-color:#ff8a1a}
+#factOv.ctTop{z-index:30}
+ /* 0.71: the v2 card art has its own emblem on the banner */
 /* tier halo (Ali 2026-11-23): blue rare, purple epic, orange-gold legendary, drawn just outside the card art */
 .fc3 .fcX::before{content:"";position:absolute;left:1.6%;right:1.6%;top:.9%;bottom:.9%;border-radius:4.2%/2.8%;pointer-events:none;opacity:0;--hc:transparent}
 .fc3.t-rare .fcX::before{--hc:80,150,255;opacity:1}
@@ -722,13 +741,15 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 
 <div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
-  <div class="mmVer">v0.72.0</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
+  <div class="mmVer">v0.73.0</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
   <button class="mmBtn" data-mm="gallery" style="top:45.8%" aria-label="Gallery"></button>
   <button class="mmBtn" data-mm="trophies" style="top:55.9%" aria-label="Trophies"></button>
   <button class="mmBtn" data-mm="settings" style="top:65.8%" aria-label="Settings"></button>
   <button class="mmBtn" data-mm="quit" style="top:75.9%" aria-label="Quit"></button>
+  <button id="ctBtn" type="button">Card test</button>
 </div></div>
+<div id="cardTest" hidden role="dialog" aria-label="Card test"><div class="ctIn"><div class="ctHd"><h2>Card test</h2><select id="ctPaint" aria-label="Painting"></select><button class="ctX" id="ctClose" type="button">Close</button></div><p class="ctNote">Temporary screen for testing. Pick a painting, then open any of its cards as Common, Rare, Epic or Legendary. Nothing here is saved to your progress.</p><div id="ctList"></div></div></div>
 <div class="ov" id="intro">
   <div class="card"><button class="btn sm introBack" id="introBack" aria-label="Back to the paintings">&#8249; Back</button>
     <canvas class="thumb" id="thumb" width="300" height="790"></canvas>
@@ -2465,7 +2486,7 @@ function factRare(o){if(o.rare!=null)return !!o.rare;const m=Math.max(...FACTS.m
 const TIER_LAB={common:'Common',rare:'Rare',epic:'Epic',legendary:'Legendary'},TIER_N={common:0,rare:1,epic:2,legendary:3};
 let TIERS={};try{TIERS=JSON.parse(localStorage.getItem('pz.tiers')||'{}')||{};}catch(e){}
 function tierOdds(n){return n>=1000?[40,40,20]:n>=500?[55,30,15]:[70,22,8];}
-function factTier(o){if(factRare(o))return 'legendary';const m=TIERS[PAINT_ID];return (m&&m[o.at])||'common';}
+function factTier(o){if(window.__ctTier)return window.__ctTier;if(factRare(o))return 'legendary';const m=TIERS[PAINT_ID];return (m&&m[o.at])||'common';}
 function rollTier(o){if(factRare(o))return 'legendary';let pity=0;try{pity=+localStorage.getItem('pz.pity')||0;}catch(e){}
   const w=tierOdds(pieces.length),r=Math.random()*100;let t=r<w[0]?'common':r<w[0]+w[1]?'rare':'epic';if(pity>=10)t='epic';
   pity=t==='epic'?0:pity+1;const m=TIERS[PAINT_ID]||(TIERS[PAINT_ID]={}),old=m[o.at];if(!old||TIER_N[t]>TIER_N[old])m[o.at]=t;
@@ -3528,6 +3549,19 @@ document.querySelectorAll('.mmBtn').forEach(b=>b.onclick=e=>{e.stopPropagation()
   else if(a==='quit'){try{window.close();}catch(_){}}
 });
 $('mmBack').onclick=()=>{setOpen(false);closePicker();showMenu(true);};
+/* TEMPORARY card test screen (Ali 2026-11-23): every card of the loaded painting, opened at any tier. Remove before release. */
+function ctOpen(){const sel=$('ctPaint');if(!sel.options.length){for(const k in PAINTINGS){const P=PAINTINGS[k];if(!P||!P.facts&&k!=='annunciation')continue;const o=document.createElement('option');o.value=k;o.textContent=(P.title||k);sel.appendChild(o);}}
+  sel.value=PAINT_ID;const L=$('ctList');L.innerHTML='';
+  FACTS.forEach(f=>{const r=document.createElement('div');r.className='ctRow';const k=factCat(f);
+    r.innerHTML='<div class="ctT"><b></b><small></small></div><div class="ctB"></div>';r.querySelector('b').textContent=f.title;r.querySelector('small').textContent=(CARDK[k]?CARDK[k].lab:k)+(factRare(f)?' · the Legendary card in normal play':'');
+    ['common','rare','epic','legendary'].forEach(t=>{const b=document.createElement('button');b.type='button';b.className=t;b.textContent=TIER_LAB[t];b.onclick=()=>{window.__ctTier=t;$('factOv').classList.add('ctTop');openFact(f,null);};r.querySelector('.ctB').appendChild(b);});
+    L.appendChild(r);});
+  $('cardTest').hidden=false;}
+function ctClose(){$('cardTest').hidden=true;window.__ctTier=null;$('factOv').classList.remove('ctTop');try{sessionStorage.removeItem('pz.cardtest');}catch(e){}}
+$('ctBtn').onclick=e=>{e.stopPropagation();ctOpen();};$('ctClose').onclick=ctClose;
+$('ctPaint').onchange=e=>{try{localStorage.setItem('pz.painting',e.target.value);sessionStorage.setItem('pz.cardtest','1');}catch(_){}location.hash='';location.reload();};
+addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('cardTest').hidden&&$('factOv').hidden){e.stopImmediatePropagation();ctClose();}},true);
+try{if(sessionStorage.getItem('pz.cardtest'))setTimeout(ctOpen,300);}catch(e){}
 if(SKIP_MENU)showMenu(false);menuMusic(true);
 function openPause(){$('pause').hidden=false;$('paResume').focus();}
 function closePause(){$('pause').hidden=true;}
