@@ -359,6 +359,14 @@ body.patOn #doneBar{opacity:0;pointer-events:none}
 
 .ft.art .fcTier{display:none!important;position:absolute;left:50%;top:1.6%;transform:translateX(-50%);z-index:4;padding:.28em .9em;border-radius:99px;font:700 calc(9.5px*var(--u))/1 'Almendra',Georgia,serif;letter-spacing:.16em;text-transform:uppercase;color:#fff;background:#6f6a62;box-shadow:0 1px 4px rgba(0,0,0,.45);white-space:nowrap;transition:opacity .5s}
 .ft.art.pre .fcTier,.ft.art.pre .fcGem{opacity:0}
+.ft.art .fcGem,.ft.art .fcEye .tn{display:none!important}
+/* OpenArt gems + simurgh crown (Ali 2026-11-23); sit outside the clipped card face so they can stick out */
+.fc3 .fcX{position:absolute;inset:0;transform:rotateY(180deg);backface-visibility:hidden;-webkit-backface-visibility:hidden;pointer-events:none;z-index:3;transition:opacity .5s}
+.fc3:has(.ft.pre) .fcX{opacity:0}
+.fc3 .fcGemI{position:absolute;left:50%;top:calc((var(--pt) + var(--ph)/2 + .012)*100%);width:15.5%;transform:translate(-50%,-50%);filter:drop-shadow(0 calc(2px*var(--u)) calc(4px*var(--u)) rgba(0,0,0,.55))}
+.fc3 .fcCrown{position:absolute;left:12.1%;width:75.7%;top:-13%;display:none;filter:drop-shadow(0 calc(3px*var(--u)) calc(6px*var(--u)) rgba(0,0,0,.5))}
+.fc3.t-legendary .fcCrown{display:block}
+.fc3.t-legendary .fcGemI{animation:fcGemL 2.4s ease-in-out infinite}
 /* rarity gem under the title ribbon (Ali 2026-11-23, like collectible card games) */
 .ft.art .fcGem{position:absolute;left:50%;top:calc((var(--rt) + var(--rh) + .045)*100%);width:7%;aspect-ratio:3/4;transform:translate(-50%,-50%);z-index:5;border-radius:50% 50% 50% 50%/42% 42% 58% 58%;transition:opacity .5s;
  --g1:#ffffff;--g2:#c9cfd6;--g3:#6d747c;
@@ -696,7 +704,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 
 <div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
-  <div class="mmVer">v0.68.1</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
+  <div class="mmVer">v0.69.0</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
   <button class="mmBtn" data-mm="gallery" style="top:45.8%" aria-label="Gallery"></button>
   <button class="mmBtn" data-mm="trophies" style="top:55.9%" aria-label="Trophies"></button>
@@ -819,7 +827,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 <div class="ov" id="quiz" hidden><div class="card quiz" id="quizCard"></div></div>
 <div class="ov" id="trophies" hidden><div class="card tro" id="troCard"></div></div>
 <div class="ov" id="gallery" hidden><div class="card gal" id="galCard"></div></div>
-<div class="ov fco" id="factOv" hidden><div class="dim" id="fcDim"></div><div class="fc3" id="fc3" role="dialog" aria-label="Fact card"><div class="in" id="fcIn"><div class="fa bk"></div><div class="fa ft art pre"><video class="fcV" id="fcV" muted loop playsinline preload="auto"></video><video class="fcRV" id="fcRV" muted playsinline preload="auto"></video><i class="fcGlow"></i><i class="fcSheen"></i><div class="fcRib"><h2 id="fcRibT"></h2></div><div class="fcPic"><canvas id="fcCv" width="760" height="500"></canvas><span class="fcCredit" id="fcCredit"></span></div><div class="fcTier" id="fcTier"></div><div class="fcGem" id="fcGem"></div><div class="fcEye" id="fcEye"></div><div class="fcBody" id="fcBody"><h2 id="fcTitle"></h2><p id="fcText"></p><div class="fcCr2" id="fcCr2"></div><button class="fcMore" id="fcMore">Read more ⌄</button></div><div class="fcNav" id="fcNav"><button id="fcPrev" aria-label="Previous fact">‹</button><span id="fcN"></span><button id="fcNext" aria-label="Next fact">›</button></div></div></div></div></div>
+<div class="ov fco" id="factOv" hidden><div class="dim" id="fcDim"></div><div class="fc3" id="fc3" role="dialog" aria-label="Fact card"><div class="in" id="fcIn"><div class="fa bk"></div><div class="fcX" id="fcX" aria-hidden="true"><img class="fcCrown" src="ui/card/crown.png" alt=""><img class="fcGemI" id="fcGemI" alt=""></div><div class="fa ft art pre"><video class="fcV" id="fcV" muted loop playsinline preload="auto"></video><video class="fcRV" id="fcRV" muted playsinline preload="auto"></video><i class="fcGlow"></i><i class="fcSheen"></i><div class="fcRib"><h2 id="fcRibT"></h2></div><div class="fcPic"><canvas id="fcCv" width="760" height="500"></canvas><span class="fcCredit" id="fcCredit"></span></div><div class="fcTier" id="fcTier"></div><div class="fcGem" id="fcGem"></div><div class="fcEye" id="fcEye"></div><div class="fcBody" id="fcBody"><h2 id="fcTitle"></h2><p id="fcText"></p><div class="fcCr2" id="fcCr2"></div><button class="fcMore" id="fcMore">Read more ⌄</button></div><div class="fcNav" id="fcNav"><button id="fcPrev" aria-label="Previous fact">‹</button><span id="fcN"></span><button id="fcNext" aria-label="Next fact">›</button></div></div></div></div></div>
 <div id="sortMenu" role="menu" hidden><button role="menuitem" id="smCol">By colour <kbd>O</kbd></button><button role="menuitem" id="smEdge">Edges together <kbd>E</kbd></button><button role="menuitem" id="smShape">Same shape as… <kbd>click a piece</kbd></button><button role="menuitem" id="smLike">Same colour as… <kbd>click a piece</kbd></button></div>
 <div id="doneBar" hidden><span id="doneTxt">Puzzle complete. Take your time: zoom in, explore the painting and open the details you found.</span><button class="btn pri" id="doneGo">Continue to the quiz →</button></div>
 <div class="ov" id="viewer" hidden><div class="card viewer mag" role="dialog" aria-label="Painting detail">
@@ -2450,9 +2458,9 @@ function fcSetCat(o){const k=factCat(o),C=CARDK[k],f=document.querySelector('.fc
   {const S=1.04,b=C.win,L=.5+(b[0]-.5)*S,T=.5+(b[1]-.5)*S;set('w',[L,T,b[2]*S,b[3]*S]);
    const pic=f.querySelector('.fcPic'),fw=f.clientWidth||$('fc3').clientWidth,fh=f.clientHeight||$('fc3').clientHeight,mi='url('+CSRC(k+'-mask.png')+')',ms=(fw*S)+'px '+(fh*S)+'px',mp=(fw*(1-S)/2-L*fw)+'px '+(fh*(1-S)/2-T*fh)+'px';
    pic.style.webkitMaskImage=pic.style.maskImage=mi;pic.style.webkitMaskSize=pic.style.maskSize=ms;pic.style.webkitMaskPosition=pic.style.maskPosition=mp;}
-  set('r',C.rib);set('b',C.tab);set('p',C.pl);f.style.setProperty('--ink',C.ink);
+  set('r',C.rib);set('b',C.tab);set('p',C.pl);{const x=$('fcX');x.style.setProperty('--pt',C.pl[1]);x.style.setProperty('--ph',C.pl[3]);}f.style.setProperty('--ink',C.ink);
   const v=$('fcV');if(fcK!==k){fcK=k;v.poster=CSRC(k+'-poster.jpg');v.src=CSRC(k+'-loop.webm');}
-  const t=factTier(o),live=t==='epic'||t==='legendary';
+  const t=factTier(o),live=t==='epic'||t==='legendary';{const gi=$('fcGemI'),src='ui/card/gem-'+t+'.png';if(gi.getAttribute('src')!==src)gi.src=src;gi.alt=TIER_LAB[t];}
   if(!$('factOv').hidden&&live){const p=v.play();if(p&&p.catch)p.catch(()=>{});}else{v.pause();try{v.currentTime=0;}catch(e){}}
   const fc=$('fc3');['common','rare','epic','legendary'].forEach(x=>fc.classList.toggle('t-'+x,x===t));fc.classList.toggle('rare',t==='legendary');return k;}
 function fcFit(){const b=$('fcBody');if(!b)return;b.classList.remove('over');if(!b.classList.contains('more')&&b.scrollHeight>b.clientHeight+2)b.classList.add('over');}
