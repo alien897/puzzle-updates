@@ -354,6 +354,7 @@ body.patOn #doneBar{opacity:0;pointer-events:none}
 .ft.art #fcN{display:none}
 .ft.art.pre .fcPic,.ft.art.pre .fcRib,.ft.art.pre .fcBody,.ft.art.pre .fcEye,.ft.art.pre .fcNav{opacity:0}
 .ft.art .fcEye,.ft.art .fcNav{transition:opacity .5s}
+#fcMed{display:none} /* 0.71: the v2 card art has its own emblem on the banner */
 .fc3.rare .ft.art{box-shadow:0 0 calc(18px*var(--u)) rgba(255,214,120,.85),0 24px 50px rgba(0,0,0,.6);animation:fcRare 2.4s ease-in-out infinite}
 @keyframes fcRare{50%{box-shadow:0 0 calc(42px*var(--u)) rgba(255,226,150,1),0 0 calc(80px*var(--u)) rgba(255,190,80,.45),0 24px 50px rgba(0,0,0,.6)}}
 
@@ -711,7 +712,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 
 <div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
-  <div class="mmVer">v0.70.2</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
+  <div class="mmVer">v0.71.0</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
   <button class="mmBtn" data-mm="gallery" style="top:45.8%" aria-label="Gallery"></button>
   <button class="mmBtn" data-mm="trophies" style="top:55.9%" aria-label="Trophies"></button>
@@ -2433,10 +2434,10 @@ function fcFill(o){fcCur=o;FCL.fillT=performance.now();fcRev(flying||$('factOv')
   {const r=$('fcRibT');r.style.fontSize='';const w=r.parentNode.clientWidth*.92;if(w>0&&r.scrollWidth>w)r.style.fontSize=(parseFloat(getComputedStyle(r).fontSize)*w/r.scrollWidth).toFixed(1)+'px';}
   $('fcN').textContent=(k+1)+' / '+L.length;$('fcNav').hidden=L.length<2;}
 /* art cards (Ali 2026-11-23) */
-const CARDK={story:{lab:'Story & myth',med:[.4907,.5830],ink:'#173a75',win:[.184,.081,.629,.394],rib:[.25,.44,.5,.058],tab:[.19,.672,.62,.19],pl:[.36,.895,.28,.045],rev:['flip','shimmer','painted','deal','emblem']},
+const CARDK={story:{lab:'Story & myth',med:[.4907,.5830],ink:'#173a75',win:[.166,.06,.664,.419],rib:[.2,.643,.6,.05],tab:[.164,.688,.689,.19],pl:[.36,.895,.28,.054],rev:['flip']},
  craft:{lab:'Materials & technique',med:[.4981,.6065],ink:'#13543e',win:[.157,.07,.684,.424],rib:[.21,.472,.58,.058],tab:[.19,.69,.62,.175],pl:[.36,.897,.28,.045],rev:['flip']},
- painter:{lab:'Painters',med:[.4981,.5743],ink:'#7e2212',win:[.198,.061,.605,.412],rib:[.25,.44,.5,.058],tab:[.19,.655,.62,.2],pl:[.36,.897,.28,.045],rev:['flip']},
- journey:{lab:'Journey',med:[.5,.5817],ink:'#6a4508',win:[.17,.067,.657,.39],rib:[.25,.438,.5,.056],tab:[.17,.672,.66,.185],pl:[.36,.896,.28,.045],rev:['flip']}};
+ painter:{lab:'Painters',med:[.4981,.5743],ink:'#7e2212',win:[.186,.049,.63,.431],rib:[.2,.638,.6,.05],tab:[.159,.683,.682,.197],pl:[.36,.899,.28,.065],rev:['flip']},
+ journey:{lab:'Journey',med:[.5,.5817],ink:'#6a4508',win:[.159,.051,.684,.418],rib:[.2,.632,.6,.05],tab:[.14,.677,.72,.205],pl:[.36,.905,.28,.057],rev:['flip']}};
 const CAT_RX=[['journey',/\b(sold|auction|bought|buyer|dealer|collector|collection|museum|gift|given to|sultan selim|ottoman court|houghton|scattered|taken apart|cut (?:out|apart)|left out|stolen|looted|soviet|hermitage|louvre|prado|metropolitan|met museum|british museum|aga khan|khalili|now in|today (?:it|the)|journey|travel(?:l)?ed|reached|exhibit|unesco|copy|copies|fate)\b/i],
  ['craft',/\b(pigment|lapis|ultramarine|gold leaf|gilding|shell gold|brush|squirrel|cat hair|paper|burnish|technique|glaze|oil paint|tempera|panel|canvas|underdrawing|x-ray|infrared|perspective|vanishing|shadow|colou?rs?|composition|symmetr|triangle|layout|margin|frame|border|scale|proportion|convention|miniature|varnish|layers?|sketch|draw(?:ing|n)|carpet designer|design)\b/i],
  ['painter',/\b(painter|artist|workshop|atelier|master|sultan muhammad|mir musavvir|aqa mirak|dust muhammad|mirza ali|abd al-?samad|mir sayyid ali|behzad|bihzad|shah tahmasp|tahmasp|bosch|goya|van eyck|fra angelico|angelico|signed|signature|apprentice|self-portrait|his (?:son|father|teacher|pupil)|born|died|deaf|court painter|painted (?:it|this|for))\b/i],
@@ -2459,7 +2460,7 @@ function rollTier(o){if(factRare(o))return 'legendary';let pity=0;try{pity=+loca
   const w=tierOdds(pieces.length),r=Math.random()*100;let t=r<w[0]?'common':r<w[0]+w[1]?'rare':'epic';if(pity>=10)t='epic';
   pity=t==='epic'?0:pity+1;const m=TIERS[PAINT_ID]||(TIERS[PAINT_ID]={}),old=m[o.at];if(!old||TIER_N[t]>TIER_N[old])m[o.at]=t;
   try{localStorage.setItem('pz.tiers',JSON.stringify(TIERS));localStorage.setItem('pz.pity',String(pity));}catch(e){}return t;}
-const OLD_EMB=new Set(['story','painter']); /* their extra/rare clips still show the old phoenix/ink-pot emblem; use flip only until remade */
+const OLD_EMB=new Set(); /* v2 clips (0.71) show the new book/palette/astrolabe emblems on the banner */
 const CSRC=k=>'ui/card/'+k;const RARE_V=new Set(['story','craft','painter','journey']); /* add craft/painter/journey when their rare-glow videos are in ui/card */
 let fcK='';
 function fcSetCat(o){const k=factCat(o),C=CARDK[k],f=document.querySelector('.fc3 .ft');if(!f)return k;
