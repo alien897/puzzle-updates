@@ -313,7 +313,7 @@ body.patOn #doneBar{opacity:0;pointer-events:none}
 .fcSheen{position:absolute;inset:0;pointer-events:none;z-index:3;border-radius:inherit;background:linear-gradient(105deg,transparent 38%,rgba(255,236,170,.55) 47%,rgba(255,250,225,.75) 50%,rgba(255,236,170,.55) 53%,transparent 62%);background-size:300% 100%;background-position:var(--sx,120%) 0;mix-blend-mode:soft-light;opacity:var(--so,0);transition:opacity .4s}
 .fcGlow{position:absolute;inset:0;pointer-events:none;z-index:2;border-radius:inherit;background:radial-gradient(circle at var(--gx,50%) var(--gy,30%),rgba(255,240,200,.35),transparent 45%);mix-blend-mode:overlay;opacity:var(--so,0);transition:opacity .4s}
 .fcPic canvas{transform-origin:var(--kx,50%) var(--ky,50%)}
-.fc3 .ft.live .fcPic canvas{animation:fcKB 22s ease-in-out infinite alternate}
+/* picture stays still (Ali 2026-11-23) */
 @keyframes fcKB{0%{transform:scale(1.03)}100%{transform:scale(1.16) translate(-2.5%,-1.5%)}}
 .fc3 .ft.live.fx .fcPic canvas{animation:none;transform:none}
 .fc3 .ft.rev p{animation:fcInk 1.5s ease-out var(--rd,0s) both;-webkit-mask-image:linear-gradient(180deg,#000 45%,transparent 55%);mask-image:linear-gradient(180deg,#000 45%,transparent 55%);-webkit-mask-size:100% 260%;mask-size:100% 260%}
@@ -633,7 +633,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 
 <div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
-  <div class="mmVer">v0.65.1</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
+  <div class="mmVer">v0.65.2</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
   <button class="mmBtn" data-mm="gallery" style="top:45.8%" aria-label="Gallery"></button>
   <button class="mmBtn" data-mm="trophies" style="top:55.9%" aria-label="Trophies"></button>
@@ -2389,7 +2389,8 @@ const FULL={x:0,y:0,w:1,h:1},ez=t=>t<0?0:t>1?1:t<.5?2*t*t:1-(-2*t+2)**2/2,lerpR=
 function fxPlace(src,r,cw,ch,pad){const iw=src.width,ih=src.height,P=pad||1.08,s=Math.min(cw/(r.w*iw*P),ch/(r.h*ih*P)),sw=iw*s,sh=ih*s,cx=(r.x+r.w/2)*iw*s,cy=(r.y+r.h/2)*ih*s;
   const cl=(o,S,C)=>S>=C?Math.max(C-S,Math.min(0,o)):(C-S)/2;return{ox:cl(cw/2-cx,sw,cw),oy:cl(ch/2-cy,sh,ch),sw,sh};}
 function fxDrawR(g,src,r,cw,ch,pad){const q=fxPlace(src,r,cw,ch,pad);g.drawImage(src,q.ox,q.oy,q.sw,q.sh);return q;}
-function fcFxDraw(now){const o=fcCur,fx=o&&o.fx;if(!fx||!mainArt||flying&&!FCL.rt)return;const cv=$('fcCv'),g=cv.getContext('2d'),W=cv.width,H=cv.height,t=Math.max(0,(now-(FCL.rt||now))/1000),src=mainArt;
+const FX_ON=false; /* Ali 2026-11-23: keep the card picture still; presets kept for later */
+function fcFxDraw(now){const o=fcCur,fx=FX_ON&&o&&o.fx;if(!fx||!mainArt||flying&&!FCL.rt)return;const cv=$('fcCv'),g=cv.getContext('2d'),W=cv.width,H=cv.height,t=Math.max(0,(now-(FCL.rt||now))/1000),src=mainArt;
   g.save();g.imageSmoothingQuality='high';g.fillStyle='#1a120a';g.fillRect(0,0,W,H);const r=fx.r||FULL;
   if(fx.k==='zoom'){fxDrawR(g,src,lerpR(FULL,r,ez(t/3.2)),W,H,1.15);}
   else if(fx.k==='zoomout'){fxDrawR(g,src,lerpR(r,FULL,ez((t-1.4)/3.4)),W,H,1.08);}
@@ -2409,7 +2410,7 @@ function fcFxDraw(now){const o=fcCur,fx=o&&o.fx;if(!fx||!mainArt||flying&&!FCL.r
   else fxDrawR(g,src,r,W,H,1.08);
   g.restore();}
 /* living card (Ali 2026-11-23) */
-function fcRev(d){const f=document.querySelector('.fc3 .ft');if(!f)return;FCL.rt=performance.now()+d*1000+250;f.classList.toggle('fx',!!(fcCur&&fcCur.fx));f.classList.remove('rev');void f.offsetWidth;f.style.setProperty('--rd',d+'s');f.classList.add('rev');
+function fcRev(d){const f=document.querySelector('.fc3 .ft');if(!f)return;FCL.rt=performance.now()+d*1000+250;f.classList.remove('rev');void f.offsetWidth;f.style.setProperty('--rd',d+'s');f.classList.add('rev');
   const r=fcCur&&fcCur.r;if(r){const cx=r.x+r.w/2,cy=r.y+r.h/2;f.style.setProperty('--kx',(30+40*cx).toFixed(1)+'%');f.style.setProperty('--ky',(30+40*cy).toFixed(1)+'%');}}
 const FCL={tx:0,ty:0,x:0,y:0,on:false,mx:.5,my:.3,t0:0};
 function fcLive(){const f=document.querySelector('.fc3 .ft');if(f)f.classList.add('live');if(FCL.on)return;FCL.on=true;FCL.t0=performance.now();requestAnimationFrame(fcLoop);}
