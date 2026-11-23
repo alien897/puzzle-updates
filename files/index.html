@@ -355,6 +355,14 @@ body.patOn #doneBar{opacity:0;pointer-events:none}
 .ft.art.pre .fcPic,.ft.art.pre .fcRib,.ft.art.pre .fcBody,.ft.art.pre .fcEye,.ft.art.pre .fcNav{opacity:0}
 .ft.art .fcEye,.ft.art .fcNav{transition:opacity .5s}
 #fcMed{display:none} /* 0.71: the v2 card art has its own emblem on the banner */
+/* tier halo (Ali 2026-11-23): blue rare, purple epic, orange-gold legendary, drawn just outside the card art */
+.fc3 .fcX::before{content:"";position:absolute;left:1.6%;right:1.6%;top:.9%;bottom:.9%;border-radius:4.2%/2.8%;pointer-events:none;opacity:0;--hc:transparent}
+.fc3.t-rare .fcX::before{--hc:80,150,255;opacity:1}
+.fc3.t-epic .fcX::before{--hc:175,90,255;opacity:1}
+.fc3.t-legendary .fcX::before{--hc:255,135,20;opacity:1}
+.fc3.t-rare .fcX::before,.fc3.t-epic .fcX::before,.fc3.t-legendary .fcX::before{box-shadow:0 0 0 calc(2px*var(--u)) rgba(var(--hc),.95),0 0 calc(14px*var(--u)) calc(3px*var(--u)) rgba(var(--hc),.9),0 0 calc(42px*var(--u)) calc(8px*var(--u)) rgba(var(--hc),.55);animation:fcHalo 2.6s ease-in-out infinite}
+@keyframes fcHalo{0%,100%{filter:brightness(1)}50%{filter:brightness(1.45)}}
+@media (prefers-reduced-motion:reduce){.fc3 .fcX::before{animation:none!important}}
 .fc3.rare .ft.art{box-shadow:0 0 calc(18px*var(--u)) rgba(255,214,120,.85),0 24px 50px rgba(0,0,0,.6);animation:fcRare 2.4s ease-in-out infinite}
 @keyframes fcRare{50%{box-shadow:0 0 calc(42px*var(--u)) rgba(255,226,150,1),0 0 calc(80px*var(--u)) rgba(255,190,80,.45),0 24px 50px rgba(0,0,0,.6)}}
 
@@ -712,7 +720,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 
 <div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
-  <div class="mmVer">v0.71.0</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
+  <div class="mmVer">v0.71.1</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
   <button class="mmBtn" data-mm="gallery" style="top:45.8%" aria-label="Gallery"></button>
   <button class="mmBtn" data-mm="trophies" style="top:55.9%" aria-label="Trophies"></button>
