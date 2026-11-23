@@ -373,6 +373,11 @@ body.patOn #doneBar{opacity:0;pointer-events:none}
 #cardTest .ctB .common{color:#e6e6e6;border-color:#9a9a9a}#cardTest .ctB .rare{color:#8fc0ff;border-color:#3f7fe0}
 #cardTest .ctB .epic{color:#d3a6ff;border-color:#9a4fe6}#cardTest .ctB .legendary{color:#ffbe6a;border-color:#ff8a1a}
 #factOv.ctTop{z-index:30}
+#cardTest .ctT{display:flex;align-items:center;gap:10px}#cardTest .ctT img{width:34px;height:34px;border-radius:50%;flex:none;box-shadow:0 0 0 2px #c9a046}
+#cardTest .ctCat{display:inline-block;font:700 11px var(--f-ui,sans-serif);letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:5px;margin-top:3px;color:#fff}
+#cardTest .ctCat.story{background:#1f4aa0}#cardTest .ctCat.painter{background:#9a2416}#cardTest .ctCat.journey{background:#9a6a12}
+#ctTag{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:31;font:700 14px var(--f-ui,sans-serif);padding:6px 14px;border-radius:8px;background:#1a1209ee;border:1px solid #8a6a3a;color:#f3e6c6;pointer-events:none}
+#ctTag[hidden]{display:none}#ctTag b{margin-left:6px}#ctTag .common{color:#e6e6e6}#ctTag .rare{color:#8fc0ff}#ctTag .epic{color:#d3a6ff}#ctTag .legendary{color:#ffbe6a}
  /* 0.71: the v2 card art has its own emblem on the banner */
 /* tier halo (Ali 2026-11-23): blue rare, purple epic, orange-gold legendary, drawn just outside the card art */
 .fc3 .fcX::before{content:"";position:absolute;left:1.6%;right:1.6%;top:.9%;bottom:.9%;border-radius:4.2%/2.8%;pointer-events:none;opacity:0;--hc:transparent}
@@ -741,7 +746,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 
 <div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
-  <div class="mmVer">v0.73.1</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
+  <div class="mmVer">v0.73.2</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
   <button class="mmBtn" data-mm="gallery" style="top:45.8%" aria-label="Gallery"></button>
   <button class="mmBtn" data-mm="trophies" style="top:55.9%" aria-label="Trophies"></button>
@@ -749,7 +754,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
   <button class="mmBtn" data-mm="quit" style="top:75.9%" aria-label="Quit"></button>
   <button id="ctBtn" type="button">Card test</button>
 </div></div>
-<div id="cardTest" hidden role="dialog" aria-label="Card test"><div class="ctIn"><div class="ctHd"><h2>Card test</h2><select id="ctPaint" aria-label="Painting"></select><button class="ctX" id="ctClose" type="button">Close</button></div><p class="ctNote">Temporary screen for testing. Pick a painting, then open any of its cards as Common, Rare, Epic or Legendary. Nothing here is saved to your progress.</p><p id="ctErr" hidden style="color:#ff9a7a;font-size:12.5px;margin:0 0 10px"></p><div id="ctList"></div></div></div>
+<div id="ctTag" hidden></div><div id="cardTest" hidden role="dialog" aria-label="Card test"><div class="ctIn"><div class="ctHd"><h2>Card test</h2><select id="ctPaint" aria-label="Painting"></select><button class="ctX" id="ctClose" type="button">Close</button></div><p class="ctNote">Temporary screen for testing. Pick a painting, then open any of its cards as Common, Rare, Epic or Legendary. Nothing here is saved to your progress.</p><p id="ctErr" hidden style="color:#ff9a7a;font-size:12.5px;margin:0 0 10px"></p><div id="ctList"></div></div></div>
 <div class="ov" id="intro">
   <div class="card"><button class="btn sm introBack" id="introBack" aria-label="Back to the paintings">&#8249; Back</button>
     <canvas class="thumb" id="thumb" width="300" height="790"></canvas>
@@ -2536,7 +2541,7 @@ function openFact(o,btn){
 function closeFact(){
   const ov=$('factOv');if(ov.hidden||flying)return;const box=$('fc3'),inn=$('fcIn'),dim=$('fcDim');
   const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
-  const done=()=>{ov.hidden=true;flying=false;try{$('fcV').pause();$('fcRV').pause();}catch(e){}[box,inn,dim].forEach(x=>x.getAnimations().forEach(a=>a.cancel()));inn.style.transform='';dim.style.opacity='';document.querySelectorAll('.fc.lift').forEach(b=>b.classList.remove('lift'));};
+  const done=()=>{ov.hidden=true;flying=false;{const g=$('ctTag');if(g)g.hidden=true;}try{$('fcV').pause();$('fcRV').pause();}catch(e){}[box,inn,dim].forEach(x=>x.getAnimations().forEach(a=>a.cancel()));inn.style.transform='';dim.style.opacity='';document.querySelectorAll('.fc.lift').forEach(b=>b.classList.remove('lift'));};
   if(reduce||!box.animate){done();return;}
   flying=true;const g=fcGeom(),btn=fcCur&&fanOpen()?fanBtnFor(fcCur):null;
   let to;if(btn){const c=btn.getBoundingClientRect(),rot=parseFloat((btn.style.transform.match(/rotate\(([-\d.]+)deg/)||[0,0])[1]);
@@ -3557,8 +3562,8 @@ addEventListener('error',e=>ctLog(e.error||e.message));addEventListener('unhandl
 function ctOpen(){const sel=$('ctPaint');if(!sel.options.length){for(const k in PAINTINGS){const P=PAINTINGS[k];if(!P||!P.facts&&k!=='annunciation')continue;const o=document.createElement('option');o.value=k;o.textContent=(P.title||k);sel.appendChild(o);}}
   sel.value=PAINT_ID;const L=$('ctList');L.innerHTML='';
   FACTS.forEach(f=>{const r=document.createElement('div');r.className='ctRow';const k=factCat(f);
-    r.innerHTML='<div class="ctT"><b></b><small></small></div><div class="ctB"></div>';r.querySelector('b').textContent=f.title;r.querySelector('small').textContent=(CARDK[k]?CARDK[k].lab:k)+(factRare(f)?' · the Legendary card in normal play':'');
-    ['common','rare','epic','legendary'].forEach(t=>{const b=document.createElement('button');b.type='button';b.className=t;b.textContent=TIER_LAB[t];b.onclick=()=>{window.__ctTier=t;$('factOv').classList.add('ctTop');openFact(f,null);};r.querySelector('.ctB').appendChild(b);});
+    r.innerHTML='<div class="ctT"><img alt=""><div><b></b><span class="ctCat"></span><small></small></div></div><div class="ctB"></div>';r.querySelector('img').src=CSRC('med-'+k+'.png');r.querySelector('b').textContent=f.title;const cc=r.querySelector('.ctCat');cc.classList.add(k);cc.textContent=CARDK[k]?CARDK[k].lab:k;r.querySelector('small').textContent=factRare(f)?'  · Legendary card in normal play':'';
+    ['common','rare','epic','legendary'].forEach(t=>{const b=document.createElement('button');b.type='button';b.className=t;b.textContent=TIER_LAB[t];b.onclick=()=>{window.__ctTier=t;{const g=$('ctTag');g.innerHTML='';g.append((CARDK[k]?CARDK[k].lab:k)+' ·');const bb=document.createElement('b');bb.className=t;bb.textContent=TIER_LAB[t];g.append(bb);g.hidden=false;}$('factOv').classList.add('ctTop');openFact(f,null);};r.querySelector('.ctB').appendChild(b);});
     L.appendChild(r);});
   $('cardTest').hidden=false;}
 function ctClose(){$('cardTest').hidden=true;window.__ctTier=null;$('factOv').classList.remove('ctTop');try{sessionStorage.removeItem('pz.cardtest');}catch(e){}}
