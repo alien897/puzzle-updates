@@ -741,7 +741,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 
 <div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
-  <div class="mmVer">v0.73.0</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
+  <div class="mmVer">v0.73.1</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
   <button class="mmBtn" data-mm="gallery" style="top:45.8%" aria-label="Gallery"></button>
   <button class="mmBtn" data-mm="trophies" style="top:55.9%" aria-label="Trophies"></button>
@@ -749,7 +749,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
   <button class="mmBtn" data-mm="quit" style="top:75.9%" aria-label="Quit"></button>
   <button id="ctBtn" type="button">Card test</button>
 </div></div>
-<div id="cardTest" hidden role="dialog" aria-label="Card test"><div class="ctIn"><div class="ctHd"><h2>Card test</h2><select id="ctPaint" aria-label="Painting"></select><button class="ctX" id="ctClose" type="button">Close</button></div><p class="ctNote">Temporary screen for testing. Pick a painting, then open any of its cards as Common, Rare, Epic or Legendary. Nothing here is saved to your progress.</p><div id="ctList"></div></div></div>
+<div id="cardTest" hidden role="dialog" aria-label="Card test"><div class="ctIn"><div class="ctHd"><h2>Card test</h2><select id="ctPaint" aria-label="Painting"></select><button class="ctX" id="ctClose" type="button">Close</button></div><p class="ctNote">Temporary screen for testing. Pick a painting, then open any of its cards as Common, Rare, Epic or Legendary. Nothing here is saved to your progress.</p><p id="ctErr" hidden style="color:#ff9a7a;font-size:12.5px;margin:0 0 10px"></p><div id="ctList"></div></div></div>
 <div class="ov" id="intro">
   <div class="card"><button class="btn sm introBack" id="introBack" aria-label="Back to the paintings">&#8249; Back</button>
     <canvas class="thumb" id="thumb" width="300" height="790"></canvas>
@@ -2509,11 +2509,11 @@ function fcMoreTog(on){const b=$('fcBody');b.classList.toggle('more',on);$('fcMo
 function fcReveal(o,done){const f=document.querySelector('.fc3 .ft'),rv=$('fcRV'),k=factCat(o),C=CARDK[k];
   const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
   const t=factTier(o);let clip='flip';if(t==='legendary'&&RARE_V.has(k)&&!OLD_EMB.has(k))clip='rare';else if(OLD_EMB.has(k)){}else if(false){const x=C.rev.filter(c=>c!=='flip'&&c!=='shimmer');clip=x[Math.floor(Math.random()*x.length)];}
-  let fin=false;const end=()=>{if(fin)return;fin=true;rv.onended=null;f.classList.remove('revv','pre');fcRev(0);setTimeout(fcFit,60);done&&done();};
+  let fin=false;const end=()=>{if(fin)return;fin=true;rv.onended=null;rv.onerror=null;f.classList.remove('revv','pre');try{rv.pause();}catch(e){}$('fcIn').style.transform='rotateY(180deg)';try{fcRev(0);setTimeout(fcFit,60);}catch(e){ctLog(e);}try{done&&done();}catch(e){ctLog(e);flying=false;}};
   if(reduce){end();return;}
-  f.classList.add('pre','revv');{const ns=CSRC(k+'-'+clip+'.webm');if(rv.getAttribute('src')!==ns){rv.poster=CSRC(k+(clip==='flip'?'-flip0.jpg':'-poster.jpg'));rv.src=ns;}}rv.playbackRate=1.6;rv.currentTime=0;
-  rv.onended=end;rv.onerror=end;const p=rv.play();if(p&&p.catch)p.catch(end);
-  setTimeout(end,4200);f.onclick=e=>{if(!fin&&!e.target.closest('button'))end();};}
+  setTimeout(end,4200);try{
+  f.classList.add('pre','revv');{const ns=CSRC(k+'-'+clip+'.webm');if(rv.getAttribute('src')!==ns){rv.poster=CSRC(k+(clip==='flip'?'-flip0.jpg':'-poster.jpg'));rv.src=ns;}}rv.playbackRate=1.6;try{rv.currentTime=0;}catch(e){}
+  rv.onended=end;rv.onerror=end;const p=rv.play();if(p&&p.catch)p.catch(end);}catch(e){ctLog(e);end();}f.onclick=e=>{if(!fin&&!e.target.closest('button'))end();};}
 function fanBtnFor(o){const L=FACTS.indexOf(o),cs=$('fanCards')?$('fanCards').children:[];return cs[L]||null;}
 function openFact(o,btn){
   if(flying)return;const ov=$('factOv'),box=$('fc3'),inn=$('fcIn'),dim=$('fcDim');
@@ -2525,11 +2525,13 @@ function openFact(o,btn){
   flying=true;inn.style.transform='rotateY(180deg)';{const f=document.querySelector('.fc3 .ft'),rv=$('fcRV'),k=factCat(o);f.classList.add('pre','revv');{const lg=factTier(o)==='legendary'&&RARE_V.has(k);rv.poster=CSRC(k+(lg?'-poster.jpg':'-flip0.jpg'));rv.src=CSRC(k+(lg?'-rare.webm':'-flip.webm'));rv.currentTime=0;}const bk=document.querySelector('.fc3 .bk');if(bk)bk.style.backgroundImage='url('+CSRC(k+'-back.jpg')+')';}const ease='cubic-bezier(.2,.8,.2,1)';
   dim.animate([{opacity:0},{opacity:.87}],{duration:700,fill:'forwards'});
   let from;
+  const f0=document.querySelector('.fc3 .ft');
   if(fcSrc){const c=fcSrc.getBoundingClientRect(),rot=parseFloat((fcSrc.style.transform.match(/rotate\(([-\d.]+)deg/)||[0,0])[1]);
     from=`translate(${c.left+c.width/2-(g.L+g.W/2)}px,${c.top+c.height/2-(g.T+g.H/2)}px) scale(${c.width/g.W}) rotate(${rot}deg)`;fcSrc.classList.add('lift');}
   else from=`translate(0,${innerHeight*.6}px) scale(.35) rotate(-8deg)`;
   const a1=box.animate([{transform:from},{transform:'translate(0,-14px) scale(1.03) rotate(0)',offset:.8},{transform:'none'}],{duration:560,easing:ease,fill:'forwards'});
-  a1.onfinish=()=>{fcReveal(o,()=>{flying=false;$('fcNext').focus({preventScroll:true});});};
+  let rs=false;const go=()=>{if(rs)return;rs=true;try{fcReveal(o,()=>{flying=false;try{$('fcNext').focus({preventScroll:true});}catch(e){}});}catch(e){ctLog(e);flying=false;f0.classList.remove('pre','revv');}};a1.onfinish=go;setTimeout(go,750);
+  setTimeout(()=>{if(fcCur===o&&flying){flying=false;f0.classList.remove('pre','revv');inn.style.transform='rotateY(180deg)';}},6500);
 }
 function closeFact(){
   const ov=$('factOv');if(ov.hidden||flying)return;const box=$('fc3'),inn=$('fcIn'),dim=$('fcDim');
@@ -2542,7 +2544,7 @@ function closeFact(){
   else to=`translate(0,${innerHeight*.7}px) scale(.35) rotate(8deg)`;
   dim.animate([{opacity:.87},{opacity:0}],{duration:700,fill:'forwards'});
   const a1=inn.animate([{transform:'rotateY(180deg)'},{transform:'rotateY(90deg) scale(1.05)'},{transform:'rotateY(0)'}],{duration:420,easing:'ease-in-out',fill:'forwards'});
-  a1.onfinish=()=>{const a2=box.animate([{transform:'none'},{transform:to}],{duration:460,easing:'cubic-bezier(.5,0,.75,0)',fill:'forwards'});a2.onfinish=done;};
+  let cd=false;const dn=()=>{if(cd)return;cd=true;done();};a1.onfinish=()=>{const a2=box.animate([{transform:'none'},{transform:to}],{duration:460,easing:'cubic-bezier(.5,0,.75,0)',fill:'forwards'});a2.onfinish=dn;};setTimeout(dn,1300);
 }
 /* card motion presets (Ali 2026-11-23): each fact picks one with fx:{k:'zoom'|'pan'|'spot'|'split'|'flip'|'compare'|'color', r, r2, img, at} */
 const FX_IMG={};function fxImg(p){let im=FX_IMG[p];if(!im){im=FX_IMG[p]=new Image();im.src=p;}return im.complete&&im.naturalWidth?im:null;}
@@ -3550,6 +3552,8 @@ document.querySelectorAll('.mmBtn').forEach(b=>b.onclick=e=>{e.stopPropagation()
 });
 $('mmBack').onclick=()=>{setOpen(false);closePicker();showMenu(true);};
 /* TEMPORARY card test screen (Ali 2026-11-23): every card of the loaded painting, opened at any tier. Remove before release. */
+function ctLog(e){try{console.error(e);const el=$('ctErr');if(el){el.hidden=false;el.textContent='Error: '+(e&&e.message||e);}}catch(_){}}
+addEventListener('error',e=>ctLog(e.error||e.message));addEventListener('unhandledrejection',e=>ctLog(e.reason));
 function ctOpen(){const sel=$('ctPaint');if(!sel.options.length){for(const k in PAINTINGS){const P=PAINTINGS[k];if(!P||!P.facts&&k!=='annunciation')continue;const o=document.createElement('option');o.value=k;o.textContent=(P.title||k);sel.appendChild(o);}}
   sel.value=PAINT_ID;const L=$('ctList');L.innerHTML='';
   FACTS.forEach(f=>{const r=document.createElement('div');r.className='ctRow';const k=factCat(f);
