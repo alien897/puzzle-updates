@@ -327,9 +327,9 @@ body.patOn #doneBar{opacity:0;pointer-events:none}
 .fc3 .ft.art{background:#000;padding:0;display:block;border:0}
 .fc3 .ft.art::before{display:none}
 .ft.art .fcV,.ft.art .fcRV{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none}
-.ft.art .fcV{z-index:0;transform:scale(1.04);clip-path:inset(1.6% 3% 1.8% 2.9% round 6% / 4%)}.fc3 .ft.art{background:transparent!important;border-radius:5.6%/3.7%}
+.ft.art .fcV{z-index:0;transform:scale(1.04);clip-path:inset(var(--ct,1.6%) var(--cr,3%) var(--cbm,1.8%) var(--cl,2.9%) round 6% / 4%)}.fc3 .ft.art{background:transparent!important;border-radius:5.6%/3.7%}
 .fc3 .ft.art.revv{background:transparent;box-shadow:none;border-radius:5.6%/3.7%}
-.ft.art .fcRV{clip-path:inset(1.6% 3% 1.8% 2.9% round 6% / 4%);transform:scale(1.062,1.034)} /* 0.74.3: crop the black margin baked into the reveal clips */
+.ft.art .fcRV{clip-path:inset(var(--ct,1.6%) var(--cr,3%) var(--cbm,1.8%) var(--cl,2.9%) round 6% / 4%);transform:scale(var(--sx,1.062),var(--sy,1.034)) translate(var(--dx,0%),var(--dy,0%))} /* 0.74.3: crop the black margin baked into the reveal clips */
 .ft.art .fcRV{z-index:8;opacity:0;transition:opacity .4s}
 .ft.art.revv .fcRV{opacity:1}
 .ft.art .fcPic{position:absolute;left:calc(var(--wl)*100%);top:calc(var(--wt)*100%);width:calc(var(--ww)*100%);height:calc(var(--wh)*100%);flex:none;min-height:0;border:0;box-shadow:none;border-radius:0;background:transparent;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;z-index:1;transition:opacity .5s}
@@ -385,7 +385,7 @@ body.patOn #doneBar{opacity:0;pointer-events:none}
 #ctTag[hidden]{display:none}#ctTag b{margin-left:6px}#ctTag .common{color:#e6e6e6}#ctTag .rare{color:#8fc0ff}#ctTag .epic{color:#d3a6ff}#ctTag .legendary{color:#ffbe6a}
  /* 0.71: the v2 card art has its own emblem on the banner */
 /* tier halo (Ali 2026-11-23): blue rare, purple epic, orange-gold legendary, drawn just outside the card art */
-.fc3 .fcX::before{content:"";position:absolute;left:1.6%;right:1.6%;top:.9%;bottom:.9%;border-radius:5.6%/3.7%;pointer-events:none;opacity:0;--hc:transparent}
+.fc3 .fcX::before{content:"";position:absolute;left:var(--hl,1.6%);right:var(--hr,1.6%);top:var(--ht,.9%);bottom:var(--hb,.9%);border-radius:5.6%/3.7%;pointer-events:none;opacity:0;--hc:transparent}
 .fc3.t-rare .fcX::before{--hc:80,150,255;opacity:1}
 .fc3.t-epic .fcX::before{--hc:175,90,255;opacity:1}
 .fc3.t-legendary .fcX::before{--hc:255,135,20;opacity:1}
@@ -759,7 +759,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 
 <div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
-  <div class="mmVer">v0.75.4</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
+  <div class="mmVer">v0.75.5</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
   <button class="mmBtn" data-mm="gallery" style="top:45.8%" aria-label="Gallery"></button>
   <button class="mmBtn" data-mm="trophies" style="top:55.9%" aria-label="Trophies"></button>
@@ -2512,7 +2512,8 @@ function rollTier(o){if(factRare(o))return 'legendary';let pity=0;try{pity=+loca
 const OLD_EMB=new Set(),NO_LOOP=new Set(['journey','painter']); /* painter: Ali 2026-11-23 palette only, the loop paints with a brush */ /* journey v2 loop morphs the astrolabe into a different shape (Ali 2026-11-23): keep it still */ /* v2 clips (0.71) show the new book/palette/astrolabe emblems on the banner */
 const CSRC=k=>'ui/card/'+k;['story','painter','journey'].forEach(k=>{new Image().src=CSRC(k+'-flip0.jpg');new Image().src=CSRC(k+'-back.jpg');});const RARE_V=new Set(['story','craft','painter','journey']); /* add craft/painter/journey when their rare-glow videos are in ui/card */
 let fcK='';
-function fcSetCat(o){const k=factCat(o),C=CARDK[k],f=document.querySelector('.fc3 .ft');if(!f)return k;
+const CARD_M={"story": [17, 18, 15, 19], "painter": [24, 23, 16, 19], "journey": [21, 21, 26, 17]}; /* 0.75.5 black margin baked into each category's clips: l,r,t,b px of 560x840 */
+function fcSetCat(o){const k=factCat(o),C=CARDK[k],f=document.querySelector('.fc3 .ft');if(!f)return k;{const m=CARD_M[k];if(m){const[l,r,t,bb]=m,P=(v,d)=>(v/d*100).toFixed(2)+'%';f.style.setProperty('--cl',P(l,560));f.style.setProperty('--cr',P(r,560));f.style.setProperty('--ct',P(t,840));f.style.setProperty('--cbm',P(bb,840));f.style.setProperty('--sx',(560/(560-l-r)).toFixed(4));f.style.setProperty('--sy',(840/(840-t-bb)).toFixed(4));f.style.setProperty('--dx',P((r-l)/2,560));f.style.setProperty('--dy',P((bb-t)/2,840));{const E=(v,c)=>Math.max(0,c-(c-v)*1.04),x=$('fcX');x.style.setProperty('--hl',P(E(l,280),560));x.style.setProperty('--hr',P(E(r,280),560));x.style.setProperty('--ht',P(E(t,420),840));x.style.setProperty('--hb',P(E(bb,420),840));}}}
   const set=(p,a)=>{f.style.setProperty('--'+p+'l',a[0]);f.style.setProperty('--'+p+'t',a[1]);f.style.setProperty('--'+p+'w',a[2]);f.style.setProperty('--'+p+'h',a[3]);};
   {const S=1.04,b=C.win,L=.5+(b[0]-.5)*S,T=.5+(b[1]-.5)*S;set('w',[L,T,b[2]*S,b[3]*S]);
    const pic=f.querySelector('.fcPic'),fw=f.clientWidth||$('fc3').clientWidth,fh=f.clientHeight||$('fc3').clientHeight,mi='url('+CSRC(k+'-mask.png')+')',ms=(fw*S)+'px '+(fh*S)+'px',mp=(fw*(1-S)/2-L*fw)+'px '+(fh*(1-S)/2-T*fh)+'px';
