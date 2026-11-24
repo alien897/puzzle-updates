@@ -759,7 +759,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 
 <div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
-  <div class="mmVer">v0.75.0</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
+  <div class="mmVer">v0.75.1</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
   <button class="mmBtn" data-mm="gallery" style="top:45.8%" aria-label="Gallery"></button>
   <button class="mmBtn" data-mm="trophies" style="top:55.9%" aria-label="Trophies"></button>
@@ -2451,8 +2451,8 @@ const picCache={};
 function coverDraw(g,img,W,H,fx,fy){const ia=img.width/img.height,ca=W/H;let sw,sh;if(ia>ca){sh=img.height;sw=sh*ca;}else{sw=img.width;sh=sw/ca;}
   const sx=Math.max(0,Math.min(img.width-sw,(fx??.5)*img.width-sw/2)),sy=Math.max(0,Math.min(img.height-sh,(fy??.5)*img.height-sh/2));g.drawImage(img,sx,sy,sw,sh,0,0,W,H);}
 function drawTriptych(c){const g=c.getContext('2d'),W=c.width,H=c.height,src=mainArt;
-  const bg=g.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#2a1c10');bg.addColorStop(1,'#140d07');g.fillStyle=bg;g.fillRect(0,0,W,H);
-  const ph=Math.min(H*.74,W*.94/1.66),top=(H-ph)/2-H*.03,wingW=ph*.40,ctrW=ph*.80,gap=ph*.03,tot=wingW*2+ctrW+gap*2,x0=(W-tot)/2;
+  if(src){g.save();g.filter='blur('+Math.round(W*.02)+'px) brightness(.8) saturate(1.1)';coverDraw(g,src,W,H,.5,.45);g.restore();g.fillStyle='rgba(60,40,15,.25)';g.fillRect(0,0,W,H);}else{g.fillStyle='#6b5434';g.fillRect(0,0,W,H);} /* 0.75.1 Ali: no dark frame, fill with the painting */
+  const ph=Math.min(H*.8,W*.96/1.66),top=(H-ph)/2-H*.03,wingW=ph*.40,ctrW=ph*.80,gap=ph*.03,tot=wingW*2+ctrW+gap*2,x0=(W-tot)/2;
   const panels=[{x:x0,w:wingW,art:true},{x:x0+wingW+gap,w:ctrW},{x:x0+wingW+gap+ctrW+gap,w:wingW}];
   function arch(x,y,w,h){const r=w/2;g.beginPath();g.moveTo(x,y+h);g.lineTo(x,y+r);g.arc(x+r,y+r,r,Math.PI,0);g.lineTo(x+w,y+h);g.closePath();}
   panels.forEach((p,i)=>{const fw=Math.max(3,ph*.03);
