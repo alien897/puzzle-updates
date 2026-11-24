@@ -761,7 +761,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
   </aside>
 </div>
 
-<div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmVer">v0.76.8</div><div class="mmStage">
+<div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmVer">v0.76.9</div><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
   <div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
@@ -1983,8 +1983,8 @@ function drawCursor(x,y,col,name){
   ctx.fillStyle='#0d1210';ctx.textAlign='right';ctx.fillText(name,14+tw+7,36);ctx.restore();
 }
 const fmt=ms=>{const t=Math.floor(ms/1000);return fa(String(Math.floor(t/60)).padStart(2,'0'))+':'+fa(String(t%60).padStart(2,'0'));};
-let altDown=false,matImg=(()=>{try{return localStorage.getItem('pz.matImg2')==='1';}catch(e){return false;}})(); // off at start (Ali 2026-11-22)
-function setMatImg(v){matImg=v;try{localStorage.setItem('pz.matImg2',v?'1':'0');}catch(e){}const c=$('matImgT');if(c)c.checked=v;}
+let altDown=false,matImg=false; // off at the start of every puzzle, even if it was on last time (Ali 2026-11-22, 0.76.9)
+function setMatImg(v){matImg=v;const c=$('matImgT');if(c)c.checked=v;}
 const ghostShown=()=>mode==='daily'?false:mode==='main'&&role==='sara'?false:(ghost&&altDown);
 addEventListener('keydown',e=>{if(e.key==='Alt'){altDown=true;e.preventDefault();}});addEventListener('keyup',e=>{if(e.key==='Alt'){altDown=false;e.preventDefault();}});addEventListener('blur',()=>{altDown=false;});
 
