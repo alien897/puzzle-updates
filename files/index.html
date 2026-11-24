@@ -316,6 +316,10 @@ body.patOn #doneBar{opacity:0;pointer-events:none}
 /* picture stays still (Ali 2026-11-23) */
 @keyframes fcKB{0%{transform:scale(1.03)}100%{transform:scale(1.16) translate(-2.5%,-1.5%)}}
 .fc3 .ft.live.fx .fcPic canvas{animation:none;transform:none}
+/* 0.76.0 Ali: Legendary only, slow camera toward the card's subject (--kx/--ky) */
+.fc3.t-legendary .ft.art:not(.fx) .fcPic canvas{animation:fcKBL 16s ease-in-out infinite alternate;will-change:transform}
+@keyframes fcKBL{0%{transform:scale(1.02)}100%{transform:scale(1.16)}}
+@media (prefers-reduced-motion:reduce){.fc3.t-legendary .ft.art .fcPic canvas{animation:none}}
 .fc3 .ft.rev p{animation:fcInk 1.5s ease-out var(--rd,0s) both;-webkit-mask-image:linear-gradient(180deg,#000 45%,transparent 55%);mask-image:linear-gradient(180deg,#000 45%,transparent 55%);-webkit-mask-size:100% 260%;mask-size:100% 260%}
 @keyframes fcInk{0%{-webkit-mask-position:0 100%;mask-position:0 100%}100%{-webkit-mask-position:0 0;mask-position:0 0}}
 .fc3 .ft.rev p::first-letter{animation:fcCap 1.6s ease-out var(--rd,0s) both}
@@ -759,7 +763,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 
 <div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
-  <div class="mmVer">v0.75.8</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
+  <div class="mmVer">v0.76.0</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
   <button class="mmBtn" data-mm="gallery" style="top:45.8%" aria-label="Gallery"></button>
   <button class="mmBtn" data-mm="trophies" style="top:55.9%" aria-label="Trophies"></button>
