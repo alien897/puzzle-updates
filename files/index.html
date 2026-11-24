@@ -329,7 +329,7 @@ body.patOn #doneBar{opacity:0;pointer-events:none}
 .ft.art .fcV,.ft.art .fcRV{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none}
 .ft.art .fcV{z-index:0;transform:scale(1.04);clip-path:inset(var(--ct,1.6%) var(--cr,3%) var(--cbm,1.8%) var(--cl,2.9%) round 6% / 4%)}.fc3 .ft.art{background:transparent!important;border-radius:5.6%/3.7%}
 .fc3 .ft.art.revv{background:transparent;box-shadow:none;border-radius:5.6%/3.7%}
-.ft.art .fcRV{clip-path:inset(var(--ct,1.6%) var(--cr,3%) var(--cbm,1.8%) var(--cl,2.9%) round 6% / 4%);transform:scale(var(--sx,1.062),var(--sy,1.034)) translate(var(--dx,0%),var(--dy,0%))} /* 0.74.3: crop the black margin baked into the reveal clips */
+.ft.art .fcRV{clip-path:inset(var(--ct,1.6%) var(--cr,3%) var(--cbm,1.8%) var(--cl,2.9%) round 6% / 4%);transform:scale(var(--rvx,1.062),var(--rvy,1.034)) translate(var(--rvdx,0%),var(--rvdy,0%))} /* 0.74.3: crop the black margin baked into the reveal clips */
 .ft.art .fcRV{z-index:8;opacity:0;transition:opacity .4s}
 .ft.art.revv .fcRV{opacity:1}
 .ft.art .fcPic{position:absolute;left:calc(var(--wl)*100%);top:calc(var(--wt)*100%);width:calc(var(--ww)*100%);height:calc(var(--wh)*100%);flex:none;min-height:0;border:0;box-shadow:none;border-radius:0;background:transparent;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;z-index:1;transition:opacity .5s}
@@ -759,7 +759,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 
 <div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
-  <div class="mmVer">v0.75.6</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
+  <div class="mmVer">v0.75.7</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
   <button class="mmBtn" data-mm="gallery" style="top:45.8%" aria-label="Gallery"></button>
   <button class="mmBtn" data-mm="trophies" style="top:55.9%" aria-label="Trophies"></button>
@@ -2513,7 +2513,7 @@ const OLD_EMB=new Set(),NO_LOOP=new Set(['journey','painter']); /* painter: Ali 
 const CSRC=k=>'ui/card/'+k;['story','painter','journey'].forEach(k=>{new Image().src=CSRC(k+'-flip0.jpg');new Image().src=CSRC(k+'-back.jpg');});const RARE_V=new Set(['story','craft','painter','journey']); /* add craft/painter/journey when their rare-glow videos are in ui/card */
 let fcK='';
 const CARD_M={"story": [17, 18, 15, 19], "painter": [24, 23, 16, 19], "journey": [21, 21, 26, 17]}; /* 0.75.5 black margin baked into each category's clips: l,r,t,b px of 560x840 */
-function fcSetCat(o){const k=factCat(o),C=CARDK[k],f=document.querySelector('.fc3 .ft');if(!f)return k;{const m=CARD_M[k];if(m){const[l,r,t,bb]=m,P=(v,d)=>(v/d*100).toFixed(2)+'%';f.style.setProperty('--cl',P(l,560));f.style.setProperty('--cr',P(r,560));f.style.setProperty('--ct',P(t,840));f.style.setProperty('--cbm',P(bb,840));f.style.setProperty('--sx',(560/(560-l-r)).toFixed(4));f.style.setProperty('--sy',(840/(840-t-bb)).toFixed(4));f.style.setProperty('--dx',P((r-l)/2,560));f.style.setProperty('--dy',P((bb-t)/2,840));{const E=(v,c)=>Math.max(0,c-(c-v)*1.04),x=$('fcX');x.style.setProperty('--hl',P(E(l,280),560));x.style.setProperty('--hr',P(E(r,280),560));x.style.setProperty('--ht',P(E(t,420),840));x.style.setProperty('--hb',P(E(bb,420),840));}}}
+function fcSetCat(o){const k=factCat(o),C=CARDK[k],f=document.querySelector('.fc3 .ft');if(!f)return k;{const m=CARD_M[k];if(m){const[l,r,t,bb]=m,P=(v,d)=>(v/d*100).toFixed(2)+'%';f.style.setProperty('--cl',P(l,560));f.style.setProperty('--cr',P(r,560));f.style.setProperty('--ct',P(t,840));f.style.setProperty('--cbm',P(bb,840));f.style.setProperty('--rvx',(560/(560-l-r)).toFixed(4));f.style.setProperty('--rvy',(840/(840-t-bb)).toFixed(4));f.style.setProperty('--rvdx',P((r-l)/2,560));f.style.setProperty('--rvdy',P((bb-t)/2,840));{const E=(v,c)=>Math.max(0,c-(c-v)*1.04),x=$('fcX');x.style.setProperty('--hl',P(E(l,280),560));x.style.setProperty('--hr',P(E(r,280),560));x.style.setProperty('--ht',P(E(t,420),840));x.style.setProperty('--hb',P(E(bb,420),840));}}}
   const set=(p,a)=>{f.style.setProperty('--'+p+'l',a[0]);f.style.setProperty('--'+p+'t',a[1]);f.style.setProperty('--'+p+'w',a[2]);f.style.setProperty('--'+p+'h',a[3]);};
   {const S=1.04,b=C.win,L=.5+(b[0]-.5)*S,T=.5+(b[1]-.5)*S;set('w',[L,T,b[2]*S,b[3]*S]);
    const pic=f.querySelector('.fcPic'),fw=f.clientWidth||$('fc3').clientWidth,fh=f.clientHeight||$('fc3').clientHeight,mi='url('+CSRC(k+'-mask.png')+')',ms=(fw*S)+'px '+(fh*S)+'px',mp=(fw*(1-S)/2-L*fw)+'px '+(fh*(1-S)/2-T*fh)+'px';
