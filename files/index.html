@@ -761,7 +761,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
   </aside>
 </div>
 
-<div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmVer">v0.76.6</div><div class="mmStage">
+<div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmVer">v0.76.7</div><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
   <div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
@@ -3458,7 +3458,7 @@ function netPlayers(){coopBar();const on=NET.on;$('plBot').hidden=!on&&solo;if(o
 const FRIEND='#7fc8ff';
 const pid=p=>p.r*cols+p.c;
 const NET_ALPHA='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-function netOpts(){let o={debug:0,config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:global.stun.twilio.com:3478'}]}};
+function netOpts(){let o={debug:0,config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:global.stun.twilio.com:3478'},{urls:'stun:stun.cloudflare.com:3478'},{urls:['turn:openrelay.metered.ca:80','turn:openrelay.metered.ca:443','turns:openrelay.metered.ca:443?transport=tcp'],username:'openrelayproject',credential:'openrelayproject'}]}};
   try{const h=JSON.parse(localStorage.getItem('pz.peerHost')||'null');if(h)Object.assign(o,h);}catch(e){}return o;}
 function netStat(t,err){const el=$('netStat');el.textContent=t;el.classList.toggle('err',!!err);}
 function netChip(){$('netChip').hidden=true;netRoom();}
@@ -3492,6 +3492,7 @@ function netHost(){netClose(true);let code='';for(let i=0;i<6;i++)code+=NET_ALPH
   if(typeof Peer==='undefined'){netStat('Online play is not available here.',true);return;}
   netStat('Making a room…');NET.host=true;NET.code=code;
   const peer=new Peer('mpz7-'+code,netOpts());NET.peer=peer;
+  setTimeout(()=>{if(NET.peer===peer&&!peer.open)netStat('Cannot reach the game server. Check the internet connection. If you are in a country that filters sites, try a VPN.',true);},9000);
   peer.on('open',()=>{$('netCode').textContent=code;$('netLeave').hidden=false;netChip();netStat('Waiting for your friend…');
     if(!running)startMain();});
   peer.on('connection',conn=>{if(NET.on&&performance.now()-NET.last<4000){conn.on('open',()=>{conn.send({t:'full'});setTimeout(()=>conn.close(),300);});return;}
@@ -3502,8 +3503,13 @@ function netJoin(code){code=(code||'').toUpperCase().replace(/[^A-Z0-9]/g,'');if
   if(typeof Peer==='undefined'){netStat('Online play is not available here.',true);return;}
   netClose(true);NET.host=false;NET.code=code;netStat('Joining room '+code+'…');
   const peer=new Peer(netOpts());NET.peer=peer;
-  peer.on('open',()=>{const conn=peer.connect('mpz7-'+code,{reliable:true,serialization:'json'});netWire(conn);});
-  peer.on('error',e=>{netStat(e.type==='peer-unavailable'?'No room with this code. Check the code with your friend.':'Could not join ('+(e.type||'network')+').',true);netClose(true);});}
+  /* 0.76.7: say which step is stuck instead of waiting forever (Ali 2026-11-23: stuck on "Joining room") */
+  clearTimeout(NET.jt1);clearTimeout(NET.jt2);
+  NET.jt1=setTimeout(()=>{if(NET.peer===peer&&!peer.open)netStat('Cannot reach the game server. Check the internet connection. If you are in a country that filters sites, try a VPN.',true);},9000);
+  peer.on('open',()=>{clearTimeout(NET.jt1);netStat('Connected to the game server. Reaching your friend…');const conn=peer.connect('mpz7-'+code,{reliable:true,serialization:'json'});netWire(conn);
+    const pc=conn.peerConnection;if(pc)pc.addEventListener('iceconnectionstatechange',()=>{if(pc.iceConnectionState==='failed'&&!NET.on)netStat('The room is there, but your two networks block a direct connection. Try again, swap who makes the room, or one of you use a VPN.',true);});
+    NET.jt2=setTimeout(()=>{if(NET.peer===peer&&!NET.on)netStat('The room is there, but the connection to your friend is not getting through. Try again, swap who makes the room, or one of you use a VPN.',true);},20000);});
+  peer.on('error',e=>{clearTimeout(NET.jt1);clearTimeout(NET.jt2);netStat(e.type==='peer-unavailable'?'No room with this code. Check the code with your friend.':'Could not join ('+(e.type||'network')+').',true);netClose(true);});}
 function netSendSnap(){if(!NET.on)return;if(!running||!pieces.length||mode!=='main'||phase!=='pieces'){setTimeout(netSendSnap,400);return;}
   netSend({t:'snap',pid:PAINT_ID,d:snapData()});}
 function netRecv(m){if(!m||!m.t)return;NET.last=performance.now();if(m.t==='p')return;
