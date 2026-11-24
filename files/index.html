@@ -763,7 +763,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 
 <div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
-  <div class="mmVer">v0.76.0</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
+  <div class="mmVer">v0.76.1</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
   <button class="mmBtn" data-mm="gallery" style="top:45.8%" aria-label="Gallery"></button>
   <button class="mmBtn" data-mm="trophies" style="top:55.9%" aria-label="Trophies"></button>
@@ -2538,10 +2538,11 @@ function fcReveal(o,done){const f=document.querySelector('.fc3 .ft'),rv=$('fcRV'
   f.classList.add('pre','revv');{const ns=CSRC(k+'-'+clip+'.webm');if(rv.getAttribute('src')!==ns){rv.poster=CSRC(k+(clip==='flip'?'-flip0.jpg':'-poster.jpg'));rv.src=ns;}}rv.playbackRate=1.6;try{rv.currentTime=0;}catch(e){}
   rv.onended=end;rv.onerror=end;const p=rv.play();if(p&&p.catch)p.catch(end);}catch(e){ctLog(e);end();}f.onclick=e=>{if(!fin&&!e.target.closest('button'))end();};}
 function fanBtnFor(o){const L=FACTS.indexOf(o),cs=$('fanCards')?$('fanCards').children:[];return cs[L]||null;}
+let FCTOK=0; /* 0.76.1: each open/close/step gets a token so stale timers from an earlier one do nothing */
 function openFact(o,btn){
   if(flying){if(window.__closing)window.__pendOpen=[o,btn];return;} /* 0.75.8: a card picked while the last one is still closing opens right after */const ov=$('factOv'),box=$('fc3'),inn=$('fcIn'),dim=$('fcDim');
   const g=fcGeom();Object.assign(box.style,{left:g.L+'px',top:g.T+'px',width:g.W+'px',height:g.H+'px'});box.style.setProperty('--u',(g.H/700).toFixed(3));
-  ov.hidden=false;fcFill(o);fcRev(1.05);fcLive();fcSrc=btn&&btn.isConnected&&fanOpen()?btn:null;
+  const tk=++FCTOK;ov.hidden=false;fcFill(o);fcRev(1.05);fcLive();fcSrc=btn&&btn.isConnected&&fanOpen()?btn:null;
   const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
   box.getAnimations().forEach(a=>a.cancel());inn.getAnimations().forEach(a=>a.cancel());dim.getAnimations().forEach(a=>a.cancel());
   if(reduce||!box.animate){inn.style.transform='rotateY(180deg)';dim.style.opacity=.87;fcReveal(o);return;}
@@ -2553,21 +2554,21 @@ function openFact(o,btn){
     from=`translate(${c.left+c.width/2-(g.L+g.W/2)}px,${c.top+c.height/2-(g.T+g.H/2)}px) scale(${c.width/g.W}) rotate(${rot}deg)`;fcSrc.classList.add('lift');}
   else from=`translate(0,${innerHeight*.6}px) scale(.35) rotate(-8deg)`;
   const a1=box.animate([{transform:from},{transform:'translate(0,-14px) scale(1.03) rotate(0)',offset:.8},{transform:'none'}],{duration:560,easing:ease,fill:'forwards'});
-  let rs=false;const go=()=>{if(rs)return;rs=true;try{fcReveal(o,()=>{flying=false;try{$('fcNext').focus({preventScroll:true});}catch(e){}});}catch(e){ctLog(e);flying=false;f0.classList.remove('pre','revv');}};a1.onfinish=go;setTimeout(go,750);
-  setTimeout(()=>{if(fcCur===o&&flying){flying=false;f0.classList.remove('pre','revv');inn.style.transform='rotateY(180deg)';}},6500);
+  let rs=false;const go=()=>{if(rs||tk!==FCTOK)return;rs=true;try{fcReveal(o,()=>{if(tk!==FCTOK)return;flying=false;try{$('fcNext').focus({preventScroll:true});}catch(e){}});}catch(e){ctLog(e);flying=false;f0.classList.remove('pre','revv');}};a1.onfinish=go;setTimeout(go,750);
+  setTimeout(()=>{if(tk===FCTOK&&fcCur===o&&flying){flying=false;f0.classList.remove('pre','revv');inn.style.transform='rotateY(180deg)';}},6500);
 }
 function closeFact(){
   const ov=$('factOv');if(!ov.hidden&&flying&&window.fcRevEnd){try{window.fcRevEnd();}catch(e){}}if(ov.hidden||flying)return;const box=$('fc3'),inn=$('fcIn'),dim=$('fcDim');
   const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
   const done=()=>{ov.hidden=true;flying=false;window.__closing=false;ov.style.pointerEvents='';setTimeout(()=>{const q=window.__pendOpen;window.__pendOpen=null;if(q)openFact(q[0],q[1]);},0);{const g=$('ctTag');if(g&&!window.__pendOpen)g.hidden=true;}try{$('fcV').pause();$('fcRV').pause();}catch(e){}[box,inn,dim].forEach(x=>x.getAnimations().forEach(a=>a.cancel()));inn.style.transform='';dim.style.opacity='';document.querySelectorAll('.fc.lift').forEach(b=>b.classList.remove('lift'));};
   if(reduce||!box.animate){done();return;}
-  flying=true;window.__closing=true;window.__pendOpen=null;ov.style.pointerEvents='none';const g=fcGeom(),btn=fcCur&&fanOpen()?fanBtnFor(fcCur):null;
+  const tk=++FCTOK;flying=true;window.__closing=true;window.__pendOpen=null;ov.style.pointerEvents='none';const g=fcGeom(),btn=fcCur&&fanOpen()?fanBtnFor(fcCur):null;
   let to;if(btn){const c=btn.getBoundingClientRect(),rot=parseFloat((btn.style.transform.match(/rotate\(([-\d.]+)deg/)||[0,0])[1]);
     to=`translate(${c.left+c.width/2-(g.L+g.W/2)}px,${c.top+c.height/2-(g.T+g.H/2)}px) scale(${c.width/g.W}) rotate(${rot}deg)`;}
   else to=`translate(0,${innerHeight*.7}px) scale(.35) rotate(8deg)`;
   dim.animate([{opacity:.87},{opacity:0}],{duration:700,fill:'forwards'});
   const a1=inn.animate([{transform:'rotateY(180deg)'},{transform:'rotateY(90deg) scale(1.05)'},{transform:'rotateY(0)'}],{duration:420,easing:'ease-in-out',fill:'forwards'}); /* Ali 2026-11-23: keep the flip when a card closes */
-  let cd=false;const dn=()=>{if(cd)return;cd=true;done();};a1.onfinish=()=>{const a2=box.animate([{transform:'none'},{transform:to}],{duration:460,easing:'cubic-bezier(.5,0,.75,0)',fill:'forwards'});a2.onfinish=dn;};setTimeout(dn,1300);
+  let cd=false;const dn=()=>{if(cd||tk!==FCTOK)return;cd=true;done();};a1.onfinish=()=>{const a2=box.animate([{transform:'none'},{transform:to}],{duration:460,easing:'cubic-bezier(.5,0,.75,0)',fill:'forwards'});a2.onfinish=dn;};setTimeout(dn,1300);
 }
 /* card motion presets (Ali 2026-11-23): each fact picks one with fx:{k:'zoom'|'pan'|'spot'|'split'|'flip'|'compare'|'color', r, r2, img, at} */
 const FX_IMG={};function fxImg(p){let im=FX_IMG[p];if(!im){im=FX_IMG[p]=new Image();im.src=p;}return im.complete&&im.naturalWidth?im:null;}
@@ -2613,8 +2614,8 @@ addEventListener('pointermove',e=>{if($('factOv').hidden)return;const r=$('fc3')
   const nx=(e.clientX-r.left)/r.width,ny=(e.clientY-r.top)/r.height;FCL.mx=Math.max(0,Math.min(1,nx));FCL.my=Math.max(0,Math.min(1,ny));
   FCL.tx=Math.max(-1,Math.min(1,(nx-.5)*2))*7;FCL.ty=Math.max(-1,Math.min(1,(ny-.5)*2))*7;},{passive:true});
 function stepFact(d){if(flying||!fcCur)return;const L=fcList();if(L.length<2)return;const k=(L.indexOf(fcCur)+d+L.length)%L.length,inn=$('fcIn');
-  flying=true;const a=inn.animate([{transform:'rotateY(180deg)'},{transform:'rotateY(270deg)'}],{duration:200,easing:'ease-in',fill:'forwards'});
-  let h=false;const half=()=>{if(h)return;h=true;fcFill(L[k]);setTimeout(fcFit,30);const b=inn.animate([{transform:'rotateY(90deg)'},{transform:'rotateY(180deg)'}],{duration:220,easing:'ease-out',fill:'forwards'});let z=false;const fin=()=>{if(z)return;z=true;inn.getAnimations().forEach(x=>x.cancel());inn.style.transform='rotateY(180deg)';flying=false;};b.onfinish=fin;setTimeout(fin,500);};a.onfinish=half;setTimeout(half,450);}
+  const tk=++FCTOK;flying=true;const a=inn.animate([{transform:'rotateY(180deg)'},{transform:'rotateY(270deg)'}],{duration:200,easing:'ease-in',fill:'forwards'});
+  let h=false;const half=()=>{if(h||tk!==FCTOK)return;h=true;fcFill(L[k]);setTimeout(fcFit,30);const b=inn.animate([{transform:'rotateY(90deg)'},{transform:'rotateY(180deg)'}],{duration:220,easing:'ease-out',fill:'forwards'});let z=false;const fin=()=>{if(z||tk!==FCTOK)return;z=true;inn.getAnimations().forEach(x=>x.cancel());inn.style.transform='rotateY(180deg)';flying=false;};b.onfinish=fin;setTimeout(fin,500);};a.onfinish=half;setTimeout(half,450);}
 /* zoomable lens in the detail viewer: drawn from the sharpest picture we have (museum-scan tiles when present), with wheel/pinch zoom and drag */
 const LZ={cx:0,cy:0,vw:1,vmin:1,vmax:1,q:false,drag:null};
 function lensSoon(){if(LZ.q||$('viewer').hidden)return;LZ.q=true;requestAnimationFrame(()=>{LZ.q=false;lensDraw();});}
