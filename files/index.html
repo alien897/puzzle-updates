@@ -299,7 +299,7 @@ body.patOn #doneBar{opacity:0;pointer-events:none}
 .fc3{position:fixed;perspective:1800px;z-index:2}
 .fc3 .in{position:absolute;inset:0;transform-style:preserve-3d}
 .fc3 .fa{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:calc(14px*var(--u,1));overflow:hidden}
-.fc3 .bk{background:#e4d2a8 var(--cb) center/cover;border:1px solid #8a6a3a;box-shadow:0 24px 50px rgba(0,0,0,.6)}
+.fc3 .bk{background:#e4d2a8 var(--cb) center/cover;border:1px solid #8a6a3a;box-shadow:0 24px 50px rgba(0,0,0,.6)}.fc3 .bk[style*='ui/card/']{border:0;border-radius:calc(14px*var(--u))}
 .fc3 .ft{transform:rotateY(180deg);background:radial-gradient(ellipse at 50% 35%,#fbf3de 0%,#f1e3c0 60%,#e2cc9c 100%);border:1px solid #8a6a3a;box-shadow:0 24px 50px rgba(0,0,0,.6);display:flex;flex-direction:column;padding:calc(26px*var(--u)) calc(26px*var(--u)) calc(18px*var(--u));color:#3b2a14;font-family:'Almendra',Georgia,serif}
 .fc3 .ft::before{content:"";position:absolute;inset:calc(9px*var(--u));border:calc(2px*var(--u)) solid #8e1b1d;border-radius:calc(9px*var(--u));pointer-events:none;box-shadow:inset 0 0 0 calc(3px*var(--u)) #f6ecd2,inset 0 0 0 calc(4px*var(--u)) #b8954e}
 .fcPic{flex:1 1 auto;min-height:calc(160px*var(--u));border:calc(3px*var(--u)) solid #6b4a2a;box-shadow:0 0 0 1px #c9a77a;background:#1a120a;overflow:hidden;position:relative}
@@ -751,7 +751,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 
 <div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
-  <div class="mmVer">v0.74.3</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
+  <div class="mmVer">v0.74.4</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
   <button class="mmBtn" data-mm="gallery" style="top:45.8%" aria-label="Gallery"></button>
   <button class="mmBtn" data-mm="trophies" style="top:55.9%" aria-label="Trophies"></button>
