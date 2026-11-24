@@ -405,7 +405,15 @@ body.patOn #doneBar{opacity:0;pointer-events:none}
 .fc3 .fcGemI{position:absolute;left:50%;top:calc((var(--pt) + var(--ph)/2 + .012)*100%);width:15.5%;transform:translate(-50%,-50%);filter:drop-shadow(0 calc(2px*var(--u)) calc(4px*var(--u)) rgba(0,0,0,.55))}
 .fc3 .fcCrown{position:absolute;left:12.1%;width:75.7%;top:-13%;display:none;filter:drop-shadow(0 calc(3px*var(--u)) calc(6px*var(--u)) rgba(0,0,0,.5))}
 .fc3.t-legendary .fcCrown{display:block}
-.fc3.t-legendary .fcGemI{animation:fcGemL 2.4s ease-in-out infinite}
+.fc3.t-legendary .fcGemI{animation:none;filter:drop-shadow(0 0 calc(5px*var(--u)) rgba(255,170,50,.75)) drop-shadow(0 calc(2px*var(--u)) calc(4px*var(--u)) rgba(0,0,0,.55))}
+.fc3 .fcSpark{display:none;position:absolute;left:50%;top:calc((var(--pt) + var(--ph)/2 + .012)*100%);width:15.5%;aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none}
+.fc3.t-legendary .fcSpark{display:block}
+.fcSpark i{position:absolute;width:48%;aspect-ratio:1;background:radial-gradient(circle,#fff 0 12%,rgba(255,236,180,.95) 22%,rgba(255,200,90,0) 60%);clip-path:polygon(50% 0,58% 42%,100% 50%,58% 58%,50% 100%,42% 58%,0 50%,42% 42%);opacity:0;transform:scale(.2);animation:fcTw 2.4s ease-in-out infinite;filter:drop-shadow(0 0 3px rgba(255,220,140,.9))}
+.fcSpark i:nth-child(1){left:8%;top:2%}
+.fcSpark i:nth-child(2){left:50%;top:34%;width:36%;animation-delay:.8s}
+.fcSpark i:nth-child(3){left:18%;top:56%;width:30%;animation-delay:1.6s}
+@keyframes fcTw{0%,100%{opacity:0;transform:scale(.2) rotate(0)}18%{opacity:1;transform:scale(1) rotate(30deg)}42%{opacity:0;transform:scale(.3) rotate(70deg)}}
+@media (prefers-reduced-motion:reduce){.fcSpark i{animation:none}}
 /* one same-size emblem on top of the banner for all 4 card types (Ali 2026-11-23) */
 .fc3 .fcMed{position:absolute;left:calc(var(--mx)*100%);top:calc(var(--my)*100%);width:22%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;transition:opacity .4s;
  box-shadow:0 0 0 calc(3.5px*var(--u)) #e6bf5c,0 0 0 calc(5px*var(--u)) #6b4a12,0 0 0 calc(7px*var(--u)) #c9982f,0 0 0 calc(8px*var(--u)) #4a300a,0 calc(4px*var(--u)) calc(10px*var(--u)) calc(6px*var(--u)) rgba(0,0,0,.45)}
@@ -751,7 +759,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 
 <div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
-  <div class="mmVer">v0.74.6</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
+  <div class="mmVer">v0.75.0</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
   <button class="mmBtn" data-mm="gallery" style="top:45.8%" aria-label="Gallery"></button>
   <button class="mmBtn" data-mm="trophies" style="top:55.9%" aria-label="Trophies"></button>
@@ -876,7 +884,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 <div class="ov" id="quiz" hidden><div class="card quiz" id="quizCard"></div></div>
 <div class="ov" id="trophies" hidden><div class="card tro" id="troCard"></div></div>
 <div class="ov" id="gallery" hidden><div class="card gal" id="galCard"></div></div>
-<div class="ov fco" id="factOv" hidden><div class="dim" id="fcDim"></div><div class="fc3" id="fc3" role="dialog" aria-label="Fact card"><div class="in" id="fcIn"><div class="fa bk"></div><div class="fcX" id="fcX" aria-hidden="true"><img class="fcCrown" src="ui/card/crown.png" alt=""><img class="fcGemI" id="fcGemI" alt=""><img class="fcMed" id="fcMed" alt=""></div><div class="fa ft art pre"><video class="fcV" id="fcV" muted loop playsinline preload="auto"></video><video class="fcRV" id="fcRV" muted playsinline preload="auto"></video><i class="fcGlow"></i><i class="fcSheen"></i><div class="fcRib"><h2 id="fcRibT"></h2></div><div class="fcPic"><canvas id="fcCv" width="760" height="500"></canvas><span class="fcCredit" id="fcCredit"></span></div><div class="fcTier" id="fcTier"></div><div class="fcGem" id="fcGem"></div><div class="fcEye" id="fcEye"></div><div class="fcBody" id="fcBody"><h2 id="fcTitle"></h2><p id="fcText"></p><div class="fcCr2" id="fcCr2"></div><button class="fcMore" id="fcMore">Read more ⌄</button></div><div class="fcNav" id="fcNav"><button id="fcPrev" aria-label="Previous fact">‹</button><span id="fcN"></span><button id="fcNext" aria-label="Next fact">›</button></div></div></div></div></div>
+<div class="ov fco" id="factOv" hidden><div class="dim" id="fcDim"></div><div class="fc3" id="fc3" role="dialog" aria-label="Fact card"><div class="in" id="fcIn"><div class="fa bk"></div><div class="fcX" id="fcX" aria-hidden="true"><img class="fcCrown" src="ui/card/crown.png" alt=""><img class="fcGemI" id="fcGemI" alt=""><span class="fcSpark" aria-hidden="true"><i></i><i></i><i></i></span><img class="fcMed" id="fcMed" alt=""></div><div class="fa ft art pre"><video class="fcV" id="fcV" muted loop playsinline preload="auto"></video><video class="fcRV" id="fcRV" muted playsinline preload="auto"></video><i class="fcGlow"></i><i class="fcSheen"></i><div class="fcRib"><h2 id="fcRibT"></h2></div><div class="fcPic"><canvas id="fcCv" width="760" height="500"></canvas><span class="fcCredit" id="fcCredit"></span></div><div class="fcTier" id="fcTier"></div><div class="fcGem" id="fcGem"></div><div class="fcEye" id="fcEye"></div><div class="fcBody" id="fcBody"><h2 id="fcTitle"></h2><p id="fcText"></p><div class="fcCr2" id="fcCr2"></div><button class="fcMore" id="fcMore">Read more ⌄</button></div><div class="fcNav" id="fcNav"><button id="fcPrev" aria-label="Previous fact">‹</button><span id="fcN"></span><button id="fcNext" aria-label="Next fact">›</button></div></div></div></div></div>
 <div id="sortMenu" role="menu" hidden><button role="menuitem" id="smCol">By colour <kbd>O</kbd></button><button role="menuitem" id="smEdge">Edges together <kbd>E</kbd></button><button role="menuitem" id="smShape">Same shape as… <kbd>click a piece</kbd></button><button role="menuitem" id="smLike">Same colour as… <kbd>click a piece</kbd></button></div>
 <div id="doneBar" hidden><span id="doneTxt">Puzzle complete. Take your time: zoom in, explore the painting and open the details you found.</span><button class="btn pri" id="doneGo">Continue to the quiz →</button></div>
 <div class="ov" id="viewer" hidden><div class="card viewer mag" role="dialog" aria-label="Painting detail">
@@ -2501,7 +2509,7 @@ function rollTier(o){if(factRare(o))return 'legendary';let pity=0;try{pity=+loca
   const w=tierOdds(pieces.length),r=Math.random()*100;let t=r<w[0]?'common':r<w[0]+w[1]?'rare':'epic';if(pity>=10)t='epic';
   pity=t==='epic'?0:pity+1;const m=TIERS[PAINT_ID]||(TIERS[PAINT_ID]={}),old=m[o.at];if(!old||TIER_N[t]>TIER_N[old])m[o.at]=t;
   try{localStorage.setItem('pz.tiers',JSON.stringify(TIERS));localStorage.setItem('pz.pity',String(pity));}catch(e){}return t;}
-const OLD_EMB=new Set(),NO_LOOP=new Set(['journey']); /* journey v2 loop morphs the astrolabe into a different shape (Ali 2026-11-23): keep it still */ /* v2 clips (0.71) show the new book/palette/astrolabe emblems on the banner */
+const OLD_EMB=new Set(),NO_LOOP=new Set(['journey','painter']); /* painter: Ali 2026-11-23 palette only, the loop paints with a brush */ /* journey v2 loop morphs the astrolabe into a different shape (Ali 2026-11-23): keep it still */ /* v2 clips (0.71) show the new book/palette/astrolabe emblems on the banner */
 const CSRC=k=>'ui/card/'+k;['story','painter','journey'].forEach(k=>{new Image().src=CSRC(k+'-flip0.jpg');new Image().src=CSRC(k+'-back.jpg');});const RARE_V=new Set(['story','craft','painter','journey']); /* add craft/painter/journey when their rare-glow videos are in ui/card */
 let fcK='';
 function fcSetCat(o){const k=factCat(o),C=CARDK[k],f=document.querySelector('.fc3 .ft');if(!f)return k;
