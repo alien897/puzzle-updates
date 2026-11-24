@@ -751,7 +751,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 
 <div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
-  <div class="mmVer">v0.74.5</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
+  <div class="mmVer">v0.74.6</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
   <button class="mmBtn" data-mm="gallery" style="top:45.8%" aria-label="Gallery"></button>
   <button class="mmBtn" data-mm="trophies" style="top:55.9%" aria-label="Trophies"></button>
@@ -2406,7 +2406,7 @@ function toast(h,t,act){const el=document.createElement('div');el.className='toa
 function drawRegion(c,r,pad,lines){
   const src=mainArt;if(!src||!r)return;const g=c.getContext('2d'),iw=src.width,ih=src.height,cw=c.width,ch=c.height;
   /* fit the whole region (never crop it); if the region is taller/wider than the picture box, show more painting around it */
-  const P=pad||1,s=Math.min(cw/(r.w*iw*P),ch/(r.h*ih*P)),sw=iw*s,sh=ih*s;
+  const P=pad||1,s=Math.max(Math.min(cw/(r.w*iw*P),ch/(r.h*ih*P)),cw/iw,ch/ih),sw=iw*s,sh=ih*s; /* 0.74.6 Ali: painting always fills the window, no dark bars */
   const cx=(r.x+r.w/2)*iw*s,cy=(r.y+r.h/2)*ih*s;
   const cl=(o,S,C)=>S>=C?Math.max(C-S,Math.min(0,o)):(C-S)/2;
   const ox=cl(cw/2-cx,sw,cw),oy=cl(ch/2-cy,sh,ch);
