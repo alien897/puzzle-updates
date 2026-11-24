@@ -763,7 +763,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 
 <div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
-  <div class="mmVer">v0.76.1</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
+  <div class="mmVer">v0.76.2</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
   <button class="mmBtn" data-mm="gallery" style="top:45.8%" aria-label="Gallery"></button>
   <button class="mmBtn" data-mm="trophies" style="top:55.9%" aria-label="Trophies"></button>
@@ -2528,7 +2528,7 @@ function fcSetCat(o){const k=factCat(o),C=CARDK[k],f=document.querySelector('.fc
   if(!$('factOv').hidden&&live){const p=v.play();if(p&&p.catch)p.catch(()=>{});}else{v.pause();try{v.currentTime=0;}catch(e){}}
   const fc=$('fc3');['common','rare','epic','legendary'].forEach(x=>fc.classList.toggle('t-'+x,x===t));fc.classList.toggle('rare',t==='legendary');return k;}
 function fcFit(){const b=$('fcBody');if(!b)return;b.classList.remove('over');if(!b.classList.contains('more')&&b.scrollHeight>b.clientHeight+2)b.classList.add('over');}
-function fcMoreTog(on){const b=$('fcBody');b.classList.toggle('more',on);$('fcMore').textContent=on?'Close ⌃':'Read more ⌄';if(!on){b.scrollTop=0;fcFit();}else b.classList.add('over');}
+function fcMoreTog(on){const b=$('fcBody');b.classList.toggle('more',on);$('fcMore').textContent=on?'Close ⌃':'Read more ⌄';if(!on){b.scrollTop=0;fcFit();b.classList.add('over');[80,350,700].forEach(t=>setTimeout(()=>{if(!b.classList.contains('more'))fcFit();},t));}else b.classList.add('over');} /* 0.76.2: re-measure after the panel slides back, so Read more returns */
 function fcReveal(o,done){const f=document.querySelector('.fc3 .ft'),rv=$('fcRV'),k=factCat(o),C=CARDK[k];
   const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
   const t=factTier(o);let clip='flip';if(t==='legendary'&&RARE_V.has(k)&&!OLD_EMB.has(k))clip='rare';else if(OLD_EMB.has(k)){}else if(false){const x=C.rev.filter(c=>c!=='flip'&&c!=='shimmer');clip=x[Math.floor(Math.random()*x.length)];}
