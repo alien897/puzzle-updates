@@ -365,7 +365,7 @@ body.patOn #doneBar{opacity:0;pointer-events:none}
 .fc3 .ft.art .fcSheen{z-index:7;mix-blend-mode:screen;opacity:calc(var(--so,0)*.45)}
 .fc3 .ft.art.pre .fcGlow,.fc3 .ft.art.pre .fcSheen,.fc3 .ft.art .fcBody.more~.fcGlow{opacity:0}
 /* TEMPORARY card test screen (Ali 2026-11-23) — remove before release */
-#ctBtn{position:absolute;right:1.6cqw;bottom:1.6cqw;z-index:3;font:600 13px/1 var(--f-ui,sans-serif);padding:8px 12px;border-radius:8px;border:1px solid #b08a3e;background:#2a1c0c;color:#f1d58e;cursor:pointer}
+#ctBtn{position:absolute;right:1.6cqw;bottom:calc(1.6cqw + 52px);z-index:3;font:600 13px/1 var(--f-ui,sans-serif);padding:8px 12px;border-radius:8px;border:1px solid #b08a3e;background:#2a1c0c;color:#f1d58e;cursor:pointer}
 #ctBtn:hover{background:#3d2a12}
 #cardTest{position:fixed;inset:0;z-index:26;background:#0b0705f2;display:flex;justify-content:center;overflow:auto;padding:24px 16px;font-family:var(--f-ui,sans-serif);color:#f3e6c6}
 #cardTest[hidden]{display:none}
@@ -761,7 +761,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
   </aside>
 </div>
 
-<div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmVer">v0.76.4</div><div class="mmStage">
+<div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmVer">v0.76.5</div><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
   <div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
