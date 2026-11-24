@@ -329,7 +329,7 @@ body.patOn #doneBar{opacity:0;pointer-events:none}
 .ft.art .fcV,.ft.art .fcRV{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none}
 .ft.art .fcV{z-index:0;transform:scale(1.04)}
 .fc3 .ft.art.revv{background:transparent;box-shadow:none;border-radius:0}
-.ft.art .fcRV{-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent),linear-gradient(transparent,#000 4%,#000 96%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent),linear-gradient(transparent,#000 4%,#000 96%,transparent);mask-composite:intersect}
+.ft.art .fcRV{clip-path:inset(1.6% 3% 1.8% 2.9% round 3.4% / 2.2%);transform:scale(1.062,1.034)} /* 0.74.3: crop the black margin baked into the reveal clips */
 .ft.art .fcRV{z-index:8;opacity:0;transition:opacity .4s}
 .ft.art.revv .fcRV{opacity:1}
 .ft.art .fcPic{position:absolute;left:calc(var(--wl)*100%);top:calc(var(--wt)*100%);width:calc(var(--ww)*100%);height:calc(var(--wh)*100%);flex:none;min-height:0;border:0;box-shadow:none;border-radius:0;background:transparent;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;z-index:1;transition:opacity .5s}
@@ -751,7 +751,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 
 <div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
-  <div class="mmVer">v0.74.2</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
+  <div class="mmVer">v0.74.3</div><div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
   <button class="mmBtn" data-mm="gallery" style="top:45.8%" aria-label="Gallery"></button>
   <button class="mmBtn" data-mm="trophies" style="top:55.9%" aria-label="Trophies"></button>
