@@ -297,7 +297,7 @@ body.patOn #doneBar{opacity:0;pointer-events:none}
 .ov.fco{background:transparent;padding:0;overflow:hidden}
 .fco .dim{position:absolute;inset:0;background:#0a0f0d;opacity:0}
 .fc3{position:fixed;perspective:1800px;z-index:2}
-.fc3 .in{position:absolute;inset:0;transform-style:preserve-3d}
+.fc3 .in{position:absolute;inset:0;transform-style:preserve-3d}/*FUP*/.fc3.faceUp .in{transform:none!important}.fc3.faceUp .ft,.fc3.faceUp .fcX{transform:none!important}.fc3.faceUp .bk{visibility:hidden}/*/FUP*/
 .fc3 .fa{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:calc(14px*var(--u,1));overflow:hidden}
 .fc3 .bk{background:#e4d2a8 var(--cb) center/cover;border:1px solid #8a6a3a;box-shadow:0 24px 50px rgba(0,0,0,.6)}.fc3 .bk[style*='ui/card/']{border:0;border-radius:calc(14px*var(--u))}
 .fc3 .ft{transform:rotateY(180deg);background:radial-gradient(ellipse at 50% 35%,#fbf3de 0%,#f1e3c0 60%,#e2cc9c 100%);border:1px solid #8a6a3a;box-shadow:0 24px 50px rgba(0,0,0,.6);display:flex;flex-direction:column;padding:calc(26px*var(--u)) calc(26px*var(--u)) calc(18px*var(--u));color:#3b2a14;font-family:'Almendra',Georgia,serif}
@@ -951,7 +951,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
   </aside>
 </div>
 
-<div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmVer">v0.81.0</div><div class="mmStage">
+<div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmVer">v0.81.1</div><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
   <div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
@@ -2760,7 +2760,7 @@ let FCTOK=0; /* 0.76.1: each open/close/step gets a token so stale timers from a
 function openFact(o,btn){
   if(flying){if(window.__closing)window.__pendOpen=[o,btn];return;} /* 0.75.8: a card picked while the last one is still closing opens right after */const ov=$('factOv'),box=$('fc3'),inn=$('fcIn'),dim=$('fcDim');
   const g=fcGeom();Object.assign(box.style,{left:g.L+'px',top:g.T+'px',width:g.W+'px',height:g.H+'px'});box.style.setProperty('--u',(g.H/700).toFixed(3));
-  const tk=++FCTOK;ov.hidden=false;fcFill(o);fcRev(1.05);fcLive();fcSrc=btn&&btn.isConnected&&fanOpen()?btn:null;
+  const tk=++FCTOK;box.classList.add('faceUp');ov.hidden=false;fcFill(o);fcRev(1.05);fcLive();fcSrc=btn&&btn.isConnected&&fanOpen()?btn:null;
   const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
   box.getAnimations().forEach(a=>a.cancel());inn.getAnimations().forEach(a=>a.cancel());dim.getAnimations().forEach(a=>a.cancel());
   if(reduce||!box.animate){inn.style.transform='rotateY(180deg)';dim.style.opacity=.87;fcReveal(o);return;}
@@ -2780,7 +2780,7 @@ function closeFact(){
   const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
   const done=()=>{ov.hidden=true;flying=false;window.__closing=false;ov.style.pointerEvents='';setTimeout(()=>{const q=window.__pendOpen;window.__pendOpen=null;if(q)openFact(q[0],q[1]);},0);{const g=$('ctTag');if(g&&!window.__pendOpen)g.hidden=true;}try{$('fcV').pause();$('fcRV').pause();}catch(e){}[box,inn,dim].forEach(x=>x.getAnimations().forEach(a=>a.cancel()));inn.style.transform='';dim.style.opacity='';document.querySelectorAll('.fc.lift').forEach(b=>b.classList.remove('lift'));};
   if(reduce||!box.animate){done();return;}
-  const tk=++FCTOK;flying=true;window.__closing=true;window.__pendOpen=null;ov.style.pointerEvents='none';const g=fcGeom(),btn=fcCur&&fanOpen()?fanBtnFor(fcCur):null;
+  const tk=++FCTOK;flying=true;window.__closing=true;window.__pendOpen=null;ov.style.pointerEvents='none';inn.style.transform='rotateY(180deg)';box.classList.remove('faceUp');const g=fcGeom(),btn=fcCur&&fanOpen()?fanBtnFor(fcCur):null;
   let to;if(btn){const c=btn.getBoundingClientRect(),rot=parseFloat((btn.style.transform.match(/rotate\(([-\d.]+)deg/)||[0,0])[1]);
     to=`translate(${c.left+c.width/2-(g.L+g.W/2)}px,${c.top+c.height/2-(g.T+g.H/2)}px) scale(${c.width/g.W}) rotate(${rot}deg)`;}
   else to=`translate(0,${innerHeight*.7}px) scale(.35) rotate(8deg)`;
