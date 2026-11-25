@@ -951,7 +951,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
   </aside>
 </div>
 
-<div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmVer">v0.79.1</div><div class="mmStage">
+<div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmVer">v0.79.2</div><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
   <div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
@@ -1404,7 +1404,7 @@ for(const k in SG_P)if(SG_P[k].patterns)PATTERNS_RN[k]=SG_P[k].patterns;
 let PAINT_ID='annunciation',SKIP_MENU=false;
 try{PAINT_ID=localStorage.getItem('pz.painting')||PAINT_ID;}catch(e){}
 {const m=/[#&]p=([a-z0-9]+)(!?)/.exec(location.hash||'');if(m){PAINT_ID=m[1];SKIP_MENU=!!m[2];try{history.replaceState(null,'',location.pathname+location.search+'#p='+m[1]);}catch(e){}}}
-if(!PAINTINGS[PAINT_ID])PAINT_ID='annunciation';
+if(!PAINTINGS[PAINT_ID])PAINT_ID='annunciation';/*SOFF*/var STORIES_OFF=true;if(STORIES_OFF&&(/^r\d+$/.test(PAINT_ID)||["mirdas","snakes","daughters","nightmare","fate","barmaya","kava","mace","tigris","throne","kundrav","strike","damavand"].includes(PAINT_ID))){PAINT_ID='annunciation';try{localStorage.setItem('pz.painting',PAINT_ID);}catch(e){}}/*/SOFF*/
 /* Ali 2026-11-23: story lock OFF for testing; set STORY_LOCK=true to turn it back on */ var STORY_LOCK=false;
 /* a locked story page (previous page not finished) opens the next playable page instead */
 {let dn={};try{dn=(JSON.parse(localStorage.getItem('pz.trophies')||'null')||{}).done||{};}catch(e){}const ok=id=>dn[id]&&(dn[id].best||0)>=STORY_MIN;
@@ -3457,7 +3457,7 @@ function pkRender(){const esc=t=>String(t).replace(/[&<>"]/g,ch=>({'&':'&amp;','
 }
 let pkStory='';
 function storyDone(k){return STORIES[k].ids.filter(id=>storyOK(id)).length;}
-function pkBundle(k){const S=STORIES[k],n=storyDone(k),b=document.createElement('button');b.className='pkCard pkBundle';
+function pkBundle(k){const S=STORIES[k],n=storyDone(k),b=document.createElement('button');b.className='pkCard pkBundle';/*SOFF*/if(STORIES_OFF){b.className+=' soon';b.setAttribute('aria-disabled','true');b.innerHTML=`<div class="im" style="background-image:url(ui/card-${S.ids[0]}.jpg)"></div><b>${S.title}</b><small>${S.sub}</small><div class="tg"><i>Story · ${S.ids.length} pages</i><i class="lk">Locked · coming soon</i></div>`;b.onclick=()=>{};return b;}/*/SOFF*/
   const cur=S.ids.includes(PAINT_ID);
   b.innerHTML=`<div class="im" style="background-image:url(ui/card-${S.ids[0]}.jpg)"></div><b>${S.title}</b><small>${S.sub}</small>
     <div class="tg"><i class="ok">Story · ${S.ids.length} pages</i><i>${n} of ${S.ids.length} done</i>${cur?'<i class="ok">Current</i>':''}<i>Up to 1000 pieces each</i></div>`;
@@ -3625,7 +3625,7 @@ function whichRound(){const S=W8;if(S.round>=10){const nb=Math.max(S.best,S.scor
 function tellHTML(){return `<p class="note">For three hundred years the story has been told again and again, on stage, in books, in prints and on film.</p><div class="rnTell">${(X().retellings||[]).map(r=>`<div class="rnT"><small>${esc(r.year)} · ${esc(r.kind)}</small><b>${esc(r.title)}</b><p>${esc(r.t)}</p></div>`).join('')}</div>`;}
 /* ---- character quiz: "click on ..." ---- */
 function findQ(){const L=(PT.finds||[]);if(!L.length)return null;const c=L[Math.floor(Math.random()*L.length)];return {q:'Find '+c.name+' in the picture',find:c,o:[],a:-1};}
-return {open,close,views,findQ,isGishi,prelude:k=>prelude(k||K,false)};})();window.RNX=RNX;window.rnOpenPicker=()=>openPicker();
+return {open,close,views,findQ,isGishi,prelude:k=>prelude(k||K,false)};})();window.RNX=RNX;/*SOFF*/if(STORIES_OFF){RNX.open=()=>{};RNX.prelude=()=>{};}/*/SOFF*/window.rnOpenPicker=()=>openPicker();
 /* reward screen: back to the journey map, and the other artists' versions of this scene */
 function rnReward(w){if(!w||!w.story||typeof SX==='undefined'||!SX[w.story])return;const row=document.querySelector('#rewCard .row');if(!row)return;
   const X=SX[w.story],p=(X.pages||[]).find(q=>q.id===w.id)||{};
