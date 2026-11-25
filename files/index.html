@@ -860,8 +860,6 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
   box-shadow:0 0 0 calc(var(--u)*.13) #7a5320,0 0 0 calc(var(--u)*.3) #d9ad5c,0 calc(var(--u)*.3) calc(var(--u)*.8) rgba(0,0,0,.6)}
 .prl-roster .foe .ph{box-shadow:0 0 0 calc(var(--u)*.13) #1c1410,0 0 0 calc(var(--u)*.3) #a33a28,0 calc(var(--u)*.3) calc(var(--u)*.8) rgba(0,0,0,.6)}
 .prl-roster .nm{margin-top:calc(var(--u)*.35);font-size:calc(var(--u)*.78);color:#f3e6c8;text-shadow:0 1px 3px #000;white-space:nowrap}
-.prl-sweep{position:absolute;top:-10%;bottom:-10%;left:0;width:28%;pointer-events:none;mix-blend-mode:soft-light;opacity:0;
-  background:linear-gradient(90deg,transparent,rgba(255,236,200,.55) 45%,rgba(255,244,220,.75) 50%,rgba(255,236,200,.55) 55%,transparent)}
 /*/PRL-CSS*/
 </style>
 </head>
@@ -953,7 +951,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
   </aside>
 </div>
 
-<div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmVer">v0.78.3</div><div class="mmStage">
+<div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmVer">v0.78.4</div><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
   <div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
@@ -3732,9 +3730,7 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
     function buildScene(shot) {
       var set = D.sets[shot.set], host = el('div', 'prl-scene'), s = { set: shot.set, layers: [], overs: [], bd: null };
       s.bd = el('div', 'prl-bd', host); s.bd.style.backgroundImage = 'url("' + src(set.layers[0].src) + '")';
-      set.layers.forEach(function (L) { var im = el('img', 'prl-lay', host), hb = L.head; im.alt = ''; im.draggable = false; im.src = src(L.src);
-        im.style.width = (hb ? hb[2] : 1) * set.w + 'px'; im.style.height = (hb ? hb[3] : 1) * set.h + 'px'; s.layers.push({ img: im, z: L.z, head: hb, pivot: L.pivot, ph: L.ph || 0 }); });
-      s.sweep = el('div', 'prl-sweep', host);
+      set.layers.forEach(function (L) { var im = el('img', 'prl-lay', host); im.alt = ''; im.draggable = false; im.src = src(L.src); im.style.width = set.w + 'px'; im.style.height = set.h + 'px'; s.layers.push({ img: im, z: L.z }); });
       (set.over || []).forEach(function (O) { var d = el('div', 'prl-over', host); d.style.backgroundImage = 'url("' + src(O.src) + '")'; d.style.opacity = O.op;
         if (O.band) { d.style.top = O.band[0] * 100 + '%'; d.style.bottom = (1 - O.band[1]) * 100 + '%'; } s.overs.push({ div: d, O: O }); });
       s.el = host; return s;
@@ -3752,17 +3748,7 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
       var M = 2.4, S2 = Math.PI * 2, gust = Math.max(0, Math.sin(t * S2 / 7.5 + 1.3)), g3 = gust * gust * gust;
       var fx = Math.sin(t * S2 / 9) * W * .004, fy = Math.cos(t * S2 / 11) * H * .004; /* slow floating camera */
       var ent = Math.min(1, t / 1.1), entE = 1 - Math.pow(1 - ent, 3);
-      var bodyOp = 1, bodyTf = null, talk = shot.card && t > 2.5 && t < 5.2 ? 1 : 0;
       sc.layers.forEach(function (L) {
-        if (L.head) {
-          if (!bodyTf) return; var hb = L.head, pv = L.pivot || [hb[0] + hb[2] / 2, hb[1] + hb[3]], px = (pv[0] - hb[0]) * IW, py = (pv[1] - hb[1]) * IH, q = L.ph;
-          /* head: slow look-around tilt, small nod, quicker nods while the voice line shows */
-          var hr = 1.0 * Math.sin(t * S2 / 4.7 + q) + .4 * Math.sin(t * S2 / 2.3 + q * 2) + talk * .7 * Math.sin(t * S2 * 1.7);
-          var hy = (.004 * Math.sin(t * S2 / 3.1 + q) + talk * .004 * Math.abs(Math.sin(t * S2 * 1.7))) * IH, hx = .004 * Math.sin(t * S2 / 6.1 + q) * IW;
-          L.img.style.opacity = bodyOp;
-          L.img.style.transform = bodyTf + ' translate(' + (hb[0] * IW + px + hx) + 'px,' + (hb[1] * IH + py + hy) + 'px) rotate(' + hr + 'deg) translate(' + (-px) + 'px,' + (-py) + 'px)';
-          return;
-        }
         var z = L.z, pz = z ? 1 + z * (.012 + .03 * e) * M : 1 + .02 * e;
         var dx = (z ? z * d[0] : -d[0] * .5) * (e - .5) * W / 1000 * M + fx * (1 + z), dy = (z ? z * d[1] : -d[1] * .5) * (e - .5) * W / 1000 * M + fy * (1 + z * .6);
         var tf = 'translate(' + (W / 2 + dx) + 'px,' + (H / 2 + dy) + 'px) scale(' + pz + ') translate(' + (-W / 2) + 'px,' + (-H / 2) + 'px) translate(' + tx + 'px,' + ty + 'px) scale(' + k + ')';
@@ -3781,9 +3767,8 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
           tf += ' translate(' + (ox + shift + inX) + 'px,' + (oy + bob + inY) + 'px) rotate(' + rot + 'deg) skewX(' + (rot * .4) + 'deg) scale(' + (1 + br * .35) + ',' + (1 + br) + ') translate(' + (-ox) + 'px,' + (-oy) + 'px)';
           if (z === 1) L.img.style.opacity = .35 + .65 * entE;
         }
-        L.img.style.transform = tf; if (z === 1) { bodyTf = tf; bodyOp = L.img.style.opacity; }
+        L.img.style.transform = tf;
       });
-      if (sc.sweep) { var sw = (t % 9) / 9; sc.sweep.style.transform = 'translateX(' + ((sw * 2.4 - 1.2) * W) + 'px) skewX(-18deg)'; sc.sweep.style.opacity = Math.sin(sw * Math.PI) * .55; }
       sc.overs.forEach(function (ov) { ov.div.style.backgroundPosition = (t * ov.O.speed * 1.8 * W / 1000 + ov.O.z * 40 * e * (d[0] < 0 ? -1 : 1)) + 'px 0'; });
     }
     function imgPoint(sc, p) { var set = D.sets[sc.set], c = sc.cam; return c ? [c.tx + p[0] * set.w * c.k, c.ty + p[1] * set.h * c.k] : [0, 0]; }
@@ -3800,7 +3785,7 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
     }
     function setFx(shot) {
       fxKinds = shot.fx || []; parts = []; var W = win.clientWidth, H = win.clientHeight;
-      var counts = { dust: 70, petals: 40, needles: 34, smoke: 26 };
+      var counts = { dust: 46, petals: 26, needles: 22, smoke: 18 };
       fxKinds.forEach(function (k) { for (var i = 0; i < (counts[k] || 0); i++) { var p = spawn(k, W, H, true); if (p) parts.push(p); } });
       shaft.classList.toggle('on', fxKinds.indexOf('shaft') >= 0);
     }
@@ -3999,7 +3984,7 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
 /* generated from ronin.json */
 (window.PRELUDE_DATA=window.PRELUDE_DATA||{}).ronin={
  "key": "ronin",
- "version": 3,
+ "version": 2,
  "langs": [
   "en",
   "fa",
@@ -4069,48 +4054,6 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
     {
      "src": "layers/lacma_134584_mid.webp",
      "z": 1
-    },
-    {
-     "src": "layers/lacma_134584_head_moronao.webp",
-     "z": 1,
-     "head": [
-      0.37,
-      0.265,
-      0.27,
-      0.23
-     ],
-     "pivot": [
-      0.53,
-      0.48
-     ],
-     "ph": 0
-    },
-    {
-     "src": "layers/lacma_134584_head_kaoyo.webp",
-     "z": 1,
-     "head": [
-      0.15,
-      0.54,
-      0.33,
-      0.22
-     ],
-     "pivot": [
-      0.34,
-      0.75
-     ],
-     "ph": 2.1
-    }
-   ],
-   "over": [
-    {
-     "src": "layers/mist.webp",
-     "z": 1,
-     "speed": 10,
-     "op": 0.2,
-     "band": [
-      0.55,
-      1
-     ]
     }
    ]
   },
@@ -4125,33 +4068,6 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
     {
      "src": "layers/cma_1930.210_mid.webp",
      "z": 1
-    },
-    {
-     "src": "layers/cma_1930.210_head_enya.webp",
-     "z": 1,
-     "head": [
-      0.43,
-      0.035,
-      0.23,
-      0.17
-     ],
-     "pivot": [
-      0.56,
-      0.195
-     ],
-     "ph": 1
-    }
-   ],
-   "over": [
-    {
-     "src": "layers/mist.webp",
-     "z": 1,
-     "speed": 10,
-     "op": 0.28,
-     "band": [
-      0.5,
-      1
-     ]
     }
    ]
   },
@@ -4166,33 +4082,6 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
     {
      "src": "layers/met_55716_mid.webp",
      "z": 1
-    },
-    {
-     "src": "layers/met_55716_head_yura.webp",
-     "z": 1,
-     "head": [
-      0.33,
-      0.235,
-      0.34,
-      0.235
-     ],
-     "pivot": [
-      0.49,
-      0.46
-     ],
-     "ph": 0.5
-    }
-   ],
-   "over": [
-    {
-     "src": "layers/mist.webp",
-     "z": 1,
-     "speed": 10,
-     "op": 0.2,
-     "band": [
-      0.6,
-      1
-     ]
     }
    ]
   },
@@ -4211,18 +4100,6 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
     {
      "src": "layers/cma_1985.338.1_front.webp",
      "z": 2
-    }
-   ],
-   "over": [
-    {
-     "src": "layers/mist.webp",
-     "z": 1,
-     "speed": 10,
-     "op": 0.3,
-     "band": [
-      0.5,
-      1
-     ]
     }
    ]
   }
