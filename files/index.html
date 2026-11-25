@@ -809,8 +809,18 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 .prl-title .seal{width:calc(var(--u)*4.4);aspect-ratio:1;margin-top:calc(var(--u)*1.6);border-radius:calc(var(--u)*.4);background:#9c2a1c;color:#f6e9c8;display:grid;place-items:center;
   font-family:"Hiragino Mincho ProN",serif;font-size:calc(var(--u)*1.6);transform:rotate(-4deg);box-shadow:inset 0 0 0 calc(var(--u)*.2) #f6e9c8,inset 0 0 0 calc(var(--u)*.3) #9c2a1c}
 .prl-cast{gap:calc(var(--u)*1.6)}
-.prl-cast .row{display:flex;gap:calc(var(--u)*1.4);justify-content:center;width:92%}
-.prl-cast .p{width:13%;opacity:0;animation:prl-up .8s ease forwards}
+.prl-cast .row{display:flex;gap:calc(var(--u)*2.2);justify-content:center;align-items:center;width:92%}
+.prl-cast .grp{display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*.9)}
+.prl-cast .gl{font-size:calc(var(--u)*1.05);letter-spacing:.14em;text-transform:uppercase;color:#7a5320;border-bottom:1px solid rgba(122,83,32,.5);padding:0 calc(var(--u)*1) calc(var(--u)*.3)}
+.prl[data-lang=fa] .prl-cast .gl{letter-spacing:0;direction:rtl;font-weight:700}
+.prl-cast .gr{display:flex;gap:calc(var(--u)*1.4);align-items:flex-end}
+.prl-cast .vs{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-size:calc(var(--u)*3.2);color:#9c2a1c;opacity:.85}
+.prl-cast .p{width:calc(var(--u)*13);opacity:0;animation:prl-up .8s ease forwards}
+.prl-cast .p.minor{width:calc(var(--u)*10)}
+.prl-cast .hi{font-size:calc(var(--u)*.8);color:#6a4a26;margin-top:calc(var(--u)*.2)}
+.prl[data-lang=fa] .prl-cast .hi{direction:rtl}
+.prl-cast .foe .ph{box-shadow:0 0 0 calc(var(--u)*.15) #1c1410,0 0 0 calc(var(--u)*.38) #6b2018,0 0 0 calc(var(--u)*.5) #1c1410,0 calc(var(--u)*.6) calc(var(--u)*1.5) rgba(30,10,5,.55)}
+.prl-cast .foe .gl{color:#6b2018;border-color:rgba(107,32,24,.6)}
 @keyframes prl-up{from{opacity:0;transform:translateY(calc(var(--u)*1))}to{opacity:1;transform:none}}
 .prl-cast .ph{aspect-ratio:3/4;border-radius:calc(var(--u)*.35);background-color:#e8d6ae;background-repeat:no-repeat;
   box-shadow:0 0 0 calc(var(--u)*.15) #7a5320,0 0 0 calc(var(--u)*.38) #d9ad5c,0 0 0 calc(var(--u)*.5) #7a5320,0 calc(var(--u)*.6) calc(var(--u)*1.5) rgba(60,35,10,.45)}
@@ -833,6 +843,23 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 .prl-ctl button{font:600 calc(var(--u)*.95) Vazirmatn,Tahoma,sans-serif;color:#f3ece0;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.3);border-radius:3px;padding:.3em .8em;cursor:pointer}
 .prl-prog{position:absolute;left:0;bottom:0;height:3px;background:#d8a25a;z-index:21;width:0}
 @media (prefers-reduced-motion:reduce){.prl-leaf.go,.prl-cover{animation-duration:.01s;transition-duration:.01s}}
+
+/* rival card: iron + blood-red frame instead of gold */
+.prl-card.foe{background:linear-gradient(160deg,#e9dcc4,#c9b28c);
+  box-shadow:0 0 0 calc(var(--u)*.18) #1c1410,0 0 0 calc(var(--u)*.42) #6b2018,0 0 0 calc(var(--u)*.55) #1c1410,0 calc(var(--u)*1) calc(var(--u)*2.5) rgba(0,0,0,.7)}
+.prl-card.foe .tag{background:#1c1410;box-shadow:0 0 0 1px #a33a28}
+.prl-card.foe .vo{color:#1c1410}
+.prl-card.minor{width:15%}
+.prl-card.minor h3{font-size:calc(var(--u)*1.4)}
+/* who's-who strip: faces met so far stay on screen */
+.prl-roster{position:absolute;left:5%;bottom:5.2%;z-index:6;display:flex;gap:calc(var(--u)*.7);pointer-events:none;transition:opacity .5s}
+.prl-roster.hide,.prl-roster:empty{opacity:0}
+.prl[data-lang=fa] .prl-roster{left:auto;right:5%;flex-direction:row-reverse}
+.prl-roster .face{width:calc(var(--u)*4.6);text-align:center;animation:prl-up .6s ease}
+.prl-roster .ph{aspect-ratio:1;border-radius:50%;background-repeat:no-repeat;background-color:#e8d6ae;
+  box-shadow:0 0 0 calc(var(--u)*.13) #7a5320,0 0 0 calc(var(--u)*.3) #d9ad5c,0 calc(var(--u)*.3) calc(var(--u)*.8) rgba(0,0,0,.6)}
+.prl-roster .foe .ph{box-shadow:0 0 0 calc(var(--u)*.13) #1c1410,0 0 0 calc(var(--u)*.3) #a33a28,0 calc(var(--u)*.3) calc(var(--u)*.8) rgba(0,0,0,.6)}
+.prl-roster .nm{margin-top:calc(var(--u)*.35);font-size:calc(var(--u)*.78);color:#f3e6c8;text-shadow:0 1px 3px #000;white-space:nowrap}
 /*/PRL-CSS*/
 </style>
 </head>
@@ -924,7 +951,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
   </aside>
 </div>
 
-<div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmVer">v0.78.0</div><div class="mmStage">
+<div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmVer">v0.78.1</div><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
   <div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
@@ -3657,7 +3684,7 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
     for (var i = 0; i < 9; i++) el('i', '', curtain);
     var ctlBar = el('div', 'prl-ctl', stage), bLang = el('button', '', ctlBar), bSkip = el('button', '', ctlBar);
     bLang.type = bSkip.type = 'button';
-    var prog = el('div', 'prl-prog', stage);
+    var prog = el('div', 'prl-prog', stage), roster = el('div', 'prl-roster hide', stage);
     (opts.container || document.body).appendChild(root);
 
     function tr(o) { return o ? (o[lang] != null ? o[lang] : o.en) : ''; }
@@ -3786,20 +3813,36 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
       cardPh.style.backgroundImage = 'url("' + mid + '"),url("' + back + '")';
       cardPh.style.backgroundSize = (100 / r[2]) + '% ' + (100 / r[3]) + '%';
       cardPh.style.backgroundPosition = (r[0] / (1 - r[2]) * 100) + '% ' + (r[1] / (1 - r[3]) * 100) + '%';
-      cardTag.textContent = tr(c.role); cardH.textContent = c.name; cardLoc.textContent = c.local && c.local[lang] || '';
-      cardLoc.style.display = cardLoc.textContent ? '' : 'none'; cardReal.textContent = tr(c.real); cardVo.textContent = tr(c.voice);
+      var loc = c.local && c.local[lang] || '';
+      cardTag.textContent = tr(c.role); cardH.textContent = loc || c.name; cardLoc.textContent = loc ? c.name : '';
+      cardLoc.style.display = loc ? '' : 'none'; cardReal.textContent = tr(c.real); cardReal.style.display = c.real ? '' : 'none';
+      cardVo.textContent = tr(c.voice); cardVo.style.display = c.voice ? '' : 'none';
+    }
+    function crop(ph, set, r) {
+      ph.style.backgroundImage = 'url("' + src((set.layers[1] || set.layers[0]).src) + '"),url("' + src(set.layers[0].src) + '")';
+      ph.style.backgroundSize = (100 / r[2]) + '% ' + (100 / r[3]) + '%'; ph.style.backgroundPosition = (r[0] / (1 - r[2]) * 100) + '% ' + (r[1] / (1 - r[3]) * 100) + '%';
+    }
+    function dock(shot) {
+      var c = shot && shot.card; if (!c || roster.querySelector('[data-n="' + c.name + '"]')) return;
+      var f = el('div', 'face' + (c.team === 'foe' ? ' foe' : ''), roster); f.setAttribute('data-n', c.name);
+      crop(el('div', 'ph', f), D.sets[shot.set], c.crop); el('div', 'nm', f).textContent = c.local && c.local[lang] || c.short || c.name;
     }
     function renderSheets() {
       var t = D.title; tSheet.innerHTML = '';
       el('div', 'k', tSheet).textContent = t.kanji; var n = el('div', 'n', tSheet); n.textContent = tr(t.name); var s = el('div', 's', tSheet); s.textContent = tr(t.sub); if (lang === 'fa') { s.dir = 'rtl'; n.dir = 'rtl'; }
       el('div', 'seal', tSheet).textContent = '忠';
       coverF.innerHTML = ''; var w = el('div', '', coverF); el('div', 'k', w).textContent = t.kanji; el('div', 't', w).textContent = tr(t.name); el('div', 's', w).textContent = tr(D.cover);
-      cSheet.innerHTML = ''; var row = el('div', 'row', cSheet);
-      D.cast.forEach(function (c, i) {
-        var set = D.sets[c.set], p = el('div', 'p', row), ph = el('div', 'ph', p), r = c.r; p.style.animationDelay = (i * .15) + 's';
-        ph.style.backgroundImage = 'url("' + src((set.layers[1] || set.layers[0]).src) + '"),url("' + src(set.layers[0].src) + '")';
-        ph.style.backgroundSize = (100 / r[2]) + '% ' + (100 / r[3]) + '%'; ph.style.backgroundPosition = (r[0] / (1 - r[2]) * 100) + '% ' + (r[1] / (1 - r[3]) * 100) + '%';
-        el('div', 'nm', p).textContent = c.name; el('div', 'rl', p).textContent = tr(c.role);
+      cSheet.innerHTML = ''; var row = el('div', 'row', cSheet), groups = {}, k = 0;
+      (D.teams || [{ id: '' }]).forEach(function (t, gi) {
+        if (gi) el('div', 'vs', row).textContent = D.vs || '対';
+        var g = groups[t.id] = el('div', 'grp' + (t.id === 'foe' ? ' foe' : ''), row); if (t.label) el('div', 'gl', g).textContent = tr(t.label); el('div', 'gr', g);
+      });
+      D.cast.forEach(function (c) {
+        var g = (groups[c.team] || groups[Object.keys(groups)[0]]).querySelector('.gr');
+        var p = el('div', 'p' + (c.minor ? ' minor' : ''), g), ph = el('div', 'ph', p); p.style.animationDelay = (k++ * .15) + 's';
+        crop(ph, D.sets[c.set], c.r);
+        el('div', 'nm', p).textContent = c.local && c.local[lang] || c.name; el('div', 'rl', p).textContent = tr(c.role);
+        if (c.real) el('div', 'hi', p).textContent = tr(c.real);
       });
       el('div', 'cta', cSheet).textContent = tr(D.cta);
       var go = el('button', 'prl-go', cSheet); go.type = 'button'; go.textContent = tr(D.begin); go.onclick = function () { finish(false); };
@@ -3834,12 +3877,13 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
     /* ---------- timeline ---------- */
     function startShot(i, withTurn) {
       var shot = D.shots[i], prev = D.shots[shotIdx];
+      if (prev && fired.card) dock(prev); roster.classList.toggle('hide', false);
       card.classList.remove('on'); cardVo.classList.remove('on'); cap.classList.remove('on');
       if (withTurn) turnPage();
       if (!scene || !prev || prev.set !== shot.set) { var ns = buildScene(shot); sceneHost.innerHTML = ''; sceneHost.appendChild(ns.el); scene = ns; }
       else if (!withTurn) crossfade();
       shotIdx = i; shotT0 = T; fired = {}; setFx(shot); frame(scene, shot, 0, 0); renderCap(shot); renderCard(shot);
-      if (shot.card) card.className = 'prl-card ' + (shot.card.side === 'left' ? 'l' : 'r');
+      if (shot.card) card.className = 'prl-card ' + (shot.card.side === 'left' ? 'l' : 'r') + (shot.card.team === 'foe' ? ' foe' : '') + (shot.card.minor ? ' minor' : '');
     }
     function shotEvents(shot, t, i) {
       function once(id, at, fn) { if (t >= at && !fired[id]) { fired[id] = 1; fn(); } }
@@ -3854,13 +3898,13 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
       curtain.classList.add('open'); cover.style.display = 'none'; phase = 'shots'; startShot(i, false);
     }
     function toTitle() {
-      phase = 'title'; turnPage(); cap.classList.remove('on'); card.classList.remove('on'); fxKinds = []; parts = []; shaft.classList.remove('on');
+      phase = 'title'; roster.classList.add('hide'); turnPage(); cap.classList.remove('on'); card.classList.remove('on'); fxKinds = []; parts = []; shaft.classList.remove('on');
       tSheet.classList.add('on'); SFX.clap(); setTimeout(function () { SFX.notes([0, 2, 4, 5]); }, 600);
       sheetTimer = setTimeout(toCast, 3800);
     }
     function toCast() {
       if (!alive || phase === 'cast') return; clearTimeout(sheetTimer);
-      var fromIntro = phase === 'intro'; phase = 'cast';
+      var fromIntro = phase === 'intro'; phase = 'cast'; roster.classList.add('hide');
       curtain.classList.add('open'); cover.classList.add('open');
       if (!fromIntro) turnPage(); else cover.style.display = 'none';
       cap.classList.remove('on'); card.classList.remove('on'); fxKinds = []; parts = []; shaft.classList.remove('on');
@@ -3924,7 +3968,7 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
 /* generated from ronin.json */
 (window.PRELUDE_DATA=window.PRELUDE_DATA||{}).ronin={
  "key": "ronin",
- "version": 1,
+ "version": 2,
  "langs": [
   "en",
   "fa",
@@ -4025,20 +4069,6 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
     }
    ]
   },
-  "lovers": {
-   "w": 1081,
-   "h": 1600,
-   "layers": [
-    {
-     "src": "layers/met_638611_back.webp",
-     "z": 0
-    },
-    {
-     "src": "layers/met_638611_mid.webp",
-     "z": 1
-    }
-   ]
-  },
   "shrine": {
    "w": 1600,
    "h": 1184,
@@ -4087,77 +4117,9 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
     4
    ],
    "text": {
-    "en": "Japan, long ago. The civil wars are over and the shogun rules in peace. Every samurai is loyal to his lord, to the death.",
-    "fa": "ژاپن، قرن‌ها پیش. جنگ‌های داخلی تمام شده و شوگان در آرامش حکومت می‌کند. هر سامورایی تا پای جان به اربابش وفادار است.",
-    "fr": "Le Japon, il y a bien longtemps. Les guerres civiles ont pris fin et le shogun règne en paix. Chaque samouraï est fidèle à son seigneur, jusqu’à la mort."
-   }
-  },
-  {
-   "set": "kuni",
-   "a": [
-    0,
-    0,
-    1,
-    0.5
-   ],
-   "b": [
-    0,
-    0.16,
-    1,
-    0.39
-   ],
-   "d": 7,
-   "sfx": "drum",
-   "drift": [
-    -16,
-    0
-   ],
-   "life": {
-    "sway": 0.35,
-    "origin": [
-     0.6,
-     0.75
-    ]
-   },
-   "fx": [
-    "dust"
-   ],
-   "notes": [
-    1,
-    0
-   ],
-   "card": {
-    "side": "right",
-    "crop": [
-     0.33,
-     0.27,
-     0.34,
-     0.3
-    ],
-    "name": "Kō no Moronao",
-    "local": {
-     "fa": "کو نو مورونائو"
-    },
-    "role": {
-     "en": "The official",
-     "fa": "مقام درباری",
-     "fr": "Le dignitaire"
-    },
-    "real": {
-     "en": "In history: Kira Yoshinaka",
-     "fa": "در تاریخ: کیرا یوشیناکا",
-     "fr": "Dans l’histoire : Kira Yoshinaka"
-    },
-    "voice": {
-     "en": "“Where is your gift? At court, respect is bought with gold.”",
-     "fa": "«هدیه‌ات کجاست؟ در دربار، احترام را با طلا می‌خرند.»",
-     "fr": "« Où est ton présent ? À la cour, le respect s’achète avec de l’or. »"
-    }
-   },
-   "text": {
-    "en": "Moronao, master of etiquette at the shogun’s court. Powerful, proud and greedy: whoever brings no gift gets no favour.",
-    "fa": "مورونائو، استاد آداب دربار شوگان. قدرتمند، مغرور و طمع‌کار؛ هر کس به او هدیه ندهد، تحویلش نمی‌گیرد.",
-    "fr": "Moronao, maître de l’étiquette à la cour du shogun. Puissant, orgueilleux et avide : qui ne lui apporte pas de cadeau n’obtient aucune faveur."
+    "en": "Japan, long ago. The wars are over and the shogun rules in peace. A samurai’s first duty: loyalty to his lord, to the death.",
+    "fa": "ژاپن، قرن‌ها پیش. جنگ‌ها تمام شده و شوگان در آرامش حکومت می‌کند. اولین وظیفه‌ی هر سامورایی: وفاداری به اربابش، تا پای جان.",
+    "fr": "Le Japon, il y a bien longtemps. Les guerres sont finies et le shogun règne en paix. Premier devoir du samouraï : la fidélité à son seigneur, jusqu’à la mort."
    }
   },
   {
@@ -4174,7 +4136,7 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
     0.56,
     0.46
    ],
-   "d": 7,
+   "d": 8,
    "fit": true,
    "sfx": "drum",
    "drift": [
@@ -4198,6 +4160,7 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
    ],
    "card": {
     "side": "left",
+    "team": "house",
     "crop": [
      0.36,
      0.02,
@@ -4205,29 +4168,90 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
      0.33
     ],
     "name": "Enya Hangan",
+    "short": "Enya",
     "local": {
-     "fa": "اِن‌یا هانگان"
+     "fa": "اِن‌یا"
     },
     "role": {
      "en": "The lord",
      "fa": "ارباب",
      "fr": "Le seigneur"
     },
-    "real": {
-     "en": "In history: Asano Naganori, lord of Akō",
-     "fa": "در تاریخ: آسانو ناگانوری، ارباب آکو",
-     "fr": "Dans l’histoire : Asano Naganori, seigneur d’Akō"
-    },
     "voice": {
-     "en": "“I do not sell my honour. Not to Moronao, not to anyone.”",
-     "fa": "«شرافتم را نمی‌فروشم؛ نه به مورونائو، نه به هیچ‌کس.»",
-     "fr": "« Je ne vends pas mon honneur. Ni à Moronao, ni à personne. »"
+     "en": "“I do not sell my honour. Not to anyone.”",
+     "fa": "«شرافتم را به هیچ‌کس نمی‌فروشم.»",
+     "fr": "« Je ne vends mon honneur à personne. »"
     }
    },
    "text": {
-    "en": "Enya Hangan, a young lord, honest and upright. He does not flatter, and he does not bribe.",
-    "fa": "اِن‌یا هانگان، اربابی جوان، شریف و راستگو. اهل چاپلوسی و رشوه دادن نیست.",
-    "fr": "Enya Hangan, un jeune seigneur, honnête et droit. Il ne flatte pas, et il ne soudoie personne."
+    "en": "This is Lord Enya: young, honest and proud. He flatters no one and bribes no one.",
+    "fa": "این اِن‌یاست؛ اربابی جوان، شریف و مغرور. نه چاپلوسی می‌کند، نه رشوه می‌دهد.",
+    "fr": "Voici le seigneur Enya : jeune, honnête et fier. Il ne flatte personne et ne soudoie personne."
+   }
+  },
+  {
+   "set": "kuni",
+   "a": [
+    0,
+    0,
+    1,
+    0.5
+   ],
+   "b": [
+    0,
+    0.16,
+    1,
+    0.39
+   ],
+   "d": 8,
+   "sfx": "drum",
+   "drift": [
+    -16,
+    0
+   ],
+   "life": {
+    "sway": 0.35,
+    "origin": [
+     0.6,
+     0.75
+    ]
+   },
+   "fx": [
+    "dust"
+   ],
+   "notes": [
+    1,
+    0
+   ],
+   "card": {
+    "side": "right",
+    "team": "foe",
+    "crop": [
+     0.33,
+     0.27,
+     0.34,
+     0.3
+    ],
+    "name": "Kō no Moronao",
+    "short": "Moronao",
+    "local": {
+     "fa": "مورونائو"
+    },
+    "role": {
+     "en": "The rival",
+     "fa": "دشمن",
+     "fr": "Le rival"
+    },
+    "voice": {
+     "en": "“No gift? Then expect no respect.”",
+     "fa": "«هدیه نیاوردی؟ پس احترام هم نخواه.»",
+     "fr": "« Pas de présent ? Alors pas de respect. »"
+    }
+   },
+   "text": {
+    "en": "And this is Moronao, the shogun’s powerful master of ceremonies. He is greedy, and he cannot stand Enya.",
+    "fa": "و این مورونائوست، رئیس قدرتمند تشریفات دربار شوگان. طمع‌کار است و چشم دیدن اِن‌یا را ندارد.",
+    "fr": "Et voici Moronao, le puissant maître des cérémonies du shogun. Il est avide, et il ne supporte pas Enya."
    }
   },
   {
@@ -4244,7 +4268,7 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
     1,
     0.4
    ],
-   "d": 7,
+   "d": 6,
    "drift": [
     14,
     -4
@@ -4266,36 +4290,29 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
    ],
    "card": {
     "side": "right",
+    "team": "house",
+    "minor": true,
     "crop": [
      0.2,
      0.57,
      0.34,
      0.3
     ],
-    "name": "Kaoyo Gozen",
+    "name": "Kaoyo",
+    "short": "Kaoyo",
     "local": {
      "fa": "کائویو"
     },
     "role": {
-     "en": "The lady",
-     "fa": "بانو",
-     "fr": "La dame"
-    },
-    "real": {
-     "en": "Enya’s wife · in history: Yōzei-in",
-     "fa": "همسر اِن‌یا · در تاریخ: یوزِی‌این",
-     "fr": "Épouse d’Enya · dans l’histoire : Yōzei-in"
-    },
-    "voice": {
-     "en": "“I have seen every helmet that ever passed through the palace.”",
-     "fa": "«هر کلاه‌خودی که از قصر گذشته، من دیده‌ام.»",
-     "fr": "« J’ai vu chaque casque qui est passé par le palais. »"
+     "en": "Enya’s wife",
+     "fa": "همسر اِن‌یا",
+     "fr": "L’épouse d’Enya"
     }
    },
    "text": {
-    "en": "Kaoyo, Enya’s wife. Before her marriage she served at the palace; she knows its customs and its treasures well.",
-    "fa": "کائویو، همسر اِن‌یا. پیش از ازدواج، ندیمه‌ی قصر بوده و رسم‌ها و گنجینه‌های آن را خوب می‌شناسد.",
-    "fr": "Kaoyo, l’épouse d’Enya. Avant son mariage, elle servait au palais ; elle en connaît bien les coutumes et les trésors."
+    "en": "Enya’s wife, Kaoyo. Moronao has his eye on her too, and that means trouble.",
+    "fa": "کائویو، همسر اِن‌یا. مورونائو به او هم چشم دارد، و این یعنی دردسر.",
+    "fr": "Kaoyo, l’épouse d’Enya. Moronao la convoite elle aussi, et cela annonce des ennuis."
    }
   },
   {
@@ -4312,7 +4329,7 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
     0.58,
     0.4
    ],
-   "d": 7,
+   "d": 8,
    "fit": true,
    "sfx": "drum",
    "drift": [
@@ -4341,6 +4358,7 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
    ],
    "card": {
     "side": "left",
+    "team": "house",
     "crop": [
      0.28,
      0.2,
@@ -4348,18 +4366,14 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
      0.4
     ],
     "name": "Ōboshi Yuranosuke",
+    "short": "Yuranosuke",
     "local": {
-     "fa": "اُبوشی یورانوسکه"
+     "fa": "یورانوسکه"
     },
     "role": {
-     "en": "The chief retainer",
-     "fa": "رئیس سامورایی‌ها",
-     "fr": "Le premier vassal"
-    },
-    "real": {
-     "en": "In history: Ōishi Kuranosuke",
-     "fa": "در تاریخ: اوئیشی کورانوسکه",
-     "fr": "Dans l’histoire : Ōishi Kuranosuke"
+     "en": "The loyal samurai",
+     "fa": "سامورایی وفادار",
+     "fr": "Le samouraï fidèle"
     },
     "voice": {
      "en": "“Haste is a samurai’s enemy.”",
@@ -4368,78 +4382,9 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
     }
    },
    "text": {
-    "en": "Yuranosuke, chief of Enya’s samurai: calm, clever and patient. For now he is far away, keeping his lord’s castle.",
-    "fa": "یورانوسکه، رئیس سامورایی‌های اِن‌یا؛ آرام، باهوش و صبور. فعلاً دور از اربابش، از قلعه‌ی او نگهداری می‌کند.",
-    "fr": "Yuranosuke, chef des samouraïs d’Enya : calme, habile et patient. Pour l’heure, il est loin et garde le château de son seigneur."
-   }
-  },
-  {
-   "set": "lovers",
-   "a": [
-    0.04,
-    0.1,
-    0.92,
-    0.62
-   ],
-   "b": [
-    0.06,
-    0.3,
-    0.74,
-    0.42
-   ],
-   "d": 7,
-   "drift": [
-    -14,
-    0
-   ],
-   "life": {
-    "breathe": 0.008,
-    "origin": [
-     0.5,
-     0.9
-    ]
-   },
-   "fx": [
-    "petals"
-   ],
-   "notes": [
-    2,
-    4,
-    5,
-    4
-   ],
-   "card": {
-    "side": "right",
-    "crop": [
-     0.12,
-     0.26,
-     0.54,
-     0.32
-    ],
-    "name": "Kanpei & Okaru",
-    "local": {
-     "fa": "کانپِی و اوکارو"
-    },
-    "role": {
-     "en": "The lovers",
-     "fa": "عاشقان",
-     "fr": "Les amoureux"
-    },
-    "real": {
-     "en": "In service to the Enya house",
-     "fa": "در خدمت خانه‌ی اِن‌یا",
-     "fr": "Au service de la maison Enya"
-    },
-    "voice": {
-     "en": "Kanpei: “As long as my lord stands, so do I.”  Okaru: “And I, wherever you are.”",
-     "fa": "کانپِی: «تا ارباب هست، من هم هستم.»  اوکارو: «و من هر جا که تو باشی.»",
-     "fr": "Kanpei : « Tant que mon seigneur tient debout, moi aussi. »  Okaru : « Et moi, partout où tu seras. »"
-    }
-   },
-   "text": {
-    "en": "Kanpei, Enya’s young samurai, and Okaru, Kaoyo’s maid: two young lovers who always attend their lord and lady.",
-    "fa": "کانپِی، سامورایی جوان اِن‌یا، و اوکارو، ندیمه‌ی کائویو؛ دو عاشق جوان که همیشه همراه ارباب و بانویشان‌اند.",
-    "fr": "Kanpei, jeune samouraï d’Enya, et Okaru, suivante de Kaoyo : deux jeunes amoureux, toujours au service de leur seigneur et de leur dame."
+    "en": "And Yuranosuke, chief of Enya’s samurai: calm and patient. Remember him. This story is his.",
+    "fa": "و یورانوسکه، رئیس سامورایی‌های اِن‌یا؛ آرام و صبور. یادتان بماند، این قصه، قصه‌ی اوست.",
+    "fr": "Et Yuranosuke, chef des samouraïs d’Enya : calme et patient. Retenez-le : cette histoire est la sienne."
    }
   },
   {
@@ -4476,9 +4421,9 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
     5
    ],
    "text": {
-    "en": "Today the shogun’s brother comes to the Hachiman shrine in Kamakura to dedicate a fallen hero’s helmet. The lords have gathered, and Moronao runs the ceremony.",
-    "fa": "امروز برادر شوگان به معبد هاچیمان در کاماکورا می‌آید تا کلاه‌خود یک قهرمان شکست‌خورده را به معبد هدیه کند. اربابان جمع شده‌اند و مورونائو مراسم را می‌گرداند.",
-    "fr": "Aujourd’hui, le frère du shogun vient au sanctuaire Hachiman de Kamakura pour y consacrer le casque d’un héros tombé. Les seigneurs sont réunis, et Moronao dirige la cérémonie."
+    "en": "Today all the lords gather at the Hachiman shrine for a great ceremony, and Moronao is in charge.",
+    "fa": "امروز همه‌ی اربابان برای مراسمی بزرگ در معبد هاچیمان جمع شده‌اند، و مورونائو گرداننده‌ی مراسم است.",
+    "fr": "Aujourd’hui, tous les seigneurs se réunissent au sanctuaire Hachiman pour une grande cérémonie, et c’est Moronao qui la dirige."
    }
   },
   {
@@ -4514,9 +4459,9 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
     2
    ],
    "text": {
-    "en": "This is a story of loyalty: how far will a samurai go for his lord?",
-    "fa": "این قصه‌ی وفاداری است: یک سامورایی برای اربابش تا کجا پیش می‌رود؟",
-    "fr": "C’est une histoire de loyauté : jusqu’où un samouraï ira-t-il pour son seigneur ?"
+    "en": "An honest lord, a greedy rival, a loyal samurai. How far will loyalty go?",
+    "fa": "یک ارباب شریف، یک دشمن طمع‌کار، یک سامورایی وفادار. وفاداری تا کجا پیش می‌رود؟",
+    "fr": "Un seigneur honnête, un rival avide, un samouraï fidèle. Jusqu’où ira la loyauté ?"
    }
   },
   {
@@ -4559,22 +4504,8 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
  ],
  "cast": [
   {
-   "set": "kuni",
-   "r": [
-    0.33,
-    0.27,
-    0.34,
-    0.3
-   ],
-   "name": "Moronao",
-   "role": {
-    "en": "The official",
-    "fa": "مقام درباری",
-    "fr": "Le dignitaire"
-   }
-  },
-  {
    "set": "enya",
+   "team": "house",
    "r": [
     0.36,
     0.02,
@@ -4582,29 +4513,23 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
     0.33
    ],
    "name": "Enya",
+   "local": {
+    "fa": "اِن‌یا"
+   },
    "role": {
     "en": "The lord",
     "fa": "ارباب",
     "fr": "Le seigneur"
-   }
-  },
-  {
-   "set": "kuni",
-   "r": [
-    0.2,
-    0.57,
-    0.34,
-    0.3
-   ],
-   "name": "Kaoyo",
-   "role": {
-    "en": "The lady",
-    "fa": "بانو",
-    "fr": "La dame"
+   },
+   "real": {
+    "en": "in history: Asano",
+    "fa": "در تاریخ: آسانو",
+    "fr": "dans l’histoire : Asano"
    }
   },
   {
    "set": "yura",
+   "team": "house",
    "r": [
     0.28,
     0.2,
@@ -4612,40 +4537,80 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
     0.4
    ],
    "name": "Yuranosuke",
+   "local": {
+    "fa": "یورانوسکه"
+   },
    "role": {
-    "en": "Chief retainer",
-    "fa": "رئیس سامورایی‌ها",
-    "fr": "Premier vassal"
+    "en": "The loyal samurai",
+    "fa": "سامورایی وفادار",
+    "fr": "Le samouraï fidèle"
+   },
+   "real": {
+    "en": "in history: Ōishi",
+    "fa": "در تاریخ: اوئیشی",
+    "fr": "dans l’histoire : Ōishi"
    }
   },
   {
-   "set": "lovers",
+   "set": "kuni",
+   "team": "house",
+   "minor": true,
    "r": [
-    0.12,
-    0.26,
-    0.3,
+    0.2,
+    0.57,
+    0.34,
     0.3
    ],
-   "name": "Kanpei",
+   "name": "Kaoyo",
+   "local": {
+    "fa": "کائویو"
+   },
    "role": {
-    "en": "The lover",
-    "fa": "عاشق",
-    "fr": "L’amoureux"
+    "en": "His wife",
+    "fa": "همسرش",
+    "fr": "Son épouse"
    }
   },
   {
-   "set": "lovers",
+   "set": "kuni",
+   "team": "foe",
    "r": [
-    0.36,
+    0.33,
     0.27,
-    0.3,
+    0.34,
     0.3
    ],
-   "name": "Okaru",
+   "name": "Moronao",
+   "local": {
+    "fa": "مورونائو"
+   },
    "role": {
-    "en": "The lover",
-    "fa": "عاشق",
-    "fr": "L’amoureuse"
+    "en": "The rival",
+    "fa": "دشمن",
+    "fr": "Le rival"
+   },
+   "real": {
+    "en": "in history: Kira",
+    "fa": "در تاریخ: کیرا",
+    "fr": "dans l’histoire : Kira"
+   }
+  }
+ ],
+ "teams": [
+  {
+   "id": "house",
+   "label": {
+    "en": "House of Enya",
+    "fa": "خاندان اِن‌یا",
+    "fr": "La maison Enya"
+   }
+  },
+  {
+   "id": "foe",
+   "label": {
+    "en": "The rival",
+    "fa": "دشمن",
+    "fr": "Le rival"
    }
   }
  ],
@@ -4654,7 +4619,6 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
   "Moronao & Kaoyo: Utagawa Kunisada, LACMA 134584, public domain",
   "Enya Hangan: Cleveland Museum of Art 1930.210, CC0",
   "Yuranosuke: The Met 55716, CC0",
-  "Kanpei & Okaru: The Met 638611, CC0",
   "Hachiman shrine, Act I perspective print: Kitao Masayoshi, Cleveland Museum of Art 1985.338.1, CC0",
   "Clouds, particles, frame and sound: made in code for this project"
  ]
