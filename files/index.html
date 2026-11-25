@@ -951,7 +951,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
   </aside>
 </div>
 
-<div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmVer">v0.78.4</div><div class="mmStage">
+<div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmVer">v0.78.5</div><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
   <div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
@@ -3733,6 +3733,13 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
       set.layers.forEach(function (L) { var im = el('img', 'prl-lay', host); im.alt = ''; im.draggable = false; im.src = src(L.src); im.style.width = set.w + 'px'; im.style.height = set.h + 'px'; s.layers.push({ img: im, z: L.z }); });
       (set.over || []).forEach(function (O) { var d = el('div', 'prl-over', host); d.style.backgroundImage = 'url("' + src(O.src) + '")'; d.style.opacity = O.op;
         if (O.band) { d.style.top = O.band[0] * 100 + '%'; d.style.bottom = (1 - O.band[1]) * 100 + '%'; } s.overs.push({ div: d, O: O }); });
+      (set.figs || []).forEach(function (F, i) { var L = set.layers.filter(function (l) { return l.z === F.z; })[0]; if (!L) return;
+        var im = el('img', 'prl-lay', host), r = F.r, x = r[0] * set.w, y = r[1] * set.h, w = (r[2] - r[0]) * set.w, h = (r[3] - r[1]) * set.h;
+        im.alt = ''; im.draggable = false; im.src = src(L.src); im.style.width = set.w + 'px'; im.style.height = set.h + 'px';
+        var m = 'radial-gradient(closest-side,#000 62%,transparent 100%)'; im.style.webkitMaskImage = im.style.maskImage = m;
+        im.style.webkitMaskRepeat = im.style.maskRepeat = 'no-repeat'; im.style.webkitMaskSize = im.style.maskSize = (w * 1.25) + 'px ' + (h * 1.2) + 'px';
+        im.style.webkitMaskPosition = im.style.maskPosition = (x - w * .125) + 'px ' + (y - h * .12) + 'px';
+        s.layers.push({ img: im, z: F.z, fig: { ox: (x + w / 2), oy: y + h, h: h, ph: F.ph != null ? F.ph : i * 1.7, a: F.a || 1 } }); });
       s.el = host; return s;
     }
     function frame(sc, shot, e, t) {
@@ -3745,20 +3752,25 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
       sc.bd.style.display = shot.fit ? '' : 'none';
       var d = shot.drift || [0, 0], life = shot.life;
       /* v5 motion: stronger parallax, living background, characters that breathe, sway, shift weight and step in */
-      var M = 2.4, S2 = Math.PI * 2, gust = Math.max(0, Math.sin(t * S2 / 7.5 + 1.3)), g3 = gust * gust * gust;
-      var fx = Math.sin(t * S2 / 9) * W * .004, fy = Math.cos(t * S2 / 11) * H * .004; /* slow floating camera */
+      var calm = !life, M = calm ? 1 : 2.4, S2 = Math.PI * 2, gust = Math.max(0, Math.sin(t * S2 / 7.5 + 1.3)), g3 = gust * gust * gust;
+      var fx = calm ? 0 : Math.sin(t * S2 / 9) * W * .004, fy = calm ? 0 : Math.cos(t * S2 / 11) * H * .004; /* slow floating camera */
       var ent = Math.min(1, t / 1.1), entE = 1 - Math.pow(1 - ent, 3);
       sc.layers.forEach(function (L) {
         var z = L.z, pz = z ? 1 + z * (.012 + .03 * e) * M : 1 + .02 * e;
         var dx = (z ? z * d[0] : -d[0] * .5) * (e - .5) * W / 1000 * M + fx * (1 + z), dy = (z ? z * d[1] : -d[1] * .5) * (e - .5) * W / 1000 * M + fy * (1 + z * .6);
         var tf = 'translate(' + (W / 2 + dx) + 'px,' + (H / 2 + dy) + 'px) scale(' + pz + ') translate(' + (-W / 2) + 'px,' + (-H / 2) + 'px) translate(' + tx + 'px,' + ty + 'px) scale(' + k + ')';
-        if (z === 0) {
+        if (L.fig) {
+          var G = L.fig, tt = t * S2 + G.ph, b2 = .022 * G.a * Math.sin(tt / 3.6), r2 = 1.1 * G.a * Math.sin(tt / 5.2) + .5 * g3 * G.a;
+          tf += ' translate(' + G.ox + 'px,' + G.oy + 'px) rotate(' + r2 + 'deg) scale(' + (1 + b2 * .3) + ',' + (1 + b2) + ') translate(' + (-G.ox) + 'px,' + (-G.oy) + 'px)';
+          L.img.style.transform = tf; return;
+        }
+        if (z === 0 && !calm) {
           /* background breathes in light and wind: slow scale wobble around the centre */
           var bs = 1 + .006 * Math.sin(t * S2 / 6.3);
           tf += ' translate(' + IW / 2 + 'px,' + IH / 2 + 'px) scale(' + bs + ') rotate(' + (.15 * Math.sin(t * S2 / 13)) + 'deg) translate(' + (-IW / 2) + 'px,' + (-IH / 2) + 'px)';
           L.img.style.filter = 'brightness(' + (1 + .05 * Math.sin(t * S2 / 5.1) + .03 * g3) + ')';
         }
-        if (z >= 1) {
+        if (z >= 1 && !calm) {
           var lf = life || {}, o = lf.origin || [.5, 1], ox = o[0] * IW, oy = o[1] * IH;
           var bA = (lf.breathe || .012) * 2, sA = (lf.sway || .3) * 2.2 * (z === 2 ? 1.6 : 1);
           var br = bA * Math.sin(t * S2 / 3.8), rot = sA * Math.sin(t * S2 / 5.5) + sA * .8 * g3 * (z === 2 ? 2 : 1);
@@ -4101,6 +4113,15 @@ setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)con
      "src": "layers/cma_1985.338.1_front.webp",
      "z": 2
     }
+   ],
+   "figs": [
+    {"z": 1, "r": [0.60, 0.555, 0.715, 0.665], "a": 1.2},
+    {"z": 2, "r": [0.108, 0.752, 0.40, 0.949]},
+    {"z": 2, "r": [0.40, 0.69, 0.513, 0.78], "a": 0.8},
+    {"z": 2, "r": [0.496, 0.713, 0.60, 0.842]},
+    {"z": 2, "r": [0.60, 0.662, 0.725, 0.831]},
+    {"z": 2, "r": [0.737, 0.696, 0.833, 0.825]},
+    {"z": 2, "r": [0.725, 0.82, 0.863, 0.938]}
    ]
   }
  },
