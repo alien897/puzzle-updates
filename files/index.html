@@ -719,6 +719,121 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
 .qFind{position:relative;align-self:center;line-height:0;cursor:crosshair}.qFind img{max-width:100%;max-height:52vh;border-radius:4px;box-shadow:0 4px 18px #0008}
 .qFind .hit{position:absolute;border:3px solid #7fdc8a;border-radius:8px;box-shadow:0 0 18px #7fdc8a}.qFind .mk{position:absolute;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;border:3px solid #ffd77a}
 /*/RNX-CSS*/
+/*PRL-CSS*//* Storybook prelude player. All selectors are scoped under .prl so it can live inside the game page. */
+.prl{position:fixed;inset:0;z-index:2147483000;background:#060504;display:grid;place-items:center;overflow:hidden;color:#2a1a0e;
+  font-family:Vazirmatn,"EB Garamond",Georgia,Tahoma,sans-serif;-webkit-user-select:none;user-select:none;--u:12.8px}
+.prl *{box-sizing:border-box}
+.prl-stage{position:relative;width:min(100vw,177.78vh);aspect-ratio:16/9;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 45%,#2a1b12 0%,#120b07 60%,#050302 100%)}
+/* the book */
+.prl-book{position:absolute;inset:2.6% 3.2%;border-radius:calc(var(--u)*1.1);perspective:calc(var(--u)*180);
+  background:linear-gradient(135deg,#4a2a1a,#2b170e 45%,#3d2216);
+  box-shadow:0 calc(var(--u)*1.6) calc(var(--u)*4) rgba(0,0,0,.75),inset 0 0 0 calc(var(--u)*.25) #6b4526,inset 0 0 calc(var(--u)*2) rgba(0,0,0,.6)}
+.prl-book::before{content:"";position:absolute;inset:calc(var(--u)*.7);border-radius:calc(var(--u)*.7);border:1px solid rgba(214,170,96,.45);pointer-events:none}
+.prl-page{position:absolute;inset:calc(var(--u)*1.3);border-radius:calc(var(--u)*.35);transform-style:preserve-3d;
+  background:#ecdfc2 radial-gradient(ellipse at 50% 40%,#f4ead3 0%,#e6d6b4 70%,#d6c197 100%);
+  box-shadow:inset calc(var(--u)*-.6) 0 calc(var(--u)*1.2) rgba(90,60,25,.25),inset calc(var(--u)*.4) 0 calc(var(--u)*.6) rgba(90,60,25,.2)}
+/* page edges on the binding side (right, as in Japanese and Persian books) */
+.prl-edges{position:absolute;top:calc(var(--u)*1.5);bottom:calc(var(--u)*1.5);right:calc(var(--u)*.55);width:calc(var(--u)*.75);pointer-events:none;
+  background:repeating-linear-gradient(90deg,#d9c8a2 0 1px,#bfa77a 1px 2px);border-radius:0 3px 3px 0;opacity:.85}
+.prl-win{position:absolute;inset:3.2%;overflow:hidden;background:#1a120c;
+  box-shadow:0 0 0 calc(var(--u)*.12) #8a6326,0 0 0 calc(var(--u)*.4) #ecdfc2,0 0 0 calc(var(--u)*.55) #b8893f,0 calc(var(--u)*.4) calc(var(--u)*1.4) rgba(60,35,10,.45)}
+.prl-scene{position:absolute;inset:0;overflow:hidden}
+.prl-bd{position:absolute;inset:-8%;background-size:cover;background-position:center;filter:blur(calc(var(--u)*2.2)) brightness(.5) saturate(.85)}
+.prl-lay{position:absolute;left:0;top:0;transform-origin:0 0;max-width:none;will-change:transform;pointer-events:none}
+.prl-over{position:absolute;left:0;right:0;top:0;bottom:0;background-repeat:repeat-x;background-size:auto 100%;pointer-events:none;will-change:background-position}
+.prl-fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.prl-shaft{position:absolute;inset:-20%;pointer-events:none;mix-blend-mode:screen;opacity:0;transition:opacity 1.5s;
+  background:linear-gradient(115deg,transparent 30%,rgba(255,226,160,.22) 42%,rgba(255,226,160,.05) 50%,transparent 58%,rgba(255,226,160,.14) 66%,transparent 74%)}
+.prl-shaft.on{opacity:1;animation:prl-shaft 6s ease-in-out infinite alternate}
+@keyframes prl-shaft{from{transform:translateX(-2%)}to{transform:translateX(2%)}}
+.prl-vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 58%,rgba(30,15,5,.55) 100%)}
+.prl-fade{position:absolute;inset:0;pointer-events:none;transition:opacity .9s ease}
+/* page turn: the old picture is cloned onto a leaf that pivots on the right edge */
+.prl-leaf{position:absolute;inset:0;transform-origin:100% 50%;transform-style:preserve-3d;z-index:6;pointer-events:none}
+.prl-leaf>.f,.prl-leaf>.b{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;border-radius:calc(var(--u)*.35)}
+.prl-leaf>.f{background:#ecdfc2}
+.prl-leaf>.f::after{content:"";position:absolute;inset:0;background:linear-gradient(270deg,rgba(0,0,0,0) 40%,rgba(40,20,5,.45));opacity:0;animation:prl-shade 1.25s ease-in forwards}
+.prl-leaf>.b{transform:rotateY(180deg);background:linear-gradient(90deg,#d8c59c,#efe3c8 30%,#e9dbbb)}
+.prl-leaf.go{animation:prl-turn 1.25s cubic-bezier(.45,.05,.35,1) forwards}
+@keyframes prl-turn{0%{transform:rotateY(0)}100%{transform:rotateY(178deg)}}
+@keyframes prl-shade{to{opacity:1}}
+.prl-cast-shadow{position:absolute;inset:0;z-index:5;pointer-events:none;background:linear-gradient(270deg,rgba(40,20,5,.35),transparent 60%);opacity:0}
+.prl-cast-shadow.go{animation:prl-cs 1.25s ease forwards}
+@keyframes prl-cs{0%{opacity:0}40%{opacity:1}100%{opacity:0}}
+/* cover */
+.prl-cover{position:absolute;inset:0;z-index:8;transform-origin:100% 50%;transform-style:preserve-3d;transition:transform 1.8s cubic-bezier(.5,.05,.3,1),opacity .5s 1.4s}
+.prl-cover>.f,.prl-cover>.b{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:calc(var(--u)*.5)}
+.prl-cover>.f{display:grid;place-items:center;text-align:center;background:linear-gradient(135deg,#5a2418,#3a140c 55%,#4d1d12);
+  box-shadow:inset 0 0 0 calc(var(--u)*.9) #3a140c,inset 0 0 0 calc(var(--u)*1.05) #c99a4b,inset 0 0 0 calc(var(--u)*1.6) #3a140c,inset 0 0 0 calc(var(--u)*1.7) rgba(201,154,75,.6),inset 0 0 calc(var(--u)*6) rgba(0,0,0,.6)}
+.prl-cover>.b{transform:rotateY(180deg);background:#e9dbbb}
+.prl-cover .k{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-size:calc(var(--u)*7.5);color:#d9ad5c;line-height:1;text-shadow:0 2px 0 #2a0c06,0 0 calc(var(--u)*2) rgba(217,173,92,.35);writing-mode:vertical-rl;letter-spacing:.12em}
+.prl-cover .t{font-family:"EB Garamond",Georgia,serif;font-size:calc(var(--u)*2.6);letter-spacing:.14em;color:#e8c983;margin-top:calc(var(--u)*1.4);text-transform:uppercase}
+.prl-cover .s{font-size:calc(var(--u)*1.25);color:#c9a467;margin-top:calc(var(--u)*.5);font-style:italic}
+.prl-cover.open{transform:rotateY(170deg);opacity:0}
+/* caption on a parchment ribbon */
+.prl-cap{position:absolute;left:50%;bottom:3.5%;z-index:4;width:max-content;max-width:78%;transform:translate(-50%,8px);opacity:0;transition:opacity .6s ease,transform .6s ease;
+  padding:calc(var(--u)*.75) calc(var(--u)*1.8);text-align:center;color:#2a1a0e;font-size:calc(var(--u)*1.42);line-height:1.6;
+  background:linear-gradient(180deg,rgba(246,236,212,.96),rgba(232,216,180,.96));border-radius:calc(var(--u)*.25);
+  box-shadow:0 0 0 1px #b8893f,0 0 0 calc(var(--u)*.3) rgba(246,236,212,.9),0 0 0 calc(var(--u)*.38) #8a6326,0 calc(var(--u)*.5) calc(var(--u)*1.5) rgba(0,0,0,.5)}
+.prl-cap.on{opacity:1;transform:translate(-50%,0)}
+.prl[data-lang=en] .prl-cap,.prl[data-lang=fr] .prl-cap{font-family:"EB Garamond",Georgia,serif;font-size:calc(var(--u)*1.6);line-height:1.4}
+.prl[data-lang=fa] .prl-cap{direction:rtl}
+/* gold-framed character card */
+.prl-card{position:absolute;top:5%;z-index:4;width:22%;opacity:0;transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.3,1);
+  padding:calc(var(--u)*.6);border-radius:calc(var(--u)*.6);
+  background:linear-gradient(160deg,#f4e6c4,#dcc391);color:#2a1a0e;
+  box-shadow:0 0 0 calc(var(--u)*.18) #7a5320,0 0 0 calc(var(--u)*.42) #d9ad5c,0 0 0 calc(var(--u)*.55) #7a5320,0 calc(var(--u)*1) calc(var(--u)*2.5) rgba(0,0,0,.65)}
+.prl-card.l{left:3.5%;transform:translateX(-30%) rotate(-3deg)}
+.prl-card.r{right:3.5%;transform:translateX(30%) rotate(3deg)}
+.prl-card.on{opacity:1;transform:none}
+.prl-card .ph{aspect-ratio:4/5;border-radius:calc(var(--u)*.3);background-color:#e8d6ae;background-repeat:no-repeat;
+  box-shadow:inset 0 0 0 calc(var(--u)*.15) #7a5320,inset 0 0 calc(var(--u)*1.5) rgba(60,35,10,.4)}
+.prl-card .tag{display:block;width:max-content;max-width:100%;margin:calc(var(--u)*-.95) auto 0;position:relative;padding:calc(var(--u)*.15) calc(var(--u)*.8);
+  font-size:calc(var(--u)*.85);letter-spacing:.12em;text-transform:uppercase;color:#f6e9c8;background:#9c2a1c;border-radius:2px;box-shadow:0 0 0 1px #d9ad5c}
+.prl-card h3{margin:calc(var(--u)*.45) 0 0;text-align:center;font-family:"EB Garamond",Georgia,serif;font-weight:600;font-size:calc(var(--u)*1.75);line-height:1.1}
+.prl-card .loc{text-align:center;font-size:calc(var(--u)*1.15);font-weight:700;direction:rtl}
+.prl-card .real{text-align:center;font-size:calc(var(--u)*.92);color:#6a4a26;margin-top:calc(var(--u)*.2);line-height:1.35}
+.prl-card .vo{margin-top:calc(var(--u)*.55);padding-top:calc(var(--u)*.5);border-top:1px solid rgba(122,83,32,.45);text-align:center;
+  font-family:"EB Garamond",Georgia,serif;font-style:italic;font-size:calc(var(--u)*1.12);line-height:1.4;color:#5a1d12;opacity:0;transition:opacity .9s ease}
+.prl[data-lang=fa] .prl-card .vo{font-family:Vazirmatn,Tahoma,sans-serif;font-style:normal;direction:rtl;font-size:calc(var(--u)*1.05)}
+.prl[data-lang=fa] .prl-card .tag,.prl[data-lang=fa] .prl-card .real{direction:rtl;letter-spacing:0}
+.prl-card .vo.on{opacity:1}
+/* title + cast pages (drawn on parchment) */
+.prl-sheet{position:absolute;inset:0;z-index:3;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  background:#ecdfc2 radial-gradient(ellipse at 50% 40%,#f4ead3 0%,#e6d6b4 70%,#d6c197 100%)}
+.prl-sheet.on{display:flex}
+.prl-title .k{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-size:calc(var(--u)*8);color:#9c2a1c;line-height:1;letter-spacing:.08em}
+.prl-title .n{font-family:"EB Garamond",Georgia,serif;font-size:calc(var(--u)*3.6);letter-spacing:.08em;margin-top:calc(var(--u)*1.2);color:#2a1a0e}
+.prl-title .s{font-size:calc(var(--u)*1.4);color:#6a4a26;margin-top:calc(var(--u)*.5)}
+.prl-title .seal{width:calc(var(--u)*4.4);aspect-ratio:1;margin-top:calc(var(--u)*1.6);border-radius:calc(var(--u)*.4);background:#9c2a1c;color:#f6e9c8;display:grid;place-items:center;
+  font-family:"Hiragino Mincho ProN",serif;font-size:calc(var(--u)*1.6);transform:rotate(-4deg);box-shadow:inset 0 0 0 calc(var(--u)*.2) #f6e9c8,inset 0 0 0 calc(var(--u)*.3) #9c2a1c}
+.prl-cast{gap:calc(var(--u)*1.6)}
+.prl-cast .row{display:flex;gap:calc(var(--u)*1.4);justify-content:center;width:92%}
+.prl-cast .p{width:13%;opacity:0;animation:prl-up .8s ease forwards}
+@keyframes prl-up{from{opacity:0;transform:translateY(calc(var(--u)*1))}to{opacity:1;transform:none}}
+.prl-cast .ph{aspect-ratio:3/4;border-radius:calc(var(--u)*.35);background-color:#e8d6ae;background-repeat:no-repeat;
+  box-shadow:0 0 0 calc(var(--u)*.15) #7a5320,0 0 0 calc(var(--u)*.38) #d9ad5c,0 0 0 calc(var(--u)*.5) #7a5320,0 calc(var(--u)*.6) calc(var(--u)*1.5) rgba(60,35,10,.45)}
+.prl-cast .nm{font-family:"EB Garamond",Georgia,serif;font-weight:600;font-size:calc(var(--u)*1.45);margin-top:calc(var(--u)*.9);line-height:1.1}
+.prl-cast .rl{font-size:calc(var(--u)*1);color:#9c2a1c}
+.prl[data-lang=fa] .prl-cast .rl,.prl[data-lang=fa] .prl-cast .cta{direction:rtl}
+.prl-cast .cta{font-size:calc(var(--u)*1.45);max-width:70%;color:#3a2410}
+.prl[data-lang=en] .prl-cast .cta,.prl[data-lang=fr] .prl-cast .cta{font-family:"EB Garamond",Georgia,serif;font-style:italic;font-size:calc(var(--u)*1.7)}
+.prl-go{font:inherit;font-weight:700;font-size:calc(var(--u)*1.45);color:#f6e9c8;background:#9c2a1c;border:0;border-radius:calc(var(--u)*.3);padding:.55em 1.7em;cursor:pointer;
+  box-shadow:0 0 0 calc(var(--u)*.15) #f6e9c8,0 0 0 calc(var(--u)*.3) #9c2a1c,0 calc(var(--u)*.4) calc(var(--u)*1) rgba(0,0,0,.35)}
+.prl-go:hover,.prl-go:focus-visible{background:#b3321f;outline:none}
+/* kabuki curtain */
+.prl-curtain{position:absolute;inset:0;z-index:20;display:flex;transition:transform 2.4s cubic-bezier(.6,.05,.3,1)}
+.prl-curtain i{flex:1;box-shadow:inset calc(var(--u)*-.5) 0 calc(var(--u)*1.1) rgba(0,0,0,.35)}
+.prl-curtain i:nth-child(3n+1){background:#141210}.prl-curtain i:nth-child(3n+2){background:#b4532a}.prl-curtain i:nth-child(3n){background:#2f5a3e}
+.prl-curtain.open{transform:translateX(-102%)}
+/* controls */
+.prl-ctl{position:absolute;z-index:22;top:1.4%;right:1.4%;display:flex;gap:6px;opacity:.55;transition:opacity .3s}
+.prl-ctl:hover,.prl-ctl:focus-within{opacity:1}
+.prl-ctl button{font:600 calc(var(--u)*.95) Vazirmatn,Tahoma,sans-serif;color:#f3ece0;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.3);border-radius:3px;padding:.3em .8em;cursor:pointer}
+.prl-prog{position:absolute;left:0;bottom:0;height:3px;background:#d8a25a;z-index:21;width:0}
+@media (prefers-reduced-motion:reduce){.prl-leaf.go,.prl-cover{animation-duration:.01s;transition-duration:.01s}}
+/*/PRL-CSS*/
 </style>
 </head>
 <body>
@@ -809,7 +924,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
   </aside>
 </div>
 
-<div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmVer">v0.77.2</div><div class="mmStage">
+<div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmVer">v0.78.0</div><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
   <div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
@@ -3370,7 +3485,14 @@ const isGishi=()=>{const S=X().seasonal;if(!S||!S.date)return false;const d=new 
 let tab='map',sel=null;
 function el(){let o=$('zmap');if(!o){o=document.createElement('div');o.className='ov';o.id='zmap';o.hidden=true;o.innerHTML='<div class="card rnCard" role="dialog" aria-label="Journey map"></div>';document.body.appendChild(o);
   o.addEventListener('click',e=>{if(e.target===o)close();});}return o;}
-function open(k,t,s){K=k||K;tab=t||'map';sel=s||null;try{closePicker();}catch(e){}render();el().hidden=false;}
+/* storybook prelude (Ali 2026-11-25): plays the first time a story with one is opened, and from the map */
+const hasPre=k=>!!(window.PRELUDE&&window.PRELUDE_DATA&&PRELUDE_DATA[k]);
+const preSeen=k=>{try{return !!JSON.parse(localStorage.getItem('pz.prelude')||'{}')[k];}catch(e){return false;}};
+function prelude(k,first){try{closePicker();}catch(e){}close();
+  PRELUDE.play(k,()=>{try{const o=JSON.parse(localStorage.getItem('pz.prelude')||'{}');o[k]=1;localStorage.setItem('pz.prelude',JSON.stringify(o));}catch(e){}
+    const ids=STORIES[k].ids;if(first&&ids&&ids[0]&&!done(ids[0])){K=k;choosePainting(ids[0]);}else open(k,'map');},
+   {lang:window.LANG==='fr'?'fr':'en',base:'prelude/'});}
+function open(k,t,s){K=k||K;if(!t&&!s&&hasPre(K)&&!preSeen(K)){prelude(K,true);return;}tab=t||'map';sel=s||null;try{closePicker();}catch(e){}render();el().hidden=false;}
 function close(){el().hidden=true;}
 addEventListener('keydown',e=>{const o=$('zmap');if(o&&!o.hidden&&e.key==='Escape'){if($('rnPop')){$('rnPop').remove();}else close();e.stopPropagation();}},true);
 function nextId(){return X().pages.map(p=>p.id).find(id=>!done(id))||null;}
@@ -3410,7 +3532,7 @@ function mapHTML(){const M=X().map,nx=nextId(),G=groups(),cur=G.find(g=>g.pages.
   const pins=G.map(g=>{const s=st(g),here=g===cur;return `<button class="rnPin${s.all?' done':''}${here?' here':''}${sel===g.id?' sel':''}${g.lab?' '+g.lab:''}" data-p="${g.id}" style="left:${g.x*100}%;top:${g.y*100}%"><i>${s.all?'✓':s.d+'/'+s.n}</i><span>${esc(g.name)}${g.ps.length>1?` <em>· ${g.ps.length} places</em>`:''}</span></button>`;}).join('');
   const SG=sel&&G.find(g=>g.id===sel);
   return `<div class="rnMapWrap"><div class="rnMap"><img src="${M.img}" alt="Map"><svg viewBox="0 0 100 100" preserveAspectRatio="none">${road}${segs}</svg>${pins}</div>
-    <aside class="rnSide">${SG?groupHTML(SG):`<div class="eyebrow">Your journey</div><p>${esc(X().story.about)}</p><p class="note">Travel from place to place and restore the pictures that tell what happened there. ${nx?'Your next stop is marked with a glowing seal.':'You have finished the whole journey.'}</p>${nx?`<button class="btn pri" id="rnGo">Go to ${esc(cur?cur.name:'the next place')} →</button>`:''}`}</aside></div>
+    <aside class="rnSide">${SG?groupHTML(SG):`<div class="eyebrow">Your journey</div><p>${esc(X().story.about)}</p><p class="note">Travel from place to place and restore the pictures that tell what happened there. ${nx?'Your next stop is marked with a glowing seal.':'You have finished the whole journey.'}</p>${nx?`<button class="btn pri" id="rnGo">Go to ${esc(cur?cur.name:'the next place')} →</button>`:''}${hasPre(K)?'<button class="btn" id="rnPre">▶ Watch the prologue</button>':''}`}</aside></div>
     <p class="note rnCredit">${esc(M.credit||'')}</p>`;}
 function groupHTML(g){return (g.ps.length>1?`<div class="eyebrow">${g.ps.length} places</div><h3>${esc(g.name)}</h3>`:'')+g.ps.map(P=>placeHTML(P,g.ps.length>1)).join('')+`<button class="btn" id="rnBack">‹ Back</button>`;}
 function placeHTML(P,sub){return `${sub?`<h4 class="rnSub">${esc(P.name)}</h4>`:`<div class="eyebrow">Place</div><h3>${esc(P.name)}</h3>`}${P.t?`<p>${esc(P.t)}</p>`:''}
@@ -3421,6 +3543,7 @@ function placeHTML(P,sub){return `${sub?`<h4 class="rnSub">${esc(P.name)}</h4>`:
 const roman=n=>['','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'][n]||n;
 function wireMap(c){c.querySelectorAll('.rnPin').forEach(b=>b.onclick=()=>{sel=b.dataset.p;render();});
   if($('rnBack'))$('rnBack').onclick=()=>{sel=null;render();};
+  if($('rnPre'))$('rnPre').onclick=()=>prelude(K,false);
   if($('rnGo'))$('rnGo').onclick=()=>{const nx=nextId(),g=groups().find(g=>g.pages.includes(nx));sel=g&&g.id;render();};
   c.querySelectorAll('[data-play]').forEach(b=>b.onclick=()=>{close();choosePainting(b.dataset.play);});
   c.querySelectorAll('[data-views]').forEach(b=>b.onclick=()=>{if(!done(b.dataset.views)){toast('Other views','Finish this page first to unlock how other artists showed the same scene.');return;}views(b.dataset.views);});}
@@ -3469,7 +3592,7 @@ function whichRound(){const S=W8;if(S.round>=10){const nb=Math.max(S.best,S.scor
 function tellHTML(){return `<p class="note">For three hundred years the story has been told again and again, on stage, in books, in prints and on film.</p><div class="rnTell">${(X().retellings||[]).map(r=>`<div class="rnT"><small>${esc(r.year)} · ${esc(r.kind)}</small><b>${esc(r.title)}</b><p>${esc(r.t)}</p></div>`).join('')}</div>`;}
 /* ---- character quiz: "click on ..." ---- */
 function findQ(){const L=(PT.finds||[]);if(!L.length)return null;const c=L[Math.floor(Math.random()*L.length)];return {q:'Find '+c.name+' in the picture',find:c,o:[],a:-1};}
-return {open,close,views,findQ,isGishi};})();window.RNX=RNX;window.rnOpenPicker=()=>openPicker();
+return {open,close,views,findQ,isGishi,prelude:k=>prelude(k||K,false)};})();window.RNX=RNX;window.rnOpenPicker=()=>openPicker();
 /* reward screen: back to the journey map, and the other artists' versions of this scene */
 function rnReward(w){if(!w||!w.story||typeof SX==='undefined'||!SX[w.story])return;const row=document.querySelector('#rewCard .row');if(!row)return;
   const X=SX[w.story],p=(X.pages||[]).find(q=>q.id===w.id)||{};
@@ -3489,6 +3612,1055 @@ function showFind(q,card){card.innerHTML=`<div class="eyebrow">${solo?'Quiz':'Te
 /* Gishi-sai and other story days: a note in the main menu */
 setTimeout(()=>{try{for(const k in SX){const S=SX[k].seasonal;if(!S||!S.date)continue;const d=new Date(),[m,dd]=S.date.split('-').map(Number);if(d.getMonth()+1===m&&d.getDate()===dd)toast('Today is '+S.name,S.t||'',()=>RNX.open(k));}}catch(e){}},2500);
 /*/RNX-JS*/
+/*PRL-JS*/
+/* Storybook prelude player.
+   window.PRELUDE.play(storyKey, onDone, opts) -> controller
+     storyKey : e.g. 'ronin'. Data comes from window.PRELUDE_DATA[storyKey] (load <key>.js first),
+                or else from <base><key>.json via fetch.
+     onDone   : called once with {skipped:boolean, lang:string} when the player closes ("Begin Act I", or Esc on the cast page).
+     opts     : {lang:'en'|'fa'|'fr' (default 'en'), base:'path/to/prelude/' (default: folder of this script),
+                 container:Element (default document.body), volume:0..1 (default .8), langToggle:true, onLang:fn(lang)}
+   controller: {stop(), skip(), setLang(l), pause(), resume(), show(i)}
+   Needs prelude.css. Call play() from a click so the browser allows sound. */
+(function () {
+  'use strict';
+  var SCRIPT_BASE = (document.currentScript && document.currentScript.src || '').replace(/[^\/]*$/, '');
+  var UI = { en: { skip: 'Skip ›', lang: 'EN' }, fa: { skip: 'رد کردن ›', lang: 'فا' }, fr: { skip: 'Passer ›', lang: 'FR' } };
+  var NOTES = [293.66, 329.63, 349.23, 440, 466.16, 587.33]; // D E F A Bb D, a miyako-bushi feel
+  var ease = function (t) { return t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; };
+
+  function el(tag, cls, parent) { var e = document.createElement(tag); if (cls) e.className = cls; if (parent) parent.appendChild(e); return e; }
+
+  function play(key, onDone, opts) {
+    opts = opts || {};
+    var base = opts.base || SCRIPT_BASE;
+    var ctl = { stop: function () { finish(true); }, skip: function () { skip(); }, setLang: function (l) { setLang(l); },
+      pause: function () { paused = true; }, resume: function () { paused = false; }, show: function (i) { gotoShot(i); } };
+    var D = null, lang = opts.lang || 'en', paused = false, alive = true, raf = 0, last = 0, T = 0;
+    var phase = 'intro', shotIdx = -1, shotT0 = 0, fired = {}, scene = null, sheetTimer = 0, parts = [], fxKinds = [];
+
+    /* ---------- DOM ---------- */
+    var root = el('div', 'prl'); root.setAttribute('data-lang', lang); root.setAttribute('role', 'dialog'); root.setAttribute('aria-label', 'Prologue');
+    var stage = el('div', 'prl-stage', root), book = el('div', 'prl-book', stage), page = el('div', 'prl-page', book);
+    el('div', 'prl-edges', book);
+    var win = el('div', 'prl-win', page);
+    var sceneHost = el('div', 'prl-scene', win);
+    var cv = el('canvas', 'prl-fx', win), cx = cv.getContext('2d');
+    var shaft = el('div', 'prl-shaft', win); el('div', 'prl-vig', win);
+    var card = el('div', 'prl-card', win), cardPh = el('div', 'ph', card), cardTag = el('span', 'tag', card), cardH = el('h3', '', card),
+      cardLoc = el('div', 'loc', card), cardReal = el('div', 'real', card), cardVo = el('div', 'vo', card);
+    var cap = el('div', 'prl-cap', win);
+    var shadow = el('div', 'prl-cast-shadow', page);
+    var tSheet = el('div', 'prl-sheet prl-title', page), cSheet = el('div', 'prl-sheet prl-cast', page);
+    var cover = el('div', 'prl-cover', page), coverF = el('div', 'f', cover); el('div', 'b', cover);
+    var curtain = el('div', 'prl-curtain', stage); curtain.setAttribute('aria-hidden', 'true');
+    for (var i = 0; i < 9; i++) el('i', '', curtain);
+    var ctlBar = el('div', 'prl-ctl', stage), bLang = el('button', '', ctlBar), bSkip = el('button', '', ctlBar);
+    bLang.type = bSkip.type = 'button';
+    var prog = el('div', 'prl-prog', stage);
+    (opts.container || document.body).appendChild(root);
+
+    function tr(o) { return o ? (o[lang] != null ? o[lang] : o.en) : ''; }
+    function src(p) { return /^(https?:|data:|blob:|\/)/.test(p) ? p : base + p; }
+
+    /* ---------- audio (WebAudio synth: hyoshigi, taiko, koto plucks, page swish, drone) ---------- */
+    var AC = null, master = null;
+    try { AC = new (window.AudioContext || window.webkitAudioContext)(); master = AC.createGain(); master.gain.value = opts.volume == null ? .8 : opts.volume; master.connect(AC.destination); if (AC.state === 'suspended') AC.resume(); } catch (e) { AC = null; }
+    function noise(sec) { var b = AC.createBuffer(1, Math.max(1, AC.sampleRate * sec | 0), AC.sampleRate), d = b.getChannelData(0); for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; var s = AC.createBufferSource(); s.buffer = b; return s; }
+    function clapAt(t) {
+      var n = noise(.12), f = AC.createBiquadFilter(), g = AC.createGain(); f.type = 'bandpass'; f.frequency.value = 2300; f.Q.value = 6;
+      g.gain.setValueAtTime(1.3, t); g.gain.exponentialRampToValueAtTime(.001, t + .11); n.connect(f).connect(g).connect(master); n.start(t); n.stop(t + .12);
+      var o = AC.createOscillator(), g2 = AC.createGain(); o.frequency.value = 1750; g2.gain.setValueAtTime(.22, t); g2.gain.exponentialRampToValueAtTime(.001, t + .07); o.connect(g2).connect(master); o.start(t); o.stop(t + .08);
+    }
+    function pluck(f, t, v) {
+      var o = AC.createOscillator(), o2 = AC.createOscillator(), g = AC.createGain(), g2 = AC.createGain(), lp = AC.createBiquadFilter();
+      o.type = 'triangle'; o.frequency.value = f; o2.type = 'sine'; o2.frequency.value = f * 2.01; g2.gain.value = .3;
+      lp.type = 'lowpass'; lp.frequency.setValueAtTime(f * 8, t); lp.frequency.exponentialRampToValueAtTime(f * 1.4, t + 1.2);
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v || .16, t + .006); g.gain.exponentialRampToValueAtTime(.0008, t + 2.4);
+      o.connect(lp); o2.connect(g2).connect(lp); lp.connect(g).connect(master); o.start(t); o2.start(t); o.stop(t + 2.5); o2.stop(t + 2.5);
+    }
+    var SFX = {
+      clap: function () { if (!AC) return; var t = AC.currentTime + .03; clapAt(t); clapAt(t + .42); },
+      drum: function () {
+        if (!AC) return; var t = AC.currentTime + .03, o = AC.createOscillator(), g = AC.createGain(); o.type = 'sine';
+        o.frequency.setValueAtTime(110, t); o.frequency.exponentialRampToValueAtTime(42, t + .5); g.gain.setValueAtTime(1, t); g.gain.exponentialRampToValueAtTime(.001, t + 1.1);
+        o.connect(g).connect(master); o.start(t); o.stop(t + 1.2);
+        var n = noise(.2), f = AC.createBiquadFilter(), g2 = AC.createGain(); f.type = 'lowpass'; f.frequency.value = 700; g2.gain.setValueAtTime(.45, t); g2.gain.exponentialRampToValueAtTime(.001, t + .18); n.connect(f).connect(g2).connect(master); n.start(t);
+      },
+      swish: function () {
+        if (!AC) return; var t = AC.currentTime, n = noise(.9), f = AC.createBiquadFilter(), g = AC.createGain(); f.type = 'bandpass'; f.Q.value = .7;
+        f.frequency.setValueAtTime(900, t); f.frequency.exponentialRampToValueAtTime(3500, t + .5); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.22, t + .25); g.gain.linearRampToValueAtTime(0, t + .85);
+        n.connect(f).connect(g).connect(master); n.start(t);
+      },
+      notes: function (arr) { if (!AC || !arr) return; var t = AC.currentTime + .15; arr.forEach(function (n, i) { pluck(NOTES[n % NOTES.length], t + i * .42, .14); }); }
+    };
+    function drone() {
+      if (!AC) return; var t = AC.currentTime, g = AC.createGain(), f = AC.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 380;
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.08, t + 4); [73.42, 110, 146.83].forEach(function (fr) { var o = AC.createOscillator(); o.type = 'triangle'; o.frequency.value = fr; o.connect(f); o.start(t); }); f.connect(g).connect(master);
+    }
+
+    /* ---------- scenes ---------- */
+    function buildScene(shot) {
+      var set = D.sets[shot.set], host = el('div', 'prl-scene'), s = { set: shot.set, layers: [], overs: [], bd: null };
+      s.bd = el('div', 'prl-bd', host); s.bd.style.backgroundImage = 'url("' + src(set.layers[0].src) + '")';
+      set.layers.forEach(function (L) { var im = el('img', 'prl-lay', host); im.alt = ''; im.draggable = false; im.src = src(L.src); im.style.width = set.w + 'px'; im.style.height = set.h + 'px'; s.layers.push({ img: im, z: L.z }); });
+      (set.over || []).forEach(function (O) { var d = el('div', 'prl-over', host); d.style.backgroundImage = 'url("' + src(O.src) + '")'; d.style.opacity = O.op;
+        if (O.band) { d.style.top = O.band[0] * 100 + '%'; d.style.bottom = (1 - O.band[1]) * 100 + '%'; } s.overs.push({ div: d, O: O }); });
+      s.el = host; return s;
+    }
+    function frame(sc, shot, e, t) {
+      var W = win.clientWidth, H = win.clientHeight, set = D.sets[shot.set], IW = set.w, IH = set.h;
+      var r = shot.a.map(function (v, i) { return v + (shot.b[i] - v) * e; }), rw = r[2] * IW, rh = r[3] * IH;
+      var k = shot.fit ? Math.min(W / rw, H / rh) : Math.max(W / rw, H / rh);
+      var tx = W / 2 - (r[0] * IW + rw / 2) * k, ty = H / 2 - (r[1] * IH + rh / 2) * k;
+      if (!shot.fit) { tx = Math.min(0, Math.max(W - IW * k, tx)); ty = Math.min(0, Math.max(H - IH * k, ty)); }
+      sc.cam = { k: k, tx: tx, ty: ty, W: W, H: H };
+      sc.bd.style.display = shot.fit ? '' : 'none';
+      var d = shot.drift || [0, 0], life = shot.life;
+      sc.layers.forEach(function (L) {
+        var z = L.z, pz = z ? 1 + z * (.012 + .03 * e) : 1, dx = z * d[0] * (e - .5) * W / 1000, dy = z * d[1] * (e - .5) * W / 1000;
+        var tf = 'translate(' + (W / 2 + dx) + 'px,' + (H / 2 + dy) + 'px) scale(' + pz + ') translate(' + (-W / 2) + 'px,' + (-H / 2) + 'px) translate(' + tx + 'px,' + ty + 'px) scale(' + k + ')';
+        if (z === 1 && life) {
+          var o = life.origin || [.5, 1], ox = o[0] * IW, oy = o[1] * IH, br = life.breathe ? life.breathe * Math.sin(t * 2 * Math.PI / 4.2) : 0, rot = life.sway ? life.sway * Math.sin(t * 2 * Math.PI / 5.5) : 0;
+          tf += ' translate(' + ox + 'px,' + oy + 'px) rotate(' + rot + 'deg) scale(' + (1 + br * .35) + ',' + (1 + br) + ') translate(' + (-ox) + 'px,' + (-oy) + 'px)';
+        }
+        L.img.style.transform = tf;
+      });
+      sc.overs.forEach(function (ov) { ov.div.style.backgroundPosition = (t * ov.O.speed * W / 1000 + ov.O.z * 40 * e * (d[0] < 0 ? -1 : 1)) + 'px 0'; });
+    }
+    function imgPoint(sc, p) { var set = D.sets[sc.set], c = sc.cam; return c ? [c.tx + p[0] * set.w * c.k, c.ty + p[1] * set.h * c.k] : [0, 0]; }
+
+    /* ---------- particles (life effects drawn in code) ---------- */
+    function rnd(a, b) { return a + Math.random() * (b - a); }
+    function spawn(kind, W, H, fresh) {
+      var u = W / 100;
+      if (kind === 'dust') return { k: kind, x: rnd(0, W), y: rnd(0, H), vx: rnd(-.15, .35) * u, vy: rnd(-.35, -.05) * u, r: rnd(.06, .2) * u, a: rnd(.2, .7), ph: rnd(0, 6) };
+      if (kind === 'petals') return { k: kind, x: rnd(-.1, 1) * W, y: fresh ? rnd(-.1, 1) * H : -rnd(.02, .2) * H, vx: rnd(1, 3) * u, vy: rnd(1.8, 3.5) * u, r: rnd(.45, .8) * u, rot: rnd(0, 6), vr: rnd(-2, 2), ph: rnd(0, 6), c: Math.random() < .5 ? '#f3bcc6' : '#e48ea0' };
+      if (kind === 'needles') return { k: kind, x: rnd(0, 1) * W, y: fresh ? rnd(-.1, 1) * H : -rnd(.02, .2) * H, vx: rnd(-.6, .6) * u, vy: rnd(2, 3.4) * u, r: rnd(.8, 1.4) * u, rot: rnd(0, 6), vr: rnd(-3, 3), ph: rnd(0, 6) };
+      if (kind === 'smoke') return { k: kind, age: fresh ? rnd(0, 4) : 0, life: rnd(3.5, 5), dx: rnd(-.6, .6) * u, r0: rnd(.6, 1.2) * u, ph: rnd(0, 6) };
+      return null;
+    }
+    function setFx(shot) {
+      fxKinds = shot.fx || []; parts = []; var W = win.clientWidth, H = win.clientHeight;
+      var counts = { dust: 46, petals: 26, needles: 22, smoke: 18 };
+      fxKinds.forEach(function (k) { for (var i = 0; i < (counts[k] || 0); i++) { var p = spawn(k, W, H, true); if (p) parts.push(p); } });
+      shaft.classList.toggle('on', fxKinds.indexOf('shaft') >= 0);
+    }
+    function drawFx(dt, t, shot) {
+      var dpr = Math.min(1.5, window.devicePixelRatio || 1), W = win.clientWidth, H = win.clientHeight, u = W / 100;
+      if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+      cx.setTransform(dpr, 0, 0, dpr, 0, 0); cx.clearRect(0, 0, W, H);
+      if (!shot) return;
+      if (fxKinds.indexOf('lantern') >= 0 && shot.lantern) {
+        var lx = shot.lantern[0] * W, ly = shot.lantern[1] * H, fl = .55 + .25 * Math.sin(t * 7.3) * Math.sin(t * 3.1 + 1) + .1 * Math.sin(t * 17);
+        var gr = cx.createRadialGradient(lx, ly, 0, lx, ly, 28 * u); gr.addColorStop(0, 'rgba(255,190,110,' + (.42 * fl) + ')'); gr.addColorStop(.35, 'rgba(255,150,70,' + (.16 * fl) + ')'); gr.addColorStop(1, 'rgba(255,140,60,0)');
+        cx.globalCompositeOperation = 'lighter'; cx.fillStyle = gr; cx.fillRect(0, 0, W, H); cx.globalCompositeOperation = 'source-over';
+      }
+      var sp = shot.smoke && scene ? imgPoint(scene, shot.smoke) : null;
+      for (var i = 0; i < parts.length; i++) {
+        var p = parts[i];
+        if (p.k === 'dust') {
+          p.x += p.vx * dt; p.y += p.vy * dt; if (p.y < -5 || p.x > W + 5 || p.x < -5) { parts[i] = spawn('dust', W, H, false); parts[i].y = H + 4; continue; }
+          var a = p.a * (.5 + .5 * Math.sin(t * 1.7 + p.ph)); cx.fillStyle = 'rgba(255,236,190,' + a + ')'; cx.beginPath(); cx.arc(p.x, p.y, p.r, 0, 6.283); cx.fill();
+        } else if (p.k === 'petals' || p.k === 'needles') {
+          p.x += (p.vx + Math.sin(t * 1.3 + p.ph) * u * .8) * dt; p.y += p.vy * dt; p.rot += p.vr * dt;
+          if (p.y > H + 20 || p.x > W + 30) { parts[i] = spawn(p.k, W, H, false); continue; }
+          cx.save(); cx.translate(p.x, p.y); cx.rotate(p.rot);
+          if (p.k === 'petals') { cx.scale(1, .55 + .45 * Math.sin(t * 3 + p.ph)); cx.fillStyle = p.c; cx.globalAlpha = .85; cx.beginPath(); cx.ellipse(0, 0, p.r, p.r * .6, 0, 0, 6.283); cx.fill(); }
+          else { cx.strokeStyle = 'rgba(40,60,35,.75)'; cx.lineWidth = Math.max(1, u * .12); cx.beginPath(); cx.moveTo(-p.r / 2, 0); cx.lineTo(p.r / 2, 0); cx.stroke(); }
+          cx.restore(); cx.globalAlpha = 1;
+        } else if (p.k === 'smoke' && sp) {
+          p.age += dt; if (p.age > p.life) { parts[i] = spawn('smoke', W, H, false); continue; }
+          var q = p.age / p.life, sx = sp[0] + p.dx * q * 3 + Math.sin(p.age * 1.4 + p.ph) * u * 1.2 * q, sy = sp[1] - q * 16 * u, rr = p.r0 + q * 4 * u;
+          var g = cx.createRadialGradient(sx, sy, 0, sx, sy, rr); var al = .34 * Math.sin(q * Math.PI);
+          g.addColorStop(0, 'rgba(235,230,220,' + al + ')'); g.addColorStop(1, 'rgba(235,230,220,0)'); cx.fillStyle = g; cx.beginPath(); cx.arc(sx, sy, rr, 0, 6.283); cx.fill();
+        }
+      }
+    }
+
+    /* ---------- text ---------- */
+    function renderCap(shot) { cap.textContent = shot ? tr(shot.text) : ''; }
+    function renderCard(shot) {
+      var c = shot && shot.card; if (!c) return;
+      var set = D.sets[shot.set], r = c.crop, mid = set.layers[1] ? src(set.layers[1].src) : src(set.layers[0].src), back = src(set.layers[0].src);
+      cardPh.style.backgroundImage = 'url("' + mid + '"),url("' + back + '")';
+      cardPh.style.backgroundSize = (100 / r[2]) + '% ' + (100 / r[3]) + '%';
+      cardPh.style.backgroundPosition = (r[0] / (1 - r[2]) * 100) + '% ' + (r[1] / (1 - r[3]) * 100) + '%';
+      cardTag.textContent = tr(c.role); cardH.textContent = c.name; cardLoc.textContent = c.local && c.local[lang] || '';
+      cardLoc.style.display = cardLoc.textContent ? '' : 'none'; cardReal.textContent = tr(c.real); cardVo.textContent = tr(c.voice);
+    }
+    function renderSheets() {
+      var t = D.title; tSheet.innerHTML = '';
+      el('div', 'k', tSheet).textContent = t.kanji; var n = el('div', 'n', tSheet); n.textContent = tr(t.name); var s = el('div', 's', tSheet); s.textContent = tr(t.sub); if (lang === 'fa') { s.dir = 'rtl'; n.dir = 'rtl'; }
+      el('div', 'seal', tSheet).textContent = '忠';
+      coverF.innerHTML = ''; var w = el('div', '', coverF); el('div', 'k', w).textContent = t.kanji; el('div', 't', w).textContent = tr(t.name); el('div', 's', w).textContent = tr(D.cover);
+      cSheet.innerHTML = ''; var row = el('div', 'row', cSheet);
+      D.cast.forEach(function (c, i) {
+        var set = D.sets[c.set], p = el('div', 'p', row), ph = el('div', 'ph', p), r = c.r; p.style.animationDelay = (i * .15) + 's';
+        ph.style.backgroundImage = 'url("' + src((set.layers[1] || set.layers[0]).src) + '"),url("' + src(set.layers[0].src) + '")';
+        ph.style.backgroundSize = (100 / r[2]) + '% ' + (100 / r[3]) + '%'; ph.style.backgroundPosition = (r[0] / (1 - r[2]) * 100) + '% ' + (r[1] / (1 - r[3]) * 100) + '%';
+        el('div', 'nm', p).textContent = c.name; el('div', 'rl', p).textContent = tr(c.role);
+      });
+      el('div', 'cta', cSheet).textContent = tr(D.cta);
+      var go = el('button', 'prl-go', cSheet); go.type = 'button'; go.textContent = tr(D.begin); go.onclick = function () { finish(false); };
+      bLang.textContent = (UI[lang] || UI.en).lang; bSkip.textContent = (UI[lang] || UI.en).skip;
+      bSkip.style.display = phase === 'cast' ? 'none' : '';
+    }
+    function setLang(l) {
+      if (D && D.langs.indexOf(l) < 0) return; lang = l; root.setAttribute('data-lang', l);
+      if (!D) return; var shot = D.shots[shotIdx]; renderCap(shot); renderCard(shot); renderSheets();
+      if (phase === 'cast') { [].forEach.call(cSheet.querySelectorAll('.p'), function (p) { p.style.animation = 'none'; p.style.opacity = 1; }); }
+      if (opts.onLang) try { opts.onLang(l); } catch (e) { }
+    }
+    bLang.onclick = function () { var L = D ? D.langs : ['en']; setLang(L[(L.indexOf(lang) + 1) % L.length]); };
+    bLang.style.display = opts.langToggle === false ? 'none' : '';
+    bSkip.onclick = function () { skip(); };
+
+    /* ---------- page turn ---------- */
+    function turnPage(extra) {
+      var leaf = el('div', 'prl-leaf'), f = el('div', 'f', leaf); el('div', 'b', leaf);
+      var c = win.cloneNode(true); f.appendChild(c);
+      var oc = win.querySelector('canvas'), nc = c.querySelector('canvas'); if (oc && nc && oc.width) { nc.width = oc.width; nc.height = oc.height; try { nc.getContext('2d').drawImage(oc, 0, 0); } catch (e) { } }
+      [tSheet, cSheet].forEach(function (s) { if (s.classList.contains('on')) f.appendChild(s.cloneNode(true)); });
+      page.insertBefore(leaf, cover); shadow.classList.remove('go'); void shadow.offsetWidth; shadow.classList.add('go');
+      requestAnimationFrame(function () { requestAnimationFrame(function () { leaf.classList.add('go'); }); });
+      setTimeout(function () { leaf.remove(); }, 1350); SFX.swish();
+    }
+    function crossfade() {
+      if (!scene) return; var c = scene.el.cloneNode(true); c.classList.add('prl-fade'); c.style.opacity = 1; sceneHost.appendChild(c);
+      requestAnimationFrame(function () { requestAnimationFrame(function () { c.style.opacity = 0; }); }); setTimeout(function () { c.remove(); }, 1000);
+    }
+
+    /* ---------- timeline ---------- */
+    function startShot(i, withTurn) {
+      var shot = D.shots[i], prev = D.shots[shotIdx];
+      card.classList.remove('on'); cardVo.classList.remove('on'); cap.classList.remove('on');
+      if (withTurn) turnPage();
+      if (!scene || !prev || prev.set !== shot.set) { var ns = buildScene(shot); sceneHost.innerHTML = ''; sceneHost.appendChild(ns.el); scene = ns; }
+      else if (!withTurn) crossfade();
+      shotIdx = i; shotT0 = T; fired = {}; setFx(shot); frame(scene, shot, 0, 0); renderCap(shot); renderCard(shot);
+      if (shot.card) card.className = 'prl-card ' + (shot.card.side === 'left' ? 'l' : 'r');
+    }
+    function shotEvents(shot, t, i) {
+      function once(id, at, fn) { if (t >= at && !fired[id]) { fired[id] = 1; fn(); } }
+      once('snd', .05, function () { if (shot.sfx && SFX[shot.sfx]) SFX[shot.sfx](); SFX.notes(shot.notes); });
+      once('cap', .55, function () { cap.classList.add('on'); });
+      if (shot.card) { once('card', 1.0, function () { card.classList.add('on'); }); once('vo', 2.5, function () { cardVo.classList.add('on'); }); }
+      var next = D.shots[i + 1], turnNext = !next || next.set !== shot.set;
+      once('off', shot.d - (turnNext ? .25 : .6), function () { if (!turnNext) { cap.classList.remove('on'); card.classList.remove('on'); } });
+    }
+    function gotoShot(i) {
+      if (!D) return; clearTimeout(sheetTimer); tSheet.classList.remove('on'); cSheet.classList.remove('on');
+      curtain.classList.add('open'); cover.style.display = 'none'; phase = 'shots'; startShot(i, false);
+    }
+    function toTitle() {
+      phase = 'title'; turnPage(); cap.classList.remove('on'); card.classList.remove('on'); fxKinds = []; parts = []; shaft.classList.remove('on');
+      tSheet.classList.add('on'); SFX.clap(); setTimeout(function () { SFX.notes([0, 2, 4, 5]); }, 600);
+      sheetTimer = setTimeout(toCast, 3800);
+    }
+    function toCast() {
+      if (!alive || phase === 'cast') return; clearTimeout(sheetTimer);
+      var fromIntro = phase === 'intro'; phase = 'cast';
+      curtain.classList.add('open'); cover.classList.add('open');
+      if (!fromIntro) turnPage(); else cover.style.display = 'none';
+      cap.classList.remove('on'); card.classList.remove('on'); fxKinds = []; parts = []; shaft.classList.remove('on');
+      tSheet.classList.remove('on'); renderSheets(); cSheet.classList.add('on'); prog.style.width = '100%';
+      var go = cSheet.querySelector('.prl-go'); setTimeout(function () { try { go && go.focus({ preventScroll: true }); } catch (e) { } }, 900);
+    }
+    function skip() { if (phase === 'cast' || phase === 'done') return; toCast(); }
+    var total = 0;
+    function tick(now) {
+      if (!alive) return; raf = requestAnimationFrame(tick);
+      var dt = Math.min(.1, (now - (last || now)) / 1000); last = now; if (paused || !D) return; T += dt;
+      root.style.setProperty('--u', (stage.clientWidth / 100) + 'px');
+      if (phase === 'intro') { var s0 = D.shots[0]; if (scene) frame(scene, s0, 0, T); drawFx(dt, T, s0); return; }
+      if (phase === 'shots') {
+        var shot = D.shots[shotIdx], t = T - shotT0, p = Math.min(1, t / shot.d);
+        frame(scene, shot, ease(p), t); drawFx(dt, T, shot); shotEvents(shot, t, shotIdx);
+        var done = 0; for (var j = 0; j < shotIdx; j++) done += D.shots[j].d; prog.style.width = ((done + p * shot.d) / total * 100) + '%';
+        if (p >= 1) { var nx = D.shots[shotIdx + 1]; if (nx) startShot(shotIdx + 1, nx.set !== shot.set); else toTitle(); }
+        return;
+      }
+      drawFx(dt, T, null);
+    }
+    function onKey(e) { if (e.key === 'Escape') { e.preventDefault(); if (phase === 'cast') finish(false); else skip(); } }
+    function onVis() { if (document.hidden) { paused = true; if (AC) AC.suspend(); } else { paused = false; if (AC) AC.resume(); } }
+    document.addEventListener('keydown', onKey); document.addEventListener('visibilitychange', onVis);
+
+    function finish(skipped) {
+      if (!alive) return; alive = false; phase = 'done'; cancelAnimationFrame(raf); clearTimeout(sheetTimer);
+      document.removeEventListener('keydown', onKey); document.removeEventListener('visibilitychange', onVis);
+      root.style.transition = 'opacity .6s'; root.style.opacity = 0;
+      if (AC) { try { master.gain.setTargetAtTime(0, AC.currentTime, .15); } catch (e) { } setTimeout(function () { try { AC.close(); } catch (e) { } }, 700); }
+      setTimeout(function () { root.remove(); }, 650);
+      if (onDone) try { onDone({ skipped: !!skipped, lang: lang }); } catch (e) { console.error(e); }
+    }
+
+    function begin(data) {
+      D = data; if (D.langs.indexOf(lang) < 0) lang = 'en'; root.setAttribute('data-lang', lang);
+      total = D.shots.reduce(function (a, s) { return a + s.d; }, 0);
+      renderSheets(); renderCap(D.shots[0]); scene = buildScene(D.shots[0]); sceneHost.appendChild(scene.el); setFx(D.shots[0]);
+      // preload every layer
+      var urls = {}; Object.keys(D.sets).forEach(function (k) { var s = D.sets[k]; s.layers.concat(s.over || []).forEach(function (L) { urls[src(L.src)] = 1; }); });
+      var loads = Object.keys(urls).map(function (u) { return new Promise(function (res) { var im = new Image(); im.onload = im.onerror = function () { res(); }; im.src = u; }); });
+      var ready = Promise.race([Promise.all(loads), new Promise(function (r) { setTimeout(r, 6000); })]);
+      raf = requestAnimationFrame(tick);
+      ready.then(function () {
+        if (!alive || phase !== 'intro') return; drone(); SFX.clap();
+        setTimeout(function () { if (phase === 'intro') { curtain.classList.add('open'); SFX.clap(); } }, 1200);
+        setTimeout(function () { if (phase === 'intro') { cover.classList.add('open'); SFX.swish(); } }, 2900);
+        setTimeout(function () { if (phase === 'intro') { phase = 'shots'; shotIdx = 0; shotT0 = T; fired = {}; } }, 3500);
+        setTimeout(function () { if (phase !== 'cast') cover.style.display = 'none'; }, 4800);
+      });
+    }
+    var reg = window.PRELUDE_DATA && window.PRELUDE_DATA[key];
+    (reg ? Promise.resolve(reg) : fetch(base + key + '.json').then(function (r) { return r.json(); }))
+      .then(begin).catch(function (e) { console.error('PRELUDE: no data for', key, e); finish(true); });
+    PRELUDE._last = ctl; return ctl;
+  }
+  window.PRELUDE = { play: play, version: 1 };
+})();
+
+/* generated from ronin.json */
+(window.PRELUDE_DATA=window.PRELUDE_DATA||{}).ronin={
+ "key": "ronin",
+ "version": 1,
+ "langs": [
+  "en",
+  "fa",
+  "fr"
+ ],
+ "title": {
+  "kanji": "忠臣蔵",
+  "name": {
+   "en": "The 47 Ronin",
+   "fa": "۴۷ رونین",
+   "fr": "Les 47 rōnin"
+  },
+  "sub": {
+   "en": "Chūshingura · The Treasury of Loyal Retainers",
+   "fa": "قصه‌ی چهل‌وهفت سامورایی بی‌ارباب",
+   "fr": "Chūshingura · Le Trésor des vassaux fidèles"
+  }
+ },
+ "cover": {
+  "en": "A tale from old Japan",
+  "fa": "قصه‌ای از ژاپن کهن",
+  "fr": "Un conte du vieux Japon"
+ },
+ "cta": {
+  "en": "Every painting you restore opens the next act of the story.",
+  "fa": "هر تابلویی که کامل کنی، یک پرده از این قصه را باز می‌کند.",
+  "fr": "Chaque tableau restauré ouvre l’acte suivant de l’histoire."
+ },
+ "begin": {
+  "en": "Begin Act I",
+  "fa": "شروع پرده‌ی اول",
+  "fr": "Commencer l’acte I"
+ },
+ "sets": {
+  "map": {
+   "w": 1600,
+   "h": 1351,
+   "layers": [
+    {
+     "src": "layers/map_back.webp",
+     "z": 0
+    }
+   ],
+   "over": [
+    {
+     "src": "layers/cloud0.webp",
+     "z": 1,
+     "speed": -14,
+     "op": 0.45
+    },
+    {
+     "src": "layers/cloud1.webp",
+     "z": 2,
+     "speed": 22,
+     "op": 0.35
+    }
+   ]
+  },
+  "kuni": {
+   "w": 1102,
+   "h": 1600,
+   "layers": [
+    {
+     "src": "layers/lacma_134584_back.webp",
+     "z": 0
+    },
+    {
+     "src": "layers/lacma_134584_mid.webp",
+     "z": 1
+    }
+   ]
+  },
+  "enya": {
+   "w": 1074,
+   "h": 1600,
+   "layers": [
+    {
+     "src": "layers/cma_1930.210_back.webp",
+     "z": 0
+    },
+    {
+     "src": "layers/cma_1930.210_mid.webp",
+     "z": 1
+    }
+   ]
+  },
+  "yura": {
+   "w": 1090,
+   "h": 1600,
+   "layers": [
+    {
+     "src": "layers/met_55716_back.webp",
+     "z": 0
+    },
+    {
+     "src": "layers/met_55716_mid.webp",
+     "z": 1
+    }
+   ]
+  },
+  "lovers": {
+   "w": 1081,
+   "h": 1600,
+   "layers": [
+    {
+     "src": "layers/met_638611_back.webp",
+     "z": 0
+    },
+    {
+     "src": "layers/met_638611_mid.webp",
+     "z": 1
+    }
+   ]
+  },
+  "shrine": {
+   "w": 1600,
+   "h": 1184,
+   "layers": [
+    {
+     "src": "layers/cma_1985.338.1_back.webp",
+     "z": 0
+    },
+    {
+     "src": "layers/cma_1985.338.1_mid.webp",
+     "z": 1
+    },
+    {
+     "src": "layers/cma_1985.338.1_front.webp",
+     "z": 2
+    }
+   ]
+  }
+ },
+ "shots": [
+  {
+   "set": "map",
+   "a": [
+    0.06,
+    0.1,
+    0.88,
+    0.5
+   ],
+   "b": [
+    0.64,
+    0.34,
+    0.3,
+    0.2
+   ],
+   "d": 7,
+   "drift": [
+    -10,
+    0
+   ],
+   "fx": [
+    "dust"
+   ],
+   "notes": [
+    0,
+    2,
+    4
+   ],
+   "text": {
+    "en": "Japan, long ago. The civil wars are over and the shogun rules in peace. Every samurai is loyal to his lord, to the death.",
+    "fa": "ژاپن، قرن‌ها پیش. جنگ‌های داخلی تمام شده و شوگان در آرامش حکومت می‌کند. هر سامورایی تا پای جان به اربابش وفادار است.",
+    "fr": "Le Japon, il y a bien longtemps. Les guerres civiles ont pris fin et le shogun règne en paix. Chaque samouraï est fidèle à son seigneur, jusqu’à la mort."
+   }
+  },
+  {
+   "set": "kuni",
+   "a": [
+    0,
+    0,
+    1,
+    0.5
+   ],
+   "b": [
+    0,
+    0.16,
+    1,
+    0.39
+   ],
+   "d": 7,
+   "sfx": "drum",
+   "drift": [
+    -16,
+    0
+   ],
+   "life": {
+    "sway": 0.35,
+    "origin": [
+     0.6,
+     0.75
+    ]
+   },
+   "fx": [
+    "dust"
+   ],
+   "notes": [
+    1,
+    0
+   ],
+   "card": {
+    "side": "right",
+    "crop": [
+     0.33,
+     0.27,
+     0.34,
+     0.3
+    ],
+    "name": "Kō no Moronao",
+    "local": {
+     "fa": "کو نو مورونائو"
+    },
+    "role": {
+     "en": "The official",
+     "fa": "مقام درباری",
+     "fr": "Le dignitaire"
+    },
+    "real": {
+     "en": "In history: Kira Yoshinaka",
+     "fa": "در تاریخ: کیرا یوشیناکا",
+     "fr": "Dans l’histoire : Kira Yoshinaka"
+    },
+    "voice": {
+     "en": "“Where is your gift? At court, respect is bought with gold.”",
+     "fa": "«هدیه‌ات کجاست؟ در دربار، احترام را با طلا می‌خرند.»",
+     "fr": "« Où est ton présent ? À la cour, le respect s’achète avec de l’or. »"
+    }
+   },
+   "text": {
+    "en": "Moronao, master of etiquette at the shogun’s court. Powerful, proud and greedy: whoever brings no gift gets no favour.",
+    "fa": "مورونائو، استاد آداب دربار شوگان. قدرتمند، مغرور و طمع‌کار؛ هر کس به او هدیه ندهد، تحویلش نمی‌گیرد.",
+    "fr": "Moronao, maître de l’étiquette à la cour du shogun. Puissant, orgueilleux et avide : qui ne lui apporte pas de cadeau n’obtient aucune faveur."
+   }
+  },
+  {
+   "set": "enya",
+   "a": [
+    0,
+    0,
+    1,
+    1
+   ],
+   "b": [
+    0.25,
+    0.02,
+    0.56,
+    0.46
+   ],
+   "d": 7,
+   "fit": true,
+   "sfx": "drum",
+   "drift": [
+    12,
+    0
+   ],
+   "life": {
+    "breathe": 0.012,
+    "origin": [
+     0.5,
+     0.95
+    ]
+   },
+   "fx": [
+    "needles"
+   ],
+   "notes": [
+    2,
+    4,
+    5
+   ],
+   "card": {
+    "side": "left",
+    "crop": [
+     0.36,
+     0.02,
+     0.38,
+     0.33
+    ],
+    "name": "Enya Hangan",
+    "local": {
+     "fa": "اِن‌یا هانگان"
+    },
+    "role": {
+     "en": "The lord",
+     "fa": "ارباب",
+     "fr": "Le seigneur"
+    },
+    "real": {
+     "en": "In history: Asano Naganori, lord of Akō",
+     "fa": "در تاریخ: آسانو ناگانوری، ارباب آکو",
+     "fr": "Dans l’histoire : Asano Naganori, seigneur d’Akō"
+    },
+    "voice": {
+     "en": "“I do not sell my honour. Not to Moronao, not to anyone.”",
+     "fa": "«شرافتم را نمی‌فروشم؛ نه به مورونائو، نه به هیچ‌کس.»",
+     "fr": "« Je ne vends pas mon honneur. Ni à Moronao, ni à personne. »"
+    }
+   },
+   "text": {
+    "en": "Enya Hangan, a young lord, honest and upright. He does not flatter, and he does not bribe.",
+    "fa": "اِن‌یا هانگان، اربابی جوان، شریف و راستگو. اهل چاپلوسی و رشوه دادن نیست.",
+    "fr": "Enya Hangan, un jeune seigneur, honnête et droit. Il ne flatte pas, et il ne soudoie personne."
+   }
+  },
+  {
+   "set": "kuni",
+   "a": [
+    0,
+    0.42,
+    1,
+    0.45
+   ],
+   "b": [
+    0,
+    0.56,
+    1,
+    0.4
+   ],
+   "d": 7,
+   "drift": [
+    14,
+    -4
+   ],
+   "life": {
+    "sway": 0.3,
+    "origin": [
+     0.3,
+     1
+    ]
+   },
+   "fx": [
+    "petals"
+   ],
+   "notes": [
+    4,
+    2,
+    1
+   ],
+   "card": {
+    "side": "right",
+    "crop": [
+     0.2,
+     0.57,
+     0.34,
+     0.3
+    ],
+    "name": "Kaoyo Gozen",
+    "local": {
+     "fa": "کائویو"
+    },
+    "role": {
+     "en": "The lady",
+     "fa": "بانو",
+     "fr": "La dame"
+    },
+    "real": {
+     "en": "Enya’s wife · in history: Yōzei-in",
+     "fa": "همسر اِن‌یا · در تاریخ: یوزِی‌این",
+     "fr": "Épouse d’Enya · dans l’histoire : Yōzei-in"
+    },
+    "voice": {
+     "en": "“I have seen every helmet that ever passed through the palace.”",
+     "fa": "«هر کلاه‌خودی که از قصر گذشته، من دیده‌ام.»",
+     "fr": "« J’ai vu chaque casque qui est passé par le palais. »"
+    }
+   },
+   "text": {
+    "en": "Kaoyo, Enya’s wife. Before her marriage she served at the palace; she knows its customs and its treasures well.",
+    "fa": "کائویو، همسر اِن‌یا. پیش از ازدواج، ندیمه‌ی قصر بوده و رسم‌ها و گنجینه‌های آن را خوب می‌شناسد.",
+    "fr": "Kaoyo, l’épouse d’Enya. Avant son mariage, elle servait au palais ; elle en connaît bien les coutumes et les trésors."
+   }
+  },
+  {
+   "set": "yura",
+   "a": [
+    0,
+    0,
+    1,
+    1
+   ],
+   "b": [
+    0.2,
+    0.16,
+    0.58,
+    0.4
+   ],
+   "d": 7,
+   "fit": true,
+   "sfx": "drum",
+   "drift": [
+    -12,
+    0
+   ],
+   "life": {
+    "breathe": 0.01,
+    "origin": [
+     0.5,
+     1
+    ]
+   },
+   "fx": [
+    "lantern",
+    "dust"
+   ],
+   "lantern": [
+    0.16,
+    0.7
+   ],
+   "notes": [
+    0,
+    1,
+    4
+   ],
+   "card": {
+    "side": "left",
+    "crop": [
+     0.28,
+     0.2,
+     0.44,
+     0.4
+    ],
+    "name": "Ōboshi Yuranosuke",
+    "local": {
+     "fa": "اُبوشی یورانوسکه"
+    },
+    "role": {
+     "en": "The chief retainer",
+     "fa": "رئیس سامورایی‌ها",
+     "fr": "Le premier vassal"
+    },
+    "real": {
+     "en": "In history: Ōishi Kuranosuke",
+     "fa": "در تاریخ: اوئیشی کورانوسکه",
+     "fr": "Dans l’histoire : Ōishi Kuranosuke"
+    },
+    "voice": {
+     "en": "“Haste is a samurai’s enemy.”",
+     "fa": "«عجله، دشمن سامورایی است.»",
+     "fr": "« La hâte est l’ennemie du samouraï. »"
+    }
+   },
+   "text": {
+    "en": "Yuranosuke, chief of Enya’s samurai: calm, clever and patient. For now he is far away, keeping his lord’s castle.",
+    "fa": "یورانوسکه، رئیس سامورایی‌های اِن‌یا؛ آرام، باهوش و صبور. فعلاً دور از اربابش، از قلعه‌ی او نگهداری می‌کند.",
+    "fr": "Yuranosuke, chef des samouraïs d’Enya : calme, habile et patient. Pour l’heure, il est loin et garde le château de son seigneur."
+   }
+  },
+  {
+   "set": "lovers",
+   "a": [
+    0.04,
+    0.1,
+    0.92,
+    0.62
+   ],
+   "b": [
+    0.06,
+    0.3,
+    0.74,
+    0.42
+   ],
+   "d": 7,
+   "drift": [
+    -14,
+    0
+   ],
+   "life": {
+    "breathe": 0.008,
+    "origin": [
+     0.5,
+     0.9
+    ]
+   },
+   "fx": [
+    "petals"
+   ],
+   "notes": [
+    2,
+    4,
+    5,
+    4
+   ],
+   "card": {
+    "side": "right",
+    "crop": [
+     0.12,
+     0.26,
+     0.54,
+     0.32
+    ],
+    "name": "Kanpei & Okaru",
+    "local": {
+     "fa": "کانپِی و اوکارو"
+    },
+    "role": {
+     "en": "The lovers",
+     "fa": "عاشقان",
+     "fr": "Les amoureux"
+    },
+    "real": {
+     "en": "In service to the Enya house",
+     "fa": "در خدمت خانه‌ی اِن‌یا",
+     "fr": "Au service de la maison Enya"
+    },
+    "voice": {
+     "en": "Kanpei: “As long as my lord stands, so do I.”  Okaru: “And I, wherever you are.”",
+     "fa": "کانپِی: «تا ارباب هست، من هم هستم.»  اوکارو: «و من هر جا که تو باشی.»",
+     "fr": "Kanpei : « Tant que mon seigneur tient debout, moi aussi. »  Okaru : « Et moi, partout où tu seras. »"
+    }
+   },
+   "text": {
+    "en": "Kanpei, Enya’s young samurai, and Okaru, Kaoyo’s maid: two young lovers who always attend their lord and lady.",
+    "fa": "کانپِی، سامورایی جوان اِن‌یا، و اوکارو، ندیمه‌ی کائویو؛ دو عاشق جوان که همیشه همراه ارباب و بانویشان‌اند.",
+    "fr": "Kanpei, jeune samouraï d’Enya, et Okaru, suivante de Kaoyo : deux jeunes amoureux, toujours au service de leur seigneur et de leur dame."
+   }
+  },
+  {
+   "set": "shrine",
+   "a": [
+    0.08,
+    0.1,
+    0.84,
+    0.56
+   ],
+   "b": [
+    0.36,
+    0.52,
+    0.56,
+    0.4
+   ],
+   "d": 8,
+   "drift": [
+    -22,
+    -6
+   ],
+   "fx": [
+    "dust",
+    "smoke"
+   ],
+   "smoke": [
+    0.63,
+    0.87
+   ],
+   "notes": [
+    0,
+    2,
+    4,
+    5
+   ],
+   "text": {
+    "en": "Today the shogun’s brother comes to the Hachiman shrine in Kamakura to dedicate a fallen hero’s helmet. The lords have gathered, and Moronao runs the ceremony.",
+    "fa": "امروز برادر شوگان به معبد هاچیمان در کاماکورا می‌آید تا کلاه‌خود یک قهرمان شکست‌خورده را به معبد هدیه کند. اربابان جمع شده‌اند و مورونائو مراسم را می‌گرداند.",
+    "fr": "Aujourd’hui, le frère du shogun vient au sanctuaire Hachiman de Kamakura pour y consacrer le casque d’un héros tombé. Les seigneurs sont réunis, et Moronao dirige la cérémonie."
+   }
+  },
+  {
+   "set": "shrine",
+   "a": [
+    0.4,
+    0.6,
+    0.5,
+    0.36
+   ],
+   "b": [
+    0.5,
+    0.72,
+    0.32,
+    0.23
+   ],
+   "d": 6,
+   "drift": [
+    -14,
+    0
+   ],
+   "fx": [
+    "smoke",
+    "shaft",
+    "dust"
+   ],
+   "smoke": [
+    0.63,
+    0.87
+   ],
+   "notes": [
+    4,
+    2
+   ],
+   "text": {
+    "en": "This is a story of loyalty: how far will a samurai go for his lord?",
+    "fa": "این قصه‌ی وفاداری است: یک سامورایی برای اربابش تا کجا پیش می‌رود؟",
+    "fr": "C’est une histoire de loyauté : jusqu’où un samouraï ira-t-il pour son seigneur ?"
+   }
+  },
+  {
+   "set": "shrine",
+   "a": [
+    0.36,
+    0.55,
+    0.56,
+    0.4
+   ],
+   "b": [
+    0.04,
+    0.06,
+    0.92,
+    0.9
+   ],
+   "d": 5,
+   "sfx": "clap",
+   "drift": [
+    18,
+    8
+   ],
+   "fx": [
+    "petals",
+    "smoke"
+   ],
+   "smoke": [
+    0.63,
+    0.87
+   ],
+   "notes": [
+    0
+   ],
+   "text": {
+    "en": "And the story begins here, at the shrine…",
+    "fa": "و قصه از همین‌جا، در معبد، شروع می‌شود…",
+    "fr": "Et l’histoire commence ici, au sanctuaire…"
+   }
+  }
+ ],
+ "cast": [
+  {
+   "set": "kuni",
+   "r": [
+    0.33,
+    0.27,
+    0.34,
+    0.3
+   ],
+   "name": "Moronao",
+   "role": {
+    "en": "The official",
+    "fa": "مقام درباری",
+    "fr": "Le dignitaire"
+   }
+  },
+  {
+   "set": "enya",
+   "r": [
+    0.36,
+    0.02,
+    0.38,
+    0.33
+   ],
+   "name": "Enya",
+   "role": {
+    "en": "The lord",
+    "fa": "ارباب",
+    "fr": "Le seigneur"
+   }
+  },
+  {
+   "set": "kuni",
+   "r": [
+    0.2,
+    0.57,
+    0.34,
+    0.3
+   ],
+   "name": "Kaoyo",
+   "role": {
+    "en": "The lady",
+    "fa": "بانو",
+    "fr": "La dame"
+   }
+  },
+  {
+   "set": "yura",
+   "r": [
+    0.28,
+    0.2,
+    0.44,
+    0.4
+   ],
+   "name": "Yuranosuke",
+   "role": {
+    "en": "Chief retainer",
+    "fa": "رئیس سامورایی‌ها",
+    "fr": "Premier vassal"
+   }
+  },
+  {
+   "set": "lovers",
+   "r": [
+    0.12,
+    0.26,
+    0.3,
+    0.3
+   ],
+   "name": "Kanpei",
+   "role": {
+    "en": "The lover",
+    "fa": "عاشق",
+    "fr": "L’amoureux"
+   }
+  },
+  {
+   "set": "lovers",
+   "r": [
+    0.36,
+    0.27,
+    0.3,
+    0.3
+   ],
+   "name": "Okaru",
+   "role": {
+    "en": "The lover",
+    "fa": "عاشق",
+    "fr": "L’amoureuse"
+   }
+  }
+ ],
+ "credits": [
+  "Map: Adriaan Reland, Imperium Japonicum (1715), public domain (ronin/map/base.jpg)",
+  "Moronao & Kaoyo: Utagawa Kunisada, LACMA 134584, public domain",
+  "Enya Hangan: Cleveland Museum of Art 1930.210, CC0",
+  "Yuranosuke: The Met 55716, CC0",
+  "Kanpei & Okaru: The Met 638611, CC0",
+  "Hachiman shrine, Act I perspective print: Kitao Masayoshi, Cleveland Museum of Art 1985.338.1, CC0",
+  "Clouds, particles, frame and sound: made in code for this project"
+ ]
+};
+
+/*/PRL-JS*/
 /* ---------- the puzzle box on the table (our own designs: museum linen, lapis & gold, leather folio, vintage card) ---------- */
 const BOXES=[['auto','By hall'],['leather','Oxblood'],['lapis','Lapis & gold'],['linen','Museum green'],['vintage','Ivory']];
 const HALL_BOX={'Persian miniature':'lapis'}; // every other hall uses the red leather box (Ali's pick)
