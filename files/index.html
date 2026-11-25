@@ -809,7 +809,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
   </aside>
 </div>
 
-<div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmVer">v0.77.0</div><div class="mmStage">
+<div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmVer">v0.77.1</div><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
   <div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
@@ -2829,7 +2829,7 @@ function renderDetails(){const box=$('details');box.innerHTML='';
     drawRegion(b.querySelector('canvas'),{x:dd.x,y:dd.y,w:dd.w,h:dd.h},1.2);
     b.querySelector('b').textContent=on?dd.name:'A hidden detail';b.querySelector('small').textContent=on?dd.t:'Find it on the painting.';
     if(on)b.onclick=()=>openViewer(dd);li.appendChild(b);box.appendChild(li);});
-  $('detCnt').textContent=fa(found.size)+' of '+fa(DETAILS.length);renderFan();}
+  $('detCnt').textContent=fa(DETAILS.filter(d=>found.has(d.id)).length)+' of '+fa(DETAILS.length);renderFan();}
 
 /* ---------- guess (artist at 50%, and detail of the day) ---------- */
 let guessMode=false,guessed=false;
@@ -2915,12 +2915,12 @@ function troDiff(before){const after=troSnapshot();
 function troAward(fn){const b=troSnapshot();fn();troSave();troDiff(b);}
 function troComplete(nPieces){troAward(()=>{const d=TRO.done[CUR_WORK]=TRO.done[CUR_WORK]||{stars:[false,false,false],best:0};
   d.stars[0]=true;if(nPieces>=1000)d.stars[2]=true;d.best=Math.max(d.best,nPieces);TRO.ach.first=true;if(nPieces>=3000)TRO.ach.longnight=true;
-  if(artistic()&&found.size===DETAILS.length)TRO.ach.sharp=true;
+  if(artistic()&&DETAILS.filter(d=>found.has(d.id)).length===DETAILS.length)TRO.ach.sharp=true;
   const mus=new Set(CATALOG.filter(w=>TRO.done[w.id]).map(w=>w.museum));if(['NGA','Met','Rijksmuseum','AIC'].every(m=>mus.has(m)))TRO.ach.grandtour=true;
   const bk=CATALOG.filter(w=>w.book);if(bk.every(w=>TRO.done[w.id]))TRO.ach.bookofkings=true;
   if(STORIES.zahhak.ids.every(id=>TRO.done[id]))TRO.ach.zahhak=true;});}
 function troQuiz(score){troAward(()=>{const d=TRO.done[CUR_WORK];if(!d)return;if(score===QUIZ.length)TRO.ach.scholar=true;
-  if(score===QUIZ.length&&found.size===DETAILS.length)d.stars[1]=true;});}
+  if(score===QUIZ.length&&DETAILS.filter(d=>found.has(d.id)).length===DETAILS.length)d.stars[1]=true;});}
 function troGuess(ok){if(!ok)return;troAward(()=>{TRO.guesses++;if(TRO.guesses>=5)TRO.ach.connoisseur=true;});}
 function achHTML(a){return `<div class="ach"><div class="ic ${a.cls?'seal '+a.cls:''}" style="${a.cls?'width:44px;height:44px;margin:0;font-size:13px':''}">${a.ic}</div><div>${a.t}<small>${a.d}</small></div></div>`;}
 function openTrophies(){const c=$('troCard');const esc=t=>String(t).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
@@ -3055,7 +3055,7 @@ function celebrate(){const now=performance.now();
   try{SOUNDS.bell();[523,659,784,1047].forEach((f,i)=>tone(f,.15+i*.14,1.4,.06));}catch(e){}
   zoomFit();toast('Puzzle complete!',PT.title+' is whole again.');}
 function showReward(){
-  if(mode==='main')mainStats={t:elapsed,n:pieces.length,you:count.you,bot:count.bot,found:found.size,team};
+  if(mode==='main')mainStats={t:elapsed,n:pieces.length,you:count.you,bot:count.bot,found:DETAILS.filter(d=>found.has(d.id)).length,team};
   const st=mainStats,d=(TRO.done[CUR_WORK]||{stars:[true,false,false]}).stars,w=CATALOG.find(x=>x.id===CUR_WORK)||{};
   const ini=(PT.artist||'').split(' ').filter(x=>/^[A-Z]/.test(x)).map(x=>x[0]).join('').slice(0,3);
   const why=['Puzzle complete','All hidden details and a perfect quiz','1000 pieces or more'];
@@ -3082,8 +3082,8 @@ function gameSummary(st){const coop=NET.on||NET.had,me=(($('netName')&&$('netNam
     ${other?bar(st.you,'#cfa646',me)+bar(st.bot,coop?'#7fc8ff':'#c97b5a',other):''}
     ${artistic()&&QUIZ.length?`<div class="gsQ">Quiz <span class="stars">${'★'.repeat(st.team)}${'☆'.repeat(QUIZ.length-st.team)}</span></div>`:''}</div>`;}
 function showGallery(){
-  if(mode==='main')mainStats={t:elapsed,n:pieces.length,you:count.you,bot:count.bot,found:found.size,team};
-  const st=mainStats||{t:elapsed,n:pieces.length,you:count.you,bot:count.bot,found:found.size,team};
+  if(mode==='main')mainStats={t:elapsed,n:pieces.length,you:count.you,bot:count.bot,found:DETAILS.filter(d=>found.has(d.id)).length,team};
+  const st=mainStats||{t:elapsed,n:pieces.length,you:count.you,bot:count.bot,found:DETAILS.filter(d=>found.has(d.id)).length,team};
   const card=$('galCard');
   card.innerHTML=`<canvas class="thumb" width="300" height="${Math.round(300*H/W)}" style="aspect-ratio:${W}/${H}"></canvas><div class="body">
    <div class="eyebrow">Added to your museum · ${PT.move} hall</div>
@@ -3397,7 +3397,7 @@ function groups(){const M=X().map,ar=M.ar||1.5,G=[];
   G.forEach(g=>{g.lab=G.some(h=>h!==g&&h.y>g.y&&h.y-g.y<.12&&Math.abs(h.x-g.x)<.12)?'up':'';});
   /* two labels on the same side and close together: the left one moves to the left of its seal */
   G.forEach(g=>{if(G.some(h=>h!==g&&h.lab===g.lab&&h.x>g.x&&h.x-g.x<.16&&Math.abs(h.y-g.y)<.1))g.lab='left';});
-  G.forEach(g=>{if(g.x<.16)g.lab='right';else if(g.x>.86)g.lab='left';});return G;}
+  G.forEach(g=>{if(g.x<.1)g.lab='right';else if(g.x>.93)g.lab='left';});return G;}
 function mapHTML(){const M=X().map,nx=nextId(),G=groups(),cur=G.find(g=>g.pages.includes(nx)),ar=M.ar||1.5;
   const st=g=>placeState(g);
   /* story lines: groups in story order, drawn as gentle arcs so back-and-forth trips stay readable */
@@ -3431,7 +3431,7 @@ function views(id){const p=pageOf(id),P=PAINTINGS[id],all=[{img:P.img,artist:P.a
     <figure><img src="${a.img}" alt=""><figcaption><b>${esc(a.artist)}</b>${a.date?' · '+esc(a.date):''}${a.museum?' · '+esc(a.museum):''}<p>${esc(a.note||'')}</p></figcaption></figure>
     <div class="rnThumbs">${all.map((x,i)=>`<button class="${i===k?'on':''}" data-i="${i}"><img src="${x.img}" alt=""><small>${esc((x.artist||'').replace(/^Utagawa |^Katsushika /,''))}</small></button>`).join('')}</div>
     <div class="row"><button class="btn pri" id="rnPopX">Close</button></div></div>`;
-   pop.querySelectorAll('.rnThumbs button').forEach(b=>b.onclick=()=>{k=+b.dataset.i;draw();});$('rnPopX').onclick=()=>pop.remove();};
+   pop.querySelectorAll('.rnThumbs button').forEach(b=>b.onclick=()=>{k=+b.dataset.i;draw();});pop.querySelector('#rnPopX').onclick=()=>pop.remove();};
   draw();pop.onclick=e=>{if(e.target===pop)pop.remove();};(el().hidden?document.body:el()).appendChild(pop);}
 /* ---- the 47 ---- */
 function roninHTML(){return `<p class="note">Every finished page brings new faces. Collect all forty-seven loyal retainers.</p><div class="rnGrid">${X().ronin.map(r=>{const ok=done(r.page);
@@ -3440,7 +3440,7 @@ function roninPop(n){const r=X().ronin.find(x=>x.n===n);if(!r||!done(r.page))ret
   pop.innerHTML=`<div class="rnPopIn rnOne"><img src="${r.img}" alt=""><div><div class="eyebrow">Ronin ${r.n} of 47</div><h3>${esc(r.real)}</h3>
    <dl class="meta">${r.play?`<dt>In the play</dt><dd>${esc(r.play)}</dd>`:''}${r.age?`<dt>Age</dt><dd>${esc(r.age)}</dd>`:''}${r.role?`<dt>Role</dt><dd>${esc(r.role)}</dd>`:''}</dl>
    <p>${esc(r.line||'')}</p><p class="note">${esc([r.artist,r.credit].filter(Boolean).join(' · '))}</p><button class="btn pri" id="rnPopX">Close</button></div></div>`;
-  pop.onclick=e=>{if(e.target===pop)pop.remove();};el().appendChild(pop);$('rnPopX').onclick=()=>pop.remove();}
+  pop.onclick=e=>{if(e.target===pop)pop.remove();};el().appendChild(pop);pop.querySelector('#rnPopX').onclick=()=>pop.remove();}
 /* ---- which version is this piece from? ---- */
 let W8=null;
 function whichPool(){const out=[];X().pages.forEach(p=>{const P=PAINTINGS[p.id];if(!(p.alts||[]).length)return;out.push({img:P.img,artist:P.artist,page:p.id});p.alts.forEach(a=>out.push({img:a.img,artist:a.artist,page:p.id}));});return out;}
