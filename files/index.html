@@ -951,7 +951,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
   </aside>
 </div>
 
-<div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmVer">v0.79.3</div><div class="mmStage">
+<div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmVer">v0.80.0</div><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
   <div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
@@ -2326,9 +2326,9 @@ const PATS=()=>(mode==='main'&&artistic()&&PATTERNS[PAINT_ID])||[];
 let patView=null,patDraw=null;
 function checkPats(){for(const P of PATS())if(!found.has(P.id)&&!isPatDone(P)){
   const ok=P.need.every(([x,y,w,h])=>pieces.filter(q=>q.tx<(x+w)*W&&q.tx+pw>x*W&&q.ty<(y+h)*H&&q.ty+ph>y*H).every(q=>q.placed));
-  if(ok){found.add(P.id);P.at=performance.now();toast('Hidden pattern found',P.hint||'Three gold stars have appeared. Click one, then touch the other two to draw the shape.',()=>openPat(P));}}}
+  if(ok){found.add(P.id);P.at=performance.now();toast('Hidden pattern found',P.kind==='rhyme'?(P.hint||'Gold stars have appeared.'):'Numbered stars have appeared. Start at star 1 and follow the numbers'+(P.open?'.':', then come back to 1.'),()=>openPat(P));}}}
 const patStar=(P,w)=>{const r=18/(view.s||1);return P.pts.findIndex(([x,y])=>Math.hypot(w.x-x*W,w.y-y*H)<r);};
-function patAt(w){if(dotA<.4||patView)return null;return PATS().find(P=>{if(!found.has(P.id)||isPatDone(P))return false;const i=patStar(P,w);return i>=0&&!(P.tdone&&P.tdone.has(i>>1));})||null;}
+/*SORD*/const PAT_COL=['#e8c669','#7fd6e8','#f4a0b8','#b9a6ff'],patActive=()=>PATS().find(P=>found.has(P.id)&&!isPatDone(P))||null,patNext=P=>{if(!(patDraw&&patDraw.P===P))return 0;const n=patDraw.chain.length;return n<P.pts.length?n:(P.open?-1:0);};/*/SORD*/function patAt(w){if(dotA<.4||patView)return null;return PATS().find(P=>{if(P!==patActive()||!found.has(P.id)||isPatDone(P))return false;const i=patStar(P,w);return i>=0&&!(P.tdone&&P.tdone.has(i>>1));})||null;}
 /* zoom so the three stars fill the view */
 function openPat(P){if(P.focus){zoomBox(P.focus);return;}const xs=P.pts.map(q=>q[0]*W),ys=P.pts.map(q=>q[1]*H),x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys),r=cv.getBoundingClientRect(),s1=view.s/zoom.k;
   const k=Math.max(minZoom(),Math.min(maxZoom(),Math.min(r.height*.55/((y1-y0)*s1),r.width*.6/((x1-x0)*s1))));zoomFocus(k,(x0+x1)/2,(y0+y1)/2+(y1-y0)*.08);}
@@ -2345,7 +2345,7 @@ function patTick(now){if(!patView||patView.out)return;if(patView.step<0&&(now-pa
 function star(g,x,y,r){g.beginPath();for(let i=0;i<8;i++){const a=i*Math.PI/4-Math.PI/2,rr=i%2?r*.32:r;g.lineTo(x+Math.cos(a)*rr,y+Math.sin(a)*rr);}g.closePath();g.fill();}
 function drawPats(now,s){const L=PATS();if(!L.length)return;patTick(now);ctx.save();
   const cl=v=>Math.max(0,Math.min(1,v)),seg=(a,b,k)=>{ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(a[0]+(b[0]-a[0])*k,a[1]+(b[1]-a[1])*k);ctx.stroke();};
-  for(const P of L){if(!found.has(P.id)||dotA<=.005)continue;const view_=patView&&patView.P===P;if(isPatDone(P)&&!view_)continue;
+  for(const P of L){if(!found.has(P.id)||dotA<=.005)continue;const view_=patView&&patView.P===P;if(isPatDone(P)&&!view_)continue;if(!view_&&P!==patActive())continue;const PC=PAT_COL[PATS().indexOf(P)%PAT_COL.length];
     const t=view_?(now-patView.t0)/1000:0,st=view_?patView.step:-1,L=view_&&st>=0?(now-patView.ts)/1000:0,out=view_&&patView.out?cl((now-patView.out)/800):0,vis=1-out;
     if(P.kind==='rhyme'){drawRhyme(P,now,s,view_,t,st,L,vis,cl);continue;}
     const pt=P.pts.map(([x,y])=>[x*W*s,y*H*s]),cx=pt.reduce((a,p)=>a+p[0],0)/pt.length,cy=pt.reduce((a,p)=>a+p[1],0)/pt.length;
@@ -2359,7 +2359,7 @@ function drawPats(now,s){const L=PATS();if(!L.length)return;patTick(now);ctx.sav
     ctx.lineCap='round';ctx.strokeStyle='#ffd98a';ctx.lineWidth=3.5;ctx.shadowColor='rgba(255,200,90,.9)';ctx.shadowBlur=14;
     if(view_){if(!P.open){ctx.globalAlpha=.18*cl(t/.9)*vis;ctx.fillStyle='rgb(255,214,130)';ctx.beginPath();tp.forEach(p=>ctx.lineTo(p[0],p[1]));ctx.closePath();ctx.fill();}
       ctx.globalAlpha=vis*dimLines;ctx.beginPath();tp.forEach(p=>ctx.lineTo(p[0],p[1]));if(!P.open)ctx.closePath();ctx.stroke();}
-    else if(patDraw&&patDraw.P===P){const ch=patDraw.chain;ctx.globalAlpha=1;for(let i=1;i<ch.length;i++)seg(pt[ch[i-1]],pt[ch[i]],1);
+    else if(patDraw&&patDraw.P===P){const ch=patDraw.chain;ctx.strokeStyle=PC;ctx.shadowColor=PC;{const q=patNext(P);if(q>=0){const a=pt[ch[ch.length-1]],b=pt[q];ctx.globalAlpha=.35+.2*Math.sin(now/300);ctx.setLineDash([3,9]);ctx.lineWidth=2.5;seg(a,b,1);ctx.setLineDash([]);ctx.lineWidth=3.5;}}ctx.globalAlpha=1;for(let i=1;i<ch.length;i++)seg(pt[ch[i-1]],pt[ch[i]],1);
       if(patDraw.cur){ctx.globalAlpha=.75;ctx.setLineDash([8,7]);seg(pt[ch[ch.length-1]],[patDraw.cur.x*s,patDraw.cur.y*s],1);ctx.setLineDash([]);}}
     ctx.shadowBlur=0;
     if(view_){/* step 1: a light runs round the triangle, the way the eye travels */
@@ -2373,17 +2373,21 @@ function drawPats(now,s){const L=PATS();if(!L.length)return;patTick(now);ctx.sav
         ctx.fillText(P.title,cx,cy+10);ctx.fillText(P.title,cx,cy+10);ctx.shadowBlur=0;}}
     /* stars: shown until the triangle closes, then they fade away for good */
     const sa=view_?1-cl(t/.6):1;if(sa>0){ctx.font='600 15px Almendra, Georgia, serif';ctx.textAlign='center';ctx.textBaseline='middle';
-      pt.forEach(([x,y],i)=>{const on=patDraw&&patDraw.P===P&&patDraw.chain.includes(i),k=Math.max(0,Math.sin(now/420-i*1.3)),R=(on?18:15)+(on?0:5)*k;
+      const NX=view_?-2:patNext(P),drawing=patDraw&&patDraw.P===P,AL=PATS().filter(q=>q.kind!=='rhyme'),ci=AL.indexOf(P);
+      pt.forEach(([x0,y],i)=>{const on=drawing&&patDraw.chain.includes(i)&&!(NX===0&&i===0&&false),nxt=i===NX,sh=P._shake&&P._shake.i===i?now-P._shake.t:1e9,x=x0+(sh<420?Math.sin(sh/22)*7*(1-sh/420):0),k=nxt?Math.max(0,Math.sin(now/260)):0,R=(on?18:nxt?17:13)+(nxt?5*k:0);
         ctx.globalAlpha=dotA*.55*sa;ctx.fillStyle='rgba(20,12,4,.8)';ctx.beginPath();ctx.arc(x,y,R*.85,0,7);ctx.fill();
-        ctx.globalAlpha=dotA*sa;ctx.fillStyle=on?'#fff0c0':GOLD;ctx.shadowColor='#ffe9a8';ctx.shadowBlur=on?26:14+10*k;star(ctx,x,y,R);ctx.shadowBlur=0;
+        ctx.globalAlpha=dotA*sa*(on||nxt?1:.72);ctx.fillStyle=on?'#fff6d8':PC;ctx.shadowColor=PC;ctx.shadowBlur=on?26:nxt?16+12*k:6;star(ctx,x,y,R);ctx.shadowBlur=0;
         ctx.strokeStyle='rgba(60,35,8,.9)';ctx.lineWidth=1.5;ctx.stroke();
-        if(!on&&!view_){const br=((now/1600)+i*.33)%1;ctx.strokeStyle=`rgba(232,198,105,${.8*(1-br)})`;ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,R+14*br,0,7);ctx.stroke();}
-        const n=(P.names||[])[i]||'';if(!n)return;const tw=ctx.measureText(n).width,ly=y-R-14;ctx.globalAlpha=dotA*sa*.95;ctx.fillStyle='#1a120acc';ctx.beginPath();ctx.roundRect(x-tw/2-6,ly-10,tw+12,20,6);ctx.fill();ctx.fillStyle='#f3e3bd';ctx.fillText(n,x,ly+1);});}}
+        ctx.globalAlpha=dotA*sa;ctx.fillStyle='#2a1806';ctx.font='800 '+Math.round(R*.78)+'px Vazirmatn, Arial, sans-serif';ctx.fillText(String(i+1),x,y+1);ctx.font='600 15px Almendra, Georgia, serif';
+        if(nxt&&!view_){const br=(now/1100)%1;ctx.strokeStyle=PC;ctx.globalAlpha=dotA*sa*.85*(1-br);ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(x,y,R+18*br,0,7);ctx.stroke();}
+        let n=(P.names||[])[i]||'';if(nxt&&!view_)n=(drawing?(NX===0?'Back to 1: ':'Next: '):'Start here: ')+n;if(!n)return;const tw=ctx.measureText(n).width,ly=y-R-14;ctx.globalAlpha=dotA*sa*(nxt||on?.95:.6);ctx.fillStyle='#1a120acc';ctx.beginPath();ctx.roundRect(x-tw/2-6,ly-10,tw+12,20,6);ctx.fill();if(nxt){ctx.strokeStyle=PC;ctx.lineWidth=1.5;ctx.stroke();}ctx.fillStyle=nxt?'#fff1cc':'#f3e3bd';ctx.fillText(n,x,ly+1);
+        if(i===0&&!drawing&&!view_&&AL.length>1){const m='Pattern '+(ci+1)+' of '+AL.length,mw=ctx.measureText(m).width;ctx.globalAlpha=dotA*sa*.85;ctx.fillStyle='#1a120acc';ctx.beginPath();ctx.roundRect(x-mw/2-6,ly-34,mw+12,20,6);ctx.fill();ctx.fillStyle=PC;ctx.fillText(m,x,ly-23);}});
+      if(P._wrong&&now-P._wrong<1800&&!drawing&&!view_){const [x,y]=pt[0];ctx.globalAlpha=dotA*sa*(1-(now-P._wrong)/1800);ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.beginPath();ctx.arc(x,y,30+8*Math.sin(now/90),0,7);ctx.stroke();}}}
   ctx.restore();}
 /* drawing: click a star, then touch (or click) the next ones; the line follows the pointer. Esc or right-click cancels. */
 function patMove(w){if(!patDraw)return;if(patDraw.P.kind==='rhyme'){rhymeMove(w);return;}patDraw.cur=w;const P=patDraw.P,ch=patDraw.chain,i=patStar(P,w);if(i<0)return;
-  if(!ch.includes(i)){ch.push(i);try{tone([523.3,587.3,659.3,784,880,987.8][Math.min(5,ch.length-1)],0,.7,.05,'triangle');}catch(e){}if(P.open&&ch.length===P.pts.length){closeTri(P);return;}}
-  else if(i===ch[0]&&ch.length===3&&!P.open)closeTri(P);
+  const nx=patNext(P);if(i!==nx){if(!ch.includes(i)&&!(P._shake&&P._shake.i===i&&performance.now()-P._shake.t<600)){P._shake={i,t:performance.now()};P._wrong=performance.now();try{tone(196,0,.35,.04,'sine');}catch(e){}}return;}
+  if(nx===0){closeTri(P);return;}ch.push(i);try{tone([523.3,587.3,659.3,784,880,987.8][Math.min(5,ch.length-1)],0,.7,.05,'triangle');}catch(e){}if(P.open&&ch.length===P.pts.length){closeTri(P);return;}
   if(P.open&&ch.length===P.pts.length)closeTri(P);}
 addEventListener('keydown',e=>{if(e.key!=='Escape')return;if(patView&&!patView.out){e.preventDefault();e.stopImmediatePropagation();closePat();}else if(patDraw){e.preventDefault();e.stopImmediatePropagation();patDraw=null;}},true);
 cv.addEventListener('pointerdown',e=>{
@@ -2392,7 +2396,7 @@ cv.addEventListener('pointerdown',e=>{
   if(e.button!==0)return;const w=toWorld(e);
   if(patDraw&&patDraw.P.kind==='rhyme'){const i=patStar(patDraw.P,w);if(i>=0){e.stopImmediatePropagation();rhymeDown(patDraw.P,i);}return;}
   if(patDraw){if(patStar(patDraw.P,w)>=0){e.stopImmediatePropagation();patMove(w);}return;}
-  const P=patAt(w);if(P&&P.kind==='rhyme'){e.stopImmediatePropagation();rhymeDown(P,patStar(P,w));return;}if(P){e.stopImmediatePropagation();patDraw={P,chain:[patStar(P,w)],cur:w};try{tone(523.3,0,.7,.05,'triangle');}catch(_){}}},true);
+  const P=patAt(w);if(P&&P.kind==='rhyme'){e.stopImmediatePropagation();rhymeDown(P,patStar(P,w));return;}if(P&&patStar(P,w)!==0){e.stopImmediatePropagation();P._shake={i:patStar(P,w),t:performance.now()};P._wrong=performance.now();try{tone(196,0,.35,.04,'sine');}catch(_){}return;}if(P){e.stopImmediatePropagation();patDraw={P,chain:[patStar(P,w)],cur:w};try{tone(523.3,0,.7,.05,'triangle');}catch(_){}}},true);
 cv.addEventListener('pointermove',e=>{if(patDraw)patMove(toWorld(e));});
 document.addEventListener('click',e=>{if(patView&&!patView.out&&e.target.closest&&e.target.closest('#patBar')){const i=patView.step;if(i<0)return;if(i>=2)closePat();else patSetStep(i+1);}});
 // found hidden detail whose gold dot is under a point (only the dot opens it)
