@@ -951,7 +951,7 @@ body{-webkit-user-select:none;user-select:none}input,textarea,[contenteditable]{
   </aside>
 </div>
 
-<div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmVer">v0.82.0</div><div class="mmStage">
+<div id="mainMenu" role="dialog" aria-label="Main menu"><div class="mmVer">v0.82.1</div><div class="mmStage">
   <img src="ui/menu-bg.webp" alt="">
   <div class="mmTitle"><b>Masterpiece Puzzles</b><small>Old masters, piece by piece</small></div>
   <button class="mmBtn" data-mm="play" style="top:35.9%" aria-label="Play"></button>
@@ -2749,7 +2749,7 @@ function fcFit(){const b=$('fcBody');if(!b)return;b.classList.remove('over');if(
 function fcMoreTog(on){const b=$('fcBody');b.classList.toggle('more',on);$('fcMore').textContent=on?'Close ⌃':'Read more ⌄';if(!on){b.scrollTop=0;fcFit();b.classList.add('over');[80,350,700].forEach(t=>setTimeout(()=>{if(!b.classList.contains('more'))fcFit();},t));}else b.classList.add('over');} /* 0.76.2: re-measure after the panel slides back, so Read more returns */
 function fcReveal(o,done){const f=document.querySelector('.fc3 .ft'),rv=$('fcRV'),k=factCat(o),C=CARDK[k];
   const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
-  const t=factTier(o);let clip='flip'; /* 0.79.3 Ali: the big card never turns or plays a reveal; it opens face-up */if(false){}else if(OLD_EMB.has(k)){}else if(false){const x=C.rev.filter(c=>c!=='flip'&&c!=='shimmer');clip=x[Math.floor(Math.random()*x.length)];}
+  const t=factTier(o);let clip='flip'; /* 0.82.1 Ali: Legendary plays its reveal clip again, on the face-up card (no turn) */if(t==='legendary'&&RARE_V.has(k)&&!OLD_EMB.has(k))clip='rare';else if(OLD_EMB.has(k)){}else if(false){const x=C.rev.filter(c=>c!=='flip'&&c!=='shimmer');clip=x[Math.floor(Math.random()*x.length)];}
   let fin=false;const end=()=>{if(fin)return;fin=true;window.fcRevEnd=null;rv.onended=null;rv.onerror=null;f.classList.remove('revv','pre');try{rv.pause();}catch(e){}$('fcIn').style.transform='rotateY(180deg)';try{fcRev(0);setTimeout(fcFit,60);}catch(e){ctLog(e);}try{done&&done();}catch(e){ctLog(e);flying=false;}};
   if(reduce||clip==='flip'){end();return;}
   window.fcRevEnd=end;setTimeout(end,4200);try{
@@ -2764,7 +2764,7 @@ function openFact(o,btn){
   const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
   box.getAnimations().forEach(a=>a.cancel());inn.getAnimations().forEach(a=>a.cancel());dim.getAnimations().forEach(a=>a.cancel());
   if(reduce||!box.animate){inn.style.transform='rotateY(180deg)';dim.style.opacity=.87;fcReveal(o);return;}
-  flying=true;inn.style.transform='rotateY(180deg)';{const f=document.querySelector('.fc3 .ft'),rv=$('fcRV'),k=factCat(o);{const lg=factTier(o)==='legendary'&&RARE_V.has(k);f.classList.remove('pre','revv');} /* Ali 2026-11-23: no flip video; only Legendary has a reveal clip */const bk=document.querySelector('.fc3 .bk');if(bk)bk.style.backgroundImage='url('+CSRC(k+'-back.jpg')+')';}const ease='cubic-bezier(.2,.8,.2,1)';
+  flying=true;inn.style.transform='rotateY(180deg)';{const f=document.querySelector('.fc3 .ft'),rv=$('fcRV'),k=factCat(o);{const lg=factTier(o)==='legendary'&&RARE_V.has(k);if(lg){f.classList.add('pre','revv');rv.poster=CSRC(k+'-poster.jpg');rv.src=CSRC(k+'-rare.webm');rv.currentTime=0;}else{f.classList.remove('pre','revv');}} /* Ali 2026-11-23: no flip video; only Legendary has a reveal clip */const bk=document.querySelector('.fc3 .bk');if(bk)bk.style.backgroundImage='url('+CSRC(k+'-back.jpg')+')';}const ease='cubic-bezier(.2,.8,.2,1)';
   dim.animate([{opacity:0},{opacity:.87}],{duration:700,fill:'forwards'});
   let from;
   const f0=document.querySelector('.fc3 .ft');
